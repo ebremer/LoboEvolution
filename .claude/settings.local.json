@@ -75,7 +75,8 @@
       "Bash(echo \"Test 1: //<![CDATA[ wrapped — should work everywhere\")",
       "Bash(mvn -f D:/projects/LoboEvolution/pom.xml -pl LoboUnitTest -am test -Dtest='GraalCdataStrippingTest' -Dsurefire.failIfNoSpecifiedTests=false)",
       "Bash(mvn -f D:/projects/LoboEvolution/pom.xml -pl LoboUnitTest -am test -Dtest='GraalJsSmokeTest,LoboGraalHostAccessTest,JsEngineFactoryTest,GraalWindowGlobalsTest,GraalDomAccessTest,GraalEventListenerTest,GraalTimerTest,GraalCdataStrippingTest' -Dsurefire.failIfNoSpecifiedTests=false)",
-      "Bash(mvn -f D:/projects/LoboEvolution/pom.xml -pl LoboUnitTest -am test -Dtest='HTMLElementTest' -Dsurefire.failIfNoSpecifiedTests=false -DargLine='-Dlobo.jsengine=graal')"
+      "Bash(mvn -f D:/projects/LoboEvolution/pom.xml -pl LoboUnitTest -am test -Dtest='HTMLElementTest' -Dsurefire.failIfNoSpecifiedTests=false -DargLine='-Dlobo.jsengine=graal')",
+      "Bash(mvn -f D:/projects/LoboEvolution/pom.xml -pl LoboUnitTest -am test -Dtest='HTMLElementTest' -Dsurefire.failIfNoSpecifiedTests=false)"
     ]
   }
 }

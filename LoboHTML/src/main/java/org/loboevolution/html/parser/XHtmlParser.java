@@ -697,11 +697,22 @@ public class XHtmlParser {
 						}
 						sb.append("</");
 						sb.append(tempBuffer);
+						// NOTE: when an end-tag mismatch causes the inner while
+						// to break, the consumed '>' is intentionally dropped.
+						// Restoring it correctly captures the script body but
+						// then exposes a separate latent bug in Lobo: scripts
+						// inserted via innerHTML get executed (HTML5 says they
+						// shouldn't). See graaljs_phase8_audit.md, gap #5b.
 					} else if (ch == '!') {
 						final String nextSeven = readN(reader, 7);
 						if ("[CDATA[".equals(nextSeven)) {
 							readCData(reader, sb);
 						} else {
+							// Per HTML5 script-data state, "<!" inside a raw-text
+							// element is just text. Preserve the leading '<' that
+							// was consumed by the outer if; the previous code
+							// dropped it, mangling "<!--..." into "!--...".
+							sb.append('<');
 							sb.append('!');
 							if (nextSeven != null) {
 								sb.append(nextSeven);
