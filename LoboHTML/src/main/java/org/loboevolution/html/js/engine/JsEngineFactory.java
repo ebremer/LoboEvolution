@@ -150,7 +150,21 @@ public final class JsEngineFactory {
         engine.putGlobal("screen", window.getScreen());
         engine.putGlobal("localStorage", window.getLocalStorage());
         engine.putGlobal("sessionStorage", window.getSessionStorage());
+        // In a real browser these are callable both as window.foo() and bare
+        // foo() because window IS the global. Re-export them as globals so
+        // legacy scripts work without the window. prefix.
+        engine.eval(WINDOW_FUNCTION_BRIDGE, "<window-fn-bridge>");
     }
+
+    private static final String WINDOW_FUNCTION_BRIDGE = String.join("\n",
+            "var setTimeout = function(fn, ms) {",
+            "  return arguments.length < 2 ? window.setTimeout(fn) : window.setTimeout(fn, ms);",
+            "};",
+            "var setInterval = function(fn, ms) { return window.setInterval(fn, ms); };",
+            "var clearTimeout = function(id) { window.clearTimeout(id); };",
+            "var clearInterval = function(id) { window.clearInterval(id); };",
+            "var alert = function(msg) { window.alert(msg); };",
+            "");
 
     private JsEngineFactory() {
     }

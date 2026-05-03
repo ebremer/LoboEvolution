@@ -680,10 +680,11 @@ public class WindowImpl extends WindowEventHandlersImpl implements Window {
 
 		if(aFunction instanceof Function function){
             task = new FunctionTimerTask(this, timeIDInt, function, false);
-		}
-
-		if(aFunction instanceof String aExpression){
+		} else if(aFunction instanceof String aExpression){
             task = new ExpressionTimerTask(this, timeIDInt, aExpression, false);
+		} else if (aFunction != null) {
+			// Engine-agnostic callback (e.g. a GraalJS polyglot Value)
+			task = new CallableTimerTask(this, timeIDInt, aFunction, false);
 		}
 
 		int t = (int) aTimeInMs;
@@ -772,10 +773,11 @@ public class WindowImpl extends WindowEventHandlersImpl implements Window {
 
 		if(function instanceof Function fun) {
             task = new FunctionTimerTask(this, timeIDInt, fun, true);
-		}
-
-		if(function instanceof String expr){
+		} else if(function instanceof String expr){
             task = new ExpressionTimerTask(this, timeIDInt, expr, true);
+		} else if (function != null) {
+			// Engine-agnostic callback (e.g. a GraalJS polyglot Value)
+			task = new CallableTimerTask(this, timeIDInt, function, true);
 		}
 
 		int t = (int) millis;
