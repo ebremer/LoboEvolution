@@ -41,10 +41,14 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.*;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Base64;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -58,9 +62,90 @@ public class HttpNetwork {
 
 	/** Constant GZIP_ENCODING="gzip" */
 	public static final String GZIP_ENCODING = "gzip";
-	
+
 	/** Constant TIMEOUT_VALUE="2000" */
 	public static final int TIMEOUT_VALUE = 2000;
+
+	/**
+	 * Singleton {@link java.net.http.HttpClient} used by all HTTP traffic. Built
+	 * with HTTP/2 enabled and native redirect-following so callers don't have to
+	 * chase 3xx responses themselves.
+	 */
+	private static final HttpClient HTTP_CLIENT = HttpClient.newBuilder()
+			.followRedirects(HttpClient.Redirect.NORMAL)
+			.connectTimeout(Duration.ofMillis(TIMEOUT_VALUE))
+			.cookieHandler(java.net.CookieHandler.getDefault() != null
+					? java.net.CookieHandler.getDefault()
+					: new java.net.CookieManager())
+			.build();
+
+	/**
+	 * Issue an HTTP(S) request via the modern {@link java.net.http.HttpClient}.
+	 *
+	 * @param uri     target URI; must have a non-blank host for http/https
+	 * @param method  HTTP method, e.g. {@code "GET"} or {@code "POST"}; null
+	 *                defaults to GET
+	 * @param body    request body bytes, or null for no body
+	 * @param headers extra headers to add to the request, or null
+	 * @return the response with body as an {@link InputStream}; redirects are
+	 *         already followed
+	 * @throws IOException if the request fails
+	 */
+	public static HttpResponse<InputStream> fetch(final URI uri, final String method,
+			final byte[] body, final Map<String, String> headers) throws IOException {
+		if (uri == null) {
+			throw new IOException("Invalid URL: null URI");
+		}
+		final String scheme = uri.getScheme();
+		if (scheme == null || (!"http".equalsIgnoreCase(scheme) && !"https".equalsIgnoreCase(scheme))) {
+			throw new IOException("HttpClient fetch only supports http/https; got: " + uri);
+		}
+		if (Strings.isBlank(uri.getHost())) {
+			throw new IOException("Invalid URL: missing host: " + uri);
+		}
+
+		final HttpRequest.Builder builder = HttpRequest.newBuilder(uri)
+				.timeout(Duration.ofMillis(TIMEOUT_VALUE * 5L))
+				.header("User-Agent", UserAgent.getUserAgent())
+				.header("Accept-Encoding", "gzip");
+		if (headers != null) {
+			headers.forEach(builder::header);
+		}
+
+		final String m = (method == null || method.isBlank()) ? "GET" : method.toUpperCase();
+		final HttpRequest.BodyPublisher publisher = (body == null || body.length == 0)
+				? HttpRequest.BodyPublishers.noBody()
+				: HttpRequest.BodyPublishers.ofByteArray(body);
+		builder.method(m, publisher);
+
+		try {
+			return HTTP_CLIENT.send(builder.build(), HttpResponse.BodyHandlers.ofInputStream());
+		} catch (final InterruptedException ie) {
+			Thread.currentThread().interrupt();
+			throw new IOException("Request interrupted: " + uri, ie);
+		}
+	}
+
+	/**
+	 * Convenience: fetch the body of a URL as an {@link InputStream}, with gzip
+	 * decoding applied if the server used it. The returned stream must be closed
+	 * by the caller.
+	 *
+	 * @param uri target URI (http/https or file)
+	 * @param method HTTP method, defaults to GET
+	 * @return body stream, never null (empty stream on no-body responses)
+	 */
+	public static InputStream fetchInputStream(final URI uri, final String method) throws IOException {
+		if (uri != null && "file".equalsIgnoreCase(uri.getScheme())) {
+			// file:// URLs are handled by the JDK's URL stream handler; HttpClient
+			// doesn't support them.
+			return uri.toURL().openStream();
+		}
+		final HttpResponse<InputStream> resp = fetch(uri, method, null, null);
+		final String enc = resp.headers().firstValue("Content-Encoding").orElse("");
+		final InputStream body = resp.body();
+		return GZIP_ENCODING.equalsIgnoreCase(enc) ? new GZIPInputStream(body) : body;
+	}
 
 	private static InputStream getGzipStream(final URLConnection con) throws IOException {
 		final InputStream cis = con.getInputStream();
@@ -140,7 +225,7 @@ public class HttpNetwork {
 				}
 			} else {
 				URI uri = Strings.isNotBlank(baseUri) ? Urls.createURI(baseUri, href) : new URI(href);
-				try (final InputStream in = HttpNetwork.openConnectionCheckRedirects(getURLConnection(uri, Proxy.NO_PROXY,null))) {
+				try (final InputStream in = fetchInputStream(uri, "GET")) {
 					if (href.contains(";base64,")) {
 						final String base64 = href.split(";base64,")[1];
 						final byte[] decodedBytes = Base64.getDecoder().decode(base64);
@@ -194,13 +279,13 @@ public class HttpNetwork {
 	 * @throws java.lang.Exception if any.
 	 */
 	public static String getSource(URI uri, final String integrity) throws Exception {
-		try (final InputStream in = openConnectionCheckRedirects(getURLConnection(uri, Proxy.NO_PROXY,null))) {
-			if(AlgorithmDigest.validate(IOUtil.readFully(in), integrity)){
+		try (final InputStream in = fetchInputStream(uri, "GET")) {
+			if (AlgorithmDigest.validate(IOUtil.readFully(in), integrity)) {
 				return toString(in);
 			}
-		} catch (final SocketTimeoutException e) {
+		} catch (final SocketTimeoutException | java.net.http.HttpTimeoutException e) {
 			log.error("More time elapsed {}", TIMEOUT_VALUE);
-	    }
+		}
 		return "";
 	}
 

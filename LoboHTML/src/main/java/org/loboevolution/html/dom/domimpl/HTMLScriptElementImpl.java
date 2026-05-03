@@ -276,11 +276,13 @@ public class HTMLScriptElementImpl extends HTMLElementImpl implements HTMLScript
 		if (Urls.isLocalFile(scriptURL)) {
 			return Files.newInputStream(Paths.get(scriptURI.replace("file://", "")));
 		} else {
-			final URLConnection connection = scriptURL.openConnection();
-			connection.setRequestProperty("User-Agent", UserAgent.getUserAgent());
-			connection.getHeaderField("Set-Cookie");
-			info.setType(connection.getContentType());
-			return HttpNetwork.openConnectionCheckRedirects(connection);
+			final java.net.http.HttpResponse<InputStream> resp = HttpNetwork.fetch(scriptURL.toURI(), "GET", null, null);
+			info.setType(resp.headers().firstValue("Content-Type").orElse(null));
+			final String enc = resp.headers().firstValue("Content-Encoding").orElse("");
+			final InputStream body = resp.body();
+			return HttpNetwork.GZIP_ENCODING.equalsIgnoreCase(enc)
+					? new java.util.zip.GZIPInputStream(body)
+					: body;
 		}
 	}
 

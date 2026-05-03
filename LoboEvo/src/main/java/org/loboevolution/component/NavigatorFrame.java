@@ -79,18 +79,32 @@ public class NavigatorFrame {
      * @return a {@link HtmlPanel} object.
      */
     public static HtmlPanel createHtmlPanel(final IBrowserPanel browserPanel, final String uri) {
-        URLConnection connection = null;
         try {
-            final URL url = new URI(uri).toURL();
-            connection = url.openConnection();
-            connection.setRequestProperty("User-Agent", UserAgent.getUserAgent());
-            connection.getHeaderField("Set-Cookie");
-            connection.connect();
-            return createPanel(browserPanel, connection, uri);
+            return createPanel(browserPanel, new URI(uri), uri);
         } catch (final Exception e) {
             log.error(e.getMessage(), e);
-            return getErrorComponent(browserPanel, connection, uri, e);
+            return getErrorComponent(browserPanel, null, uri, e);
         }
+    }
+
+    private static HtmlPanel createPanel(final IBrowserPanel browserPanel, final URI uri, final String uriString) throws Exception {
+        final HtmlPanel panel = new HtmlPanel();
+        panel.setBrowserPanel(browserPanel);
+        try (final InputStream in = HttpNetwork.fetchInputStream(uri, "GET");
+             final Reader reader = new InputStreamReader(in, StandardCharsets.UTF_8)) {
+
+            final InputSource is = new InputSourceImpl(reader, uriString);
+            final UserAgentContext ucontext = new UserAgentContext(new HtmlRendererConfigImpl());
+            final HtmlRendererConfig config = new HtmlRendererConfigImpl();
+            final HtmlRendererContext rendererContext = new HtmlRendererContextImpl(panel, ucontext, config);
+            panel.setPreferredSize(new Dimension((int) config.getInitialWindowBounds().getWidth(), (int) config.getInitialWindowBounds().getHeight()));
+            final DocumentBuilderImpl builder = new DocumentBuilderImpl(rendererContext.getUserAgentContext(),rendererContext, config);
+            final Document document = builder.parse(is);
+            panel.setDocument(document, rendererContext);
+        } catch (final SocketTimeoutException e) {
+            log.error("More time elapsed {}", HttpNetwork.TIMEOUT_VALUE);
+        }
+        return panel;
     }
 
     private static HtmlPanel createPanel(final IBrowserPanel browserPanel, final URLConnection connection, final String uri) throws Exception {

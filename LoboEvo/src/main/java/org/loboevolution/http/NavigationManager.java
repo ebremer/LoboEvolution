@@ -69,12 +69,8 @@ public class NavigationManager {
 	public static Document getDocument(final String uri) {
 		final HtmlPanel panel = new HtmlPanel();
 		try {
-			final URL url = new URI(uri).toURL();
-			final URLConnection connection = url.openConnection();
-			connection.setRequestProperty("User-Agent", UserAgent.getUserAgent());
-			connection.getHeaderField("Set-Cookie");
-			try (final InputStream in = HttpNetwork.openConnectionCheckRedirects(connection);
-                 final Reader reader = new InputStreamReader(in, StandardCharsets.UTF_8)) {
+			try (final InputStream in = HttpNetwork.fetchInputStream(new URI(uri), "GET");
+				 final Reader reader = new InputStreamReader(in, StandardCharsets.UTF_8)) {
 
 				final InputSource is = new InputSourceImpl(reader, uri);
 				final UserAgentContext ucontext = new UserAgentContext(new HtmlRendererConfigImpl());
@@ -83,8 +79,8 @@ public class NavigationManager {
 				final DocumentBuilderImpl builder = new DocumentBuilderImpl(rendererContext.getUserAgentContext(), rendererContext, config);
 				return builder.parse(is);
 			} catch (final SocketTimeoutException e) {
-				log.error("More time elapsed {}", connection.getConnectTimeout());
-		    }
+				log.error("More time elapsed {}", HttpNetwork.TIMEOUT_VALUE);
+			}
 		} catch (final Exception e) {
 			log.error(e.getMessage(), e);
 		}
