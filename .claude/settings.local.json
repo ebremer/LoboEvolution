@@ -28,7 +28,9 @@
       "Bash(mvn package *)",
       "Bash(grep -oE '<script[^>]{0,200}>' ebremer.html)",
       "Bash(javac -cp loboevolution-5.0.jar HttpTest.java)",
-      "Bash(java -cp \".;loboevolution-5.0.jar\" HttpTest)"
+      "Bash(java -cp \".;loboevolution-5.0.jar\" HttpTest)",
+      "Bash(javac -cp loboevolution-5.0.jar ObserverTest.java)",
+      "Bash(java -cp \".;loboevolution-5.0.jar\" ObserverTest)"
     ]
   }
 }

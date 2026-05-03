@@ -1273,6 +1273,9 @@ public class WindowImpl extends WindowEventHandlersImpl implements Window {
 		final JavaInstantiator jiAudioContext = (args) -> new AudioContextImpl();
 		final JavaInstantiator jiBlob = (args) -> new BlobImpl();
 		final JavaInstantiator jiImageData = (args) -> new ImageDataImpl();
+		final JavaInstantiator jiMutationObserver = org.loboevolution.html.js.observer.MutationObserverImpl::new;
+		final JavaInstantiator jiIntersectionObserver = org.loboevolution.html.js.observer.IntersectionObserverImpl::new;
+		final JavaInstantiator jiResizeObserver = org.loboevolution.html.js.observer.ResizeObserverImpl::new;
 
 
 		js.defineJsObject(ws, "Event", EventImpl.class, jiEvent);
@@ -1323,6 +1326,9 @@ public class WindowImpl extends WindowEventHandlersImpl implements Window {
 		js.defineJsObject(ws, "AudioContext", AudioContextImpl.class, jiAudioContext);
 		js.defineJsObject(ws, "Blob", BlobImpl.class, jiBlob);
 		js.defineJsObject(ws, "ImageData", ImageDataImpl.class, jiImageData);
+		js.defineJsObject(ws, "MutationObserver", org.loboevolution.html.js.observer.MutationObserverImpl.class, jiMutationObserver);
+		js.defineJsObject(ws, "IntersectionObserver", org.loboevolution.html.js.observer.IntersectionObserverImpl.class, jiIntersectionObserver);
+		js.defineJsObject(ws, "ResizeObserver", org.loboevolution.html.js.observer.ResizeObserverImpl.class, jiResizeObserver);
 
 		js.defineElementClass(ws, doc, "Comment", "comment", CommentImpl.class);
 		js.defineElementClass(ws, doc, "Image", "img", HTMLImageElementImpl.class);
