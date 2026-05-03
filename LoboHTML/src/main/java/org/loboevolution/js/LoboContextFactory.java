@@ -53,7 +53,7 @@ public class LoboContextFactory extends ContextFactory {
         final Context cx = super.makeContext();
         cx.setClassShutter(myClassShutter);
         cx.setOptimizationLevel(-1);
-        cx.setLanguageVersion(Context.VERSION_1_8);
+        cx.setLanguageVersion(Context.VERSION_ES6);
         cx.setInstructionObserverThreshold(100_000);
         return cx;
     }

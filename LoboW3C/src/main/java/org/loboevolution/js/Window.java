@@ -197,6 +197,13 @@ public interface Window
      */
     Navigator getNavigator();
 
+    /**
+     * <p>getPerformance.</p>
+     *
+     * @return a {@link Performance} object.
+     */
+    Performance getPerformance();
+
      /**
      * <p>getOuterHeight.</p>
      *

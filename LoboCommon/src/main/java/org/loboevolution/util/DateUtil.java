@@ -58,10 +58,10 @@ public final class DateUtil {
 		for (final String regexp : DATE_FORMAT) {
 			try {
 				return parse(dateString, regexp, loc);
-			} catch (final ParseException e) {
-				log.info(e.getMessage());
+			} catch (final ParseException ignored) {
 			}
 		}
+		log.info("Unparseable date: \"{}\"", dateString);
 		return null;
 	}
 

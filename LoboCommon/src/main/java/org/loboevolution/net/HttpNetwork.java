@@ -206,9 +206,13 @@ public class HttpNetwork {
 
 
 	public static URLConnection getURLConnection(URI uri, Proxy proxy, String method) throws Exception {
+		final boolean isFile = "file".equalsIgnoreCase(uri.getScheme());
+		if (!isFile && Strings.isBlank(uri.getHost())) {
+			throw new IOException("Invalid URL: missing host: " + uri);
+		}
 		URLConnection connection;
 		URL url = uri.toURL();
-		if (url.toString().contains("file")) {
+		if (isFile) {
 			url = new URI(url.toString().replace("//", "///")).toURL();
 			connection = proxy == null || proxy.equals(Proxy.NO_PROXY) ? url.openConnection() : url.openConnection(proxy);
 
@@ -232,7 +236,7 @@ public class HttpNetwork {
 			connection.connect();
 		} else {
 
-			connection = url.openConnection();
+			connection = proxy == null || proxy.equals(Proxy.NO_PROXY) ? url.openConnection() : url.openConnection(proxy);
 
 			if (Strings.isNotBlank(method) && connection instanceof HttpURLConnection hc) {
 				hc.setRequestMethod(method.toUpperCase());

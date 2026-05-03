@@ -1113,6 +1113,19 @@ public class Parser {
             Map<String, AstNode> destructuringDefault,
             Set<String> paramNames)
             throws IOException {
+        if (params instanceof UnaryExpression && params.getType() == Token.DOTDOTDOT) {
+            if (fnNode.hasRestParameter()) {
+                reportError("msg.parm.after.rest", params.getPosition(), params.getLength());
+            }
+            fnNode.setHasRestParameter(true);
+            arrowFunctionParams(
+                    fnNode,
+                    ((UnaryExpression) params).getOperand(),
+                    destructuring,
+                    destructuringDefault,
+                    paramNames);
+            return;
+        }
         if (params instanceof ArrayLiteral || params instanceof ObjectLiteral) {
             markDestructuring(params);
             fnNode.addParam(params);
@@ -1731,7 +1744,7 @@ public class Parser {
                 init = new EmptyExpression(ts.tokenBeg, 1);
                 // We haven't consumed the token, so we need the CURRENT lexer position
                 init.setLineColumnNumber(ts.getLineno(), ts.getTokenColumn());
-            } else if (tt == Token.VAR || tt == Token.LET) {
+            } else if (tt == Token.VAR || tt == Token.LET || tt == Token.CONST) {
                 consumeToken();
                 init = variables(tt, ts.tokenBeg, false);
             } else {
@@ -2783,6 +2796,19 @@ public class Parser {
                 line = lineNumber();
                 column = columnNumber();
                 node = new UnaryExpression(tt, ts.tokenBeg, unaryExpr());
+                node.setLineColumnNumber(line, column);
+                return node;
+
+            case Token.DOTDOTDOT:
+                // Rest/spread "..." in expression context. Only valid as a
+                // rest parameter in an arrow function parameter list (which is
+                // first parsed as a parenthesized expression) or as an array/
+                // object spread element. We accept it here; downstream
+                // arrowFunctionParams handles the rest-parameter case.
+                consumeToken();
+                line = lineNumber();
+                column = columnNumber();
+                node = new UnaryExpression(Token.DOTDOTDOT, ts.tokenBeg, unaryExpr());
                 node.setLineColumnNumber(line, column);
                 return node;
 

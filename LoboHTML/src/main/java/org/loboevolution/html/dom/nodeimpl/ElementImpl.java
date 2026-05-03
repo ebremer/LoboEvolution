@@ -635,8 +635,7 @@ public class ElementImpl extends NodeImpl implements Element {
 	/** {@inheritDoc} */
 	@Override
 	public void setClassName(final String className) {
-		tokList.remove();
-		tokList.add(className);
+		setAttribute("class", className == null ? "" : className);
 	}
 
 	/** {@inheritDoc} */
@@ -1555,15 +1554,15 @@ public class ElementImpl extends NodeImpl implements Element {
 			if(type == Node.TEXT_NODE){
 				final Text text = (Text) child;
 				h.addAndGet(Strings.texWidth(text.getTextContent(),  elm.getRenderState().getFont()));
-			} else if (type == Node.ELEMENT_NODE) {
-                final CSSStyleDeclaration currentStyle = ((HTMLElementImpl) child).getCurrentStyle();
+			} else if (type == Node.ELEMENT_NODE && child instanceof HTMLElement htmlChild) {
+                final CSSStyleDeclaration currentStyle = htmlChild.getCurrentStyle();
                 final String width = currentStyle.getWidth();
 				final String cssDisplay = currentStyle.getDisplay();
 				if (!CSSValues.NONE.isEqual(cssDisplay)) {
 					if (Strings.isNotBlank(width)) {
 						h.addAndGet(HtmlValues.getPixelSize(width, null, doc.getDefaultView(), 0, parentWidth));
-					} else {
-						h.addAndGet(childWidth((ElementImpl) child, doc, parentWidth));
+					} else if (child instanceof ElementImpl elementChild) {
+						h.addAndGet(childWidth(elementChild, doc, parentWidth));
 					}
 				}
             }

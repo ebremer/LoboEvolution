@@ -681,6 +681,10 @@ public class HtmlRendererContextImpl implements HtmlRendererContext {
 			final IBrowserPanel bpanel = htmlPanel.getBrowserPanel();
 			final ITabbedPane tabbedPane = bpanel.getTabbedPane();
 			final int indexPanel = tabbedPane.getSelectedIndex();
+			if (indexPanel < 0) {
+				submitFormSync(method, action, target, enctype, formInputs);
+				return;
+			}
 			final IBrowserFrame browserFrame = bpanel.getBrowserFrame();
 			final HtmlPanel hpanel = NavigatorFrame.createHtmlPanel(bpanel, action.toString());
 			final HTMLDocumentImpl nodeImpl = (HTMLDocumentImpl) hpanel.getRootNode();
@@ -801,7 +805,6 @@ public class HtmlRendererContextImpl implements HtmlRendererContext {
 		this.currentConnection = connection;
 		try {
 			connection.setRequestProperty("User-Agent", UserAgent.getUserAgent());
-			connection.getHeaderField("Set-Cookie");
 			if (connection instanceof HttpURLConnection hc) {
                 hc.setRequestMethod(actualMethod);
 				hc.setInstanceFollowRedirects(false);

@@ -109,6 +109,8 @@ public class WindowImpl extends WindowEventHandlersImpl implements Window {
 
 	private Navigator navigator;
 
+	private Performance performance;
+
 	private final HtmlRendererContext rcontext;
 
 	private ScreenImpl screen;
@@ -464,6 +466,19 @@ public class WindowImpl extends WindowEventHandlersImpl implements Window {
 				this.navigator = nav;
 			}
 			return nav;
+		}
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public Performance getPerformance() {
+		synchronized (this) {
+			Performance perf = this.performance;
+			if (perf == null) {
+				perf = new PerformanceImpl();
+				this.performance = perf;
+			}
+			return perf;
 		}
 	}
 

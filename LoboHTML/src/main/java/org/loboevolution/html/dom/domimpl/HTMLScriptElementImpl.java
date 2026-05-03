@@ -157,9 +157,56 @@ public class HTMLScriptElementImpl extends HTMLElementImpl implements HTMLScript
 	}
 
 	/**
+	 * Returns true if the given <code>type</code> attribute identifies the script
+	 * as JavaScript (or no type attribute is present, which defaults to JavaScript).
+	 * Per HTML spec, scripts with other types are "data blocks" and must not be
+	 * executed.
+	 */
+	private static boolean isJavaScriptType(final String type) {
+		if (Strings.isBlank(type)) {
+			return true;
+		}
+		final String t = type.trim().toLowerCase();
+		// Accept "module" plus the standard JavaScript MIME types and historical
+		// aliases. Anything else (application/json, application/ld+json,
+		// text/template, etc.) is data.
+		if ("module".equals(t)) {
+			return true;
+		}
+		final int semi = t.indexOf(';');
+		final String mime = semi < 0 ? t : t.substring(0, semi).trim();
+		switch (mime) {
+			case "text/javascript":
+			case "application/javascript":
+			case "application/ecmascript":
+			case "application/x-ecmascript":
+			case "application/x-javascript":
+			case "text/ecmascript":
+			case "text/javascript1.0":
+			case "text/javascript1.1":
+			case "text/javascript1.2":
+			case "text/javascript1.3":
+			case "text/javascript1.4":
+			case "text/javascript1.5":
+			case "text/jscript":
+			case "text/livescript":
+			case "text/x-ecmascript":
+			case "text/x-javascript":
+				return true;
+			default:
+				return false;
+		}
+	}
+
+	/**
 	 * <p>processScript.</p>
 	 */
 	private void processScript() {
+		if (!isJavaScriptType(getType())) {
+			// Data blocks (application/json, application/ld+json, text/template,
+			// etc.) must not be executed as scripts per HTML spec.
+			return;
+		}
 		final UserAgentContext bcontext = getUserAgentContext();
 		if (bcontext == null) {
 			throw new IllegalStateException("No user agent context.");
@@ -191,14 +238,15 @@ public class HTMLScriptElementImpl extends HTMLElementImpl implements HTMLScript
 							try (final Reader reader = new InputStreamReader(in, StandardCharsets.UTF_8)) {
 								final BufferedReader br = new BufferedReader(reader);
 								ctx.evaluateReader(scope, br, scriptURI, 1, null);
-							} catch (Exception e) {
-								throw new Exception(e);
 							}
 						}
 					} catch (final SocketTimeoutException e) {
 						info.setHttpResponse(400);
+					} catch (final RhinoException rhinoError) {
+						log.warn("Javascript error at {}:{}: {}",
+								rhinoError.sourceName(), rhinoError.lineNumber(), rhinoError.getMessage());
 					} catch (final Exception e) {
-						log.error(e.getMessage(), e);
+						log.error("Failed to load script {}", scriptURI, e);
 					} finally {
 						final Instant finish = Instant.now();
 						final long timeElapsed = Duration.between(start, finish).toMillis();
@@ -216,8 +264,8 @@ public class HTMLScriptElementImpl extends HTMLElementImpl implements HTMLScript
 					ctx.evaluateString(scope, text, scriptURI, 1, null);
 				}
 			} catch (final RhinoException ecmaError) {
-				final String error = ecmaError.sourceName() + ":" + ecmaError.lineNumber() + ": " + ecmaError.getMessage();
-				log.error("Javascript error at {}", error);
+				log.warn("Javascript error at {}:{}: {}",
+						ecmaError.sourceName(), ecmaError.lineNumber(), ecmaError.getMessage());
 			} catch (final Throwable err) {
 				log.error("Unable to evaluate Javascript code", err);
 			}

@@ -1,0 +1,32 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mvn clean *)",
+      "WebFetch(domain:repo1.maven.org)",
+      "WebFetch(domain:search.maven.org)",
+      "WebSearch",
+      "Bash(mvn -pl LoboParser -am compile -q)",
+      "Bash(mvn compile *)",
+      "Bash(jar tf *)",
+      "Bash(git checkout *)",
+      "WebFetch(domain:ebremer.com)",
+      "Bash(cd /tmp)",
+      "Bash(curl -s \"https://ebremer.com/sites/default/files/js/js_tHSIjIgEXoBOAPSCLFg8xX9X76mV_CVU41i_61NIE1U.js?scope=footer&delta=0&language=en&theme=dxpr_theme&include=eJxdyDEOgCAMBdAL0TB5HlK0qZhKCf2D3N7Nwe3lVXcEJo8t1490BRlDAul4xiw45Zas5pWNAsta16TualK4sy20PfI_XmZiI_A\" -o ebremer.js)",
+      "Bash(grep -oE '[a-zA-Z_]\\\\`[^\\\\`]{0,50}\\\\`' ebremer.js)",
+      "Bash(javac -cp loboevolution-5.0.jar ParseTest.java)",
+      "Bash(java -cp \".;loboevolution-5.0.jar\" ParseTest /tmp/ebremer.js)",
+      "Bash(awk -v p=3847 'BEGIN{FS=\"\"} {for\\(i=p-30;i<=p+30;i++\\) printf \"%s\",$i; print \"\"; for\\(i=p-30;i<=p+30;i++\\) printf \\(i==p?\"^\":\" \"\\); print \"\"}')",
+      "Bash(mvn -pl LoboParser package -DskipTests -q)",
+      "Bash(mvn -pl LoboParser clean package -DskipTests)",
+      "Bash(java -cp \"../target/LoboParser/LoboParser-1.0.jar;loboevolution-5.0.jar;.\" ParseTest /tmp/t.js)",
+      "Bash(echo \"var x = {f: \\(a, ...rest\\) => a};\")",
+      "Bash(java -cp \"../target/LoboParser/LoboParser-1.0.jar;loboevolution-5.0.jar;.\" ParseTest /tmp/ebremer.js)",
+      "Bash(sed -n '14p' ebremer.js)",
+      "Bash(awk -v p=4030 'BEGIN{FS=\"\"} {for\\(i=p-50;i<=p+50;i++\\) printf \"%s\",$i; print \"\"; for\\(i=p-50;i<=p+50;i++\\) printf \\(i==p?\"^\":\" \"\\); print \"\"}')",
+      "Bash(awk 'NR==14' ebremer.js)",
+      "Bash(mvn -pl LoboParser clean package -DskipTests -q)",
+      "Bash(mvn package *)",
+      "Bash(grep -oE '<script[^>]{0,200}>' ebremer.html)"
+    ]
+  }
+}

@@ -114,42 +114,23 @@ public class HandlerBase implements DocumentHandler, CSSErrorHandler {
     /** {@inheritDoc} */
     @Override
     public void warning(final CSSParseException exception) throws CSSException {
-        final StringBuilder sb = new StringBuilder();
-        sb.append(exception.getURI())
-            .append(" [")
-            .append(exception.getLineNumber())
-            .append(":")
-            .append(exception.getColumnNumber())
-            .append("] ")
-            .append(exception.getMessage());
-        log.error(sb.toString());
+        // CSS parse warnings are non-actionable for the user; suppress.
     }
 
     /** {@inheritDoc} */
     @Override
     public void error(final CSSParseException exception) throws CSSException {
-        final StringBuilder sb = new StringBuilder();
-        sb.append(exception.getURI())
-            .append(" [")
-            .append(exception.getLineNumber())
-            .append(":")
-            .append(exception.getColumnNumber())
-            .append("] ")
-            .append(exception.getMessage());
-        log.error(sb.toString());
+        // CSS parse errors are non-actionable for the user; the parser skips
+        // the offending rule and continues. Suppress to avoid log spam.
     }
 
     /** {@inheritDoc} */
     @Override
     public void fatalError(final CSSParseException exception) throws CSSException {
-        final StringBuilder sb = new StringBuilder();
-        sb.append(exception.getURI())
-            .append(" [")
-            .append(exception.getLineNumber())
-            .append(":")
-            .append(exception.getColumnNumber())
-            .append("] ")
-            .append(exception.getMessage());
-        log.error(sb.toString());
+        log.warn("{} [{}:{}] {}",
+                exception.getURI(),
+                exception.getLineNumber(),
+                exception.getColumnNumber(),
+                exception.getMessage());
     }
 }
