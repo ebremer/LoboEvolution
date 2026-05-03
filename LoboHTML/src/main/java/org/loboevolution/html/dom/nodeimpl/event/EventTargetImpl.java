@@ -35,6 +35,8 @@ import org.loboevolution.html.dom.nodeimpl.ElementImpl;
 import org.loboevolution.html.dom.nodeimpl.NodeImpl;
 import org.loboevolution.html.js.Executor;
 import org.loboevolution.html.js.WindowImpl;
+import org.loboevolution.html.js.engine.JsEngine;
+import org.loboevolution.html.js.engine.JsEngineFactory;
 import org.loboevolution.html.js.events.EventImpl;
 import org.loboevolution.html.node.Document;
 import org.loboevolution.html.node.Node;
@@ -65,11 +67,21 @@ public class EventTargetImpl extends AbstractScriptableDelegate implements Event
 
     @Override
     public void addEventListener(final String type, final Function listener) {
-        addEventListener(type, listener, false);
+        addEventListener(type, (Object) listener, false);
     }
 
     @Override
     public void addEventListener(final String type, final Function listener, final boolean useCapture) {
+        addEventListener(type, (Object) listener, useCapture);
+    }
+
+    @Override
+    public void addEventListener(final String type, final Object listener) {
+        addEventListener(type, listener, false);
+    }
+
+    @Override
+    public void addEventListener(final String type, final Object listener, final boolean useCapture) {
         if (Strings.isNotBlank(type) && listener != null) {
             if ("load".equals(type) || "DOMContentLoaded".equals(type)) {
                 onloadEvent(listener);
@@ -85,19 +97,26 @@ public class EventTargetImpl extends AbstractScriptableDelegate implements Event
 
     @Override
     public void removeEventListener(final String type, final Function listener) {
-        removeEventListener(type, listener, true);
+        removeEventListener(type, (Object) listener, true);
     }
 
     @Override
     public void removeEventListener(final String type, final Function listener, final boolean useCapture) {
+        removeEventListener(type, (Object) listener, useCapture);
+    }
+
+    @Override
+    public void removeEventListener(final String type, final Object listener) {
+        removeEventListener(type, listener, true);
+    }
+
+    @Override
+    public void removeEventListener(final String type, final Object listener, final boolean useCapture) {
         if (ArrayUtilities.isNotBlank(mListenerEntries)) {
-            mListenerEntries.forEach(listenerEntry -> {
-                if ((Objects.equals(listenerEntry.isUseCapture(), useCapture))
-                        && (Objects.equals(listenerEntry.getFunction(), listener))
-                        && Objects.equals(listenerEntry.getType(), type)) {
-                    mListenerEntries.remove(listenerEntry);
-                }
-            });
+            mListenerEntries.removeIf(entry ->
+                    Objects.equals(entry.isUseCapture(), useCapture)
+                            && Objects.equals(entry.getCallback(), listener)
+                            && Objects.equals(entry.getType(), type));
         }
     }
 
@@ -106,17 +125,16 @@ public class EventTargetImpl extends AbstractScriptableDelegate implements Event
         final EventImpl eventImpl = (EventImpl) evt;
         eventImpl.setEventPhase(Event.AT_TARGET);
         if (!eventImpl.isPropogationStopped() && mListenerEntries != null) {
-            mListenerEntries.forEach(listenerEntry -> {
+            new ArrayList<>(mListenerEntries).forEach(listenerEntry -> {
                 if (!listenerEntry.isUseCapture() && listenerEntry.getType().equals(eventImpl.getType())) {
                     try {
                         if (element instanceof HTMLElementImpl elem) {
                             eventImpl.setTarget(elem);
                             eventImpl.setCurrentTarget(elem);
-                            final WindowImpl window = (WindowImpl) elem.getDocumentNode().getDefaultView();
-                            Executor.executeFunction((NodeImpl) element, listenerEntry.getFunction(), new Object[0], window.getContextFactory());
+                            invokeCallback((NodeImpl) element, listenerEntry.getCallback(), eventImpl);
                         }
                     } catch (Exception e) {
-                        log.error("Catched EventListener exception", e);
+                        log.error("Caught EventListener exception", e);
                     }
                 }
             });
@@ -129,21 +147,52 @@ public class EventTargetImpl extends AbstractScriptableDelegate implements Event
         final EventImpl eventImpl = (EventImpl) evt;
         eventImpl.setEventPhase(Event.AT_TARGET);
         if (!eventImpl.getDefaultPrevented() && mListenerEntries != null) {
-            mListenerEntries.forEach(listenerEntry -> {
+            new ArrayList<>(mListenerEntries).forEach(listenerEntry -> {
                 if (!listenerEntry.isUseCapture() && listenerEntry.getType().equals(eventImpl.getType())) {
                     try {
                         if (target instanceof HTMLElementImpl elem) {
                             eventImpl.setTarget(elem);
                             eventImpl.setCurrentTarget(elem);
-                            HtmlController.getInstance().execute(target, listenerEntry.getFunction(), eventImpl);
+                            // Rhino-style attribute handlers go through HtmlController so the
+                            // legacy global `event` property is set; engine-agnostic callbacks
+                            // (e.g. graal Values from addEventListener) take the direct path.
+                            final Object cb = listenerEntry.getCallback();
+                            if (cb instanceof Function f) {
+                                HtmlController.getInstance().execute(target, f, eventImpl);
+                            } else {
+                                invokeCallback(target, cb, eventImpl);
+                            }
                         }
                     } catch (Exception e) {
-                        log.error("Catched EventListener exception", e);
+                        log.error("Caught EventListener exception", e);
                     }
                 }
             });
         }
         return eventImpl.getDefaultPrevented();
+    }
+
+    /**
+     * Routes a callback through the engine that owns the document this event
+     * target belongs to. Works for both Rhino {@link Function}s and GraalJS
+     * {@code Value}s without the call site having to know which engine is
+     * active.
+     */
+    private static void invokeCallback(final NodeImpl node, final Object callback, final EventImpl evt) {
+        final Document doc = node.getDocumentNode();
+        if (doc == null) {
+            return;
+        }
+        final WindowImpl window = (WindowImpl) doc.getDefaultView();
+        if (window == null) {
+            return;
+        }
+        final JsEngine engine = JsEngineFactory.forDocument(doc, window);
+        if (evt == null) {
+            engine.call(callback);
+        } else {
+            engine.call(callback, evt);
+        }
     }
 
     public Function getFunction(final Object obj, final String type) {
@@ -210,10 +259,16 @@ public class EventTargetImpl extends AbstractScriptableDelegate implements Event
         return func;
     }
 
-    private void onloadEvent(final Function onloadHandler) {
+    private void onloadEvent(final Object onloadHandler) {
          if(target instanceof HTMLElementImpl elem){
-            final WindowImpl window = (WindowImpl) elem.getDocumentNode().getDefaultView();
-            Executor.executeFunction(onloadHandler.getParentScope(), onloadHandler, window.getContextFactory());
+            // Rhino path keeps the legacy parent-scope behaviour; for any other
+            // engine we just route through the abstraction.
+            if (onloadHandler instanceof Function f) {
+                final WindowImpl window = (WindowImpl) elem.getDocumentNode().getDefaultView();
+                Executor.executeFunction(f.getParentScope(), f, window.getContextFactory());
+            } else {
+                invokeCallback(elem, onloadHandler, null);
+            }
         }
     }
 }

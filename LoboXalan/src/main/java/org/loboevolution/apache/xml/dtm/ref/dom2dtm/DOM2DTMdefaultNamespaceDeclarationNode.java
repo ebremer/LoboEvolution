@@ -595,6 +595,26 @@ public class DOM2DTMdefaultNamespaceDeclarationNode implements Attr, TypeInfo {
   }
 
   @Override
+  public void addEventListener(final String type, final Object listener) {
+
+  }
+
+  @Override
+  public void addEventListener(final String type, final Object listener, final boolean useCapture) {
+
+  }
+
+  @Override
+  public void removeEventListener(final String type, final Object listener) {
+
+  }
+
+  @Override
+  public void removeEventListener(final String type, final Object listener, final boolean useCapture) {
+
+  }
+
+  @Override
   public boolean dispatchEvent(final Node element, final Event evt) {
     return false;
   }

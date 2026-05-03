@@ -668,6 +668,26 @@ public class XMLDocument implements Document {
 		doc.removeEventListener(type, listener, useCapture);
 	}
 
+	@Override
+	public void addEventListener(final String type, final Object listener) {
+		doc.addEventListener(type, listener);
+	}
+
+	@Override
+	public void addEventListener(final String type, final Object listener, final boolean useCapture) {
+		doc.addEventListener(type, listener, useCapture);
+	}
+
+	@Override
+	public void removeEventListener(final String type, final Object listener) {
+		doc.removeEventListener(type, listener);
+	}
+
+	@Override
+	public void removeEventListener(final String type, final Object listener, final boolean useCapture) {
+		doc.removeEventListener(type, listener, useCapture);
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	public boolean dispatchEvent(final Node element, final Event evt) {

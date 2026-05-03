@@ -831,6 +831,26 @@ public class SVGElementWrapper implements HTMLElement {
     }
 
     @Override
+    public void addEventListener(String type, Object listener) {
+        element.addEventListener(type, listener);
+    }
+
+    @Override
+    public void addEventListener(String type, Object listener, boolean useCapture) {
+        element.addEventListener(type, listener, useCapture);
+    }
+
+    @Override
+    public void removeEventListener(String type, Object listener) {
+        element.removeEventListener(type, listener);
+    }
+
+    @Override
+    public void removeEventListener(String type, Object listener, boolean useCapture) {
+        element.removeEventListener(type, listener, useCapture);
+    }
+
+    @Override
     public boolean dispatchEvent(Node element, Event evt) {
         return element.dispatchEvent(element, evt);
     }

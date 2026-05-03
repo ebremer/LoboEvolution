@@ -36,6 +36,8 @@ import org.loboevolution.html.dom.HTMLScriptElement;
 import org.loboevolution.gui.HtmlPanel;
 import org.loboevolution.html.js.Executor;
 import org.loboevolution.html.js.WindowImpl;
+import org.loboevolution.html.js.engine.JsEngine;
+import org.loboevolution.html.js.engine.JsEngineFactory;
 import org.loboevolution.html.node.Document;
 import org.loboevolution.html.parser.XHtmlParser;
 import org.loboevolution.html.renderstate.DisplayRenderState;
@@ -46,9 +48,7 @@ import org.loboevolution.net.AlgorithmDigest;
 import org.loboevolution.net.HttpNetwork;
 import org.loboevolution.net.IOUtil;
 import org.loboevolution.net.UserAgent;
-import org.mozilla.javascript.Context;
 import org.mozilla.javascript.RhinoException;
-import org.mozilla.javascript.Scriptable;
 import org.loboevolution.html.dom.UserDataHandler;
 
 import java.io.*;
@@ -213,62 +213,80 @@ public class HTMLScriptElementImpl extends HTMLElementImpl implements HTMLScript
 		}
 
 		final Document doc = this.document;
-		final Scriptable scope = (Scriptable) doc.getUserData(Executor.SCOPE_KEY);
-
-		if (scope == null) {
-			throw new IllegalStateException(
-					"Scriptable (scope) instance was expected to be keyed as UserData to document using "
-							+ Executor.SCOPE_KEY);
-		}
 
 		if (bcontext.isScriptingEnabled()) {
 			final WindowImpl window = (WindowImpl) doc.getDefaultView();
-			try (Context ctx = Executor.createContext(window.getContextFactory())) {
-				final String src = getSrc();
-				final Instant start = Instant.now();
+			final JsEngine engine = JsEngineFactory.forDocument(doc, window);
+			final String src = getSrc();
+			final Instant start = Instant.now();
 
-				if (Strings.isNotBlank(src)) {
-					final TimingInfo info = new TimingInfo();
-					final URL scriptURL = ((HTMLDocumentImpl) doc).getFullURL(src);
-					final String scriptURI = scriptURL == null ? src : scriptURL.toExternalForm();
+			if (Strings.isNotBlank(src)) {
+				final TimingInfo info = new TimingInfo();
+				final URL scriptURL;
+				final String scriptURI;
+				try {
+					scriptURL = ((HTMLDocumentImpl) doc).getFullURL(src);
+					scriptURI = scriptURL == null ? src : scriptURL.toExternalForm();
 					info.setName(scriptURL != null ? scriptURL.getFile() : new URI(scriptURI).toURL().getFile());
-
-					try (InputStream in = getStream(scriptURL, scriptURI, info)) {
-						if (AlgorithmDigest.validate(IOUtil.readFully(in), getIntegrity())) {
-							try (final Reader reader = new InputStreamReader(in, StandardCharsets.UTF_8)) {
-								final BufferedReader br = new BufferedReader(reader);
-								ctx.evaluateReader(scope, br, scriptURI, 1, null);
-							}
-						}
-					} catch (final SocketTimeoutException e) {
-						info.setHttpResponse(400);
-					} catch (final RhinoException rhinoError) {
-						log.warn("Javascript error at {}:{}: {}",
-								rhinoError.sourceName(), rhinoError.lineNumber(), rhinoError.getMessage());
-					} catch (final Exception e) {
-						log.error("Failed to load script {}", scriptURI, e);
-					} finally {
-						final Instant finish = Instant.now();
-						final long timeElapsed = Duration.between(start, finish).toMillis();
-						info.setTimeElapsed(timeElapsed);
-						info.setPath(scriptURI);
-						info.setHttpResponse(200);
-
-						final HtmlRendererContext htmlRendererContext = this.getHtmlRendererContext();
-						final HtmlPanel htmlPanel = htmlRendererContext.getHtmlPanel();
-						htmlPanel.getBrowserPanel().getTimingList.add(info);
-					}
-				} else {
-					final String scriptURI = doc.getBaseURI();
-					text = getText();
-					ctx.evaluateString(scope, text, scriptURI, 1, null);
+				} catch (final Exception e) {
+					log.error("Failed to resolve script URL {}", src, e);
+					return;
 				}
-			} catch (final RhinoException ecmaError) {
-				log.warn("Javascript error at {}:{}: {}",
-						ecmaError.sourceName(), ecmaError.lineNumber(), ecmaError.getMessage());
-			} catch (final Throwable err) {
-				log.error("Unable to evaluate Javascript code", err);
+
+				try (InputStream in = getStream(scriptURL, scriptURI, info)) {
+					if (AlgorithmDigest.validate(IOUtil.readFully(in), getIntegrity())) {
+						final String body = readAll(in);
+						evalAndLog(engine, body, scriptURI);
+					}
+				} catch (final SocketTimeoutException e) {
+					info.setHttpResponse(400);
+				} catch (final Exception e) {
+					log.error("Failed to load script {}", scriptURI, e);
+				} finally {
+					final Instant finish = Instant.now();
+					info.setTimeElapsed(Duration.between(start, finish).toMillis());
+					info.setPath(scriptURI);
+					info.setHttpResponse(200);
+
+					final HtmlRendererContext htmlRendererContext = this.getHtmlRendererContext();
+					final HtmlPanel htmlPanel = htmlRendererContext.getHtmlPanel();
+					htmlPanel.getBrowserPanel().getTimingList.add(info);
+				}
+			} else {
+				final String scriptURI = doc.getBaseURI();
+				text = getText();
+				evalAndLog(engine, text, scriptURI);
 			}
+		}
+	}
+
+	/**
+	 * Runs {@code source} through {@code engine} and routes any failure to a
+	 * one-line warn log, matching the legacy Rhino-only behaviour. Engine-
+	 * specific exception types are unwrapped via {@link RhinoException} so the
+	 * Rhino path keeps its source-name / line-number formatting.
+	 */
+	private static void evalAndLog(final JsEngine engine, final String source, final String sourceName) {
+		try {
+			engine.eval(source, sourceName);
+		} catch (final RhinoException ecmaError) {
+			log.warn("Javascript error at {}:{}: {}",
+					ecmaError.sourceName(), ecmaError.lineNumber(), ecmaError.getMessage());
+		} catch (final Throwable err) {
+			log.warn("Javascript error in {}: {}", sourceName, err.getMessage());
+		}
+	}
+
+	private static String readAll(final InputStream in) throws IOException {
+		try (final Reader reader = new InputStreamReader(in, StandardCharsets.UTF_8);
+		     final BufferedReader br = new BufferedReader(reader)) {
+			final StringBuilder sb = new StringBuilder();
+			final char[] buf = new char[4096];
+			int n;
+			while ((n = br.read(buf)) >= 0) {
+				sb.append(buf, 0, n);
+			}
+			return sb.toString();
 		}
 	}
 

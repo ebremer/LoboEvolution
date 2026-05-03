@@ -452,7 +452,27 @@ public class XPathNamespaceImpl implements XPathNamespace {
 	@Override
 	public void removeEventListener(final String type, final Function listener, final boolean useCapture) {
 		m_attributeNode.removeEventListener(type, listener, useCapture);
-		
+
+	}
+
+	@Override
+	public void addEventListener(final String type, final Object listener) {
+		m_attributeNode.addEventListener(type, listener);
+	}
+
+	@Override
+	public void addEventListener(final String type, final Object listener, final boolean useCapture) {
+		m_attributeNode.addEventListener(type, listener, useCapture);
+	}
+
+	@Override
+	public void removeEventListener(final String type, final Object listener) {
+		m_attributeNode.removeEventListener(type, listener);
+	}
+
+	@Override
+	public void removeEventListener(final String type, final Object listener, final boolean useCapture) {
+		m_attributeNode.removeEventListener(type, listener, useCapture);
 	}
 
 	/** {@inheritDoc} */

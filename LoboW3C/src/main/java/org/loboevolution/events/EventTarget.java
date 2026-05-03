@@ -70,6 +70,25 @@ public interface EventTarget {
     void removeEventListener(String type, Function listener, boolean useCapture);
 
     /**
+     * Engine-agnostic {@code addEventListener}. The {@code listener} is the
+     * raw JS callback as the active engine surfaces it (a Rhino
+     * {@code Function} or a GraalJS {@code Value} or any other invocable
+     * object the underlying engine understands). Provided so GraalJS-side
+     * scripts can register listeners without going through Rhino's typed
+     * {@code Function} bridge, which they cannot construct.
+     */
+    void addEventListener(String type, Object listener);
+
+    /** {@link #addEventListener(String, Object)} with an explicit useCapture flag. */
+    void addEventListener(String type, Object listener, boolean useCapture);
+
+    /** Engine-agnostic counterpart to {@link #removeEventListener(String, Function)}. */
+    void removeEventListener(String type, Object listener);
+
+    /** {@link #removeEventListener(String, Object)} with an explicit useCapture flag. */
+    void removeEventListener(String type, Object listener, boolean useCapture);
+
+    /**
      * <p>dispatchEvent.</p>
      *
      * @param element a {@link org.loboevolution.html.node.Node} object.
