@@ -146,7 +146,8 @@ public class HTMLImageElementImpl extends HTMLElementImpl implements HTMLImageEl
 	public Function getOnload() {
 		final Object document = this.document;
 		if (document instanceof HTMLDocument) {
-			return ((HTMLDocumentImpl) document).getOnloadHandler();
+			final Object handler = ((HTMLDocumentImpl) document).getOnloadHandler();
+			return handler instanceof Function f ? f : null;
 		} else {
 			return null;
 		}

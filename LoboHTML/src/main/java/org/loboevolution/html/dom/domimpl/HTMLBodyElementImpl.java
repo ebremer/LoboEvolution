@@ -57,9 +57,13 @@ public class HTMLBodyElementImpl extends HTMLElementImpl implements HTMLBodyElem
 	@Override
 	public void assignAttributeField(final String normalName, final String value) {
 		if ("onload".equals(normalName)) {
-			final Function onload = getFunction(this, normalName);
+			// Use the engine-agnostic accessor so the compiled handler shares
+			// globals with the page's <script> content under either engine.
+			final Object onload = getCallable(this, normalName);
 			if (onload != null) {
-				setOnload(onload);
+				if (document instanceof HTMLDocumentImpl htmlDoc) {
+					htmlDoc.setOnloadHandler(onload);
+				}
 			}
 		} else {
 			super.assignAttributeField(normalName, value);
@@ -98,7 +102,8 @@ public class HTMLBodyElementImpl extends HTMLElementImpl implements HTMLBodyElem
 	public Function getOnload() {
 		final Object document = this.document;
 		if (document instanceof HTMLDocument) {
-			return ((HTMLDocumentImpl) document).getOnloadHandler();
+			final Object handler = ((HTMLDocumentImpl) document).getOnloadHandler();
+			return handler instanceof Function f ? f : null;
 		} else {
 			return null;
 		}

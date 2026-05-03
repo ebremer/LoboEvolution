@@ -655,6 +655,20 @@ public class HTMLElementImpl extends ElementImpl implements HTMLElement, GlobalE
 	}
 
 	/**
+	 * No-op {@code focus()} for elements that don't have a backing widget.
+	 * Per the HTMLOrSVGElement mixin every HTML element exposes {@code focus()};
+	 * input/textarea override with their real implementations. The headless
+	 * renderer doesn't have a focus concept for non-form elements so this is a
+	 * silent stub — {@code focus} events still fire when explicitly dispatched.
+	 */
+	public void focus() {
+	}
+
+	/** No-op {@code blur()}; see {@link #focus()}. */
+	public void blur() {
+	}
+
+	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>Getter for the field onblur.</p>

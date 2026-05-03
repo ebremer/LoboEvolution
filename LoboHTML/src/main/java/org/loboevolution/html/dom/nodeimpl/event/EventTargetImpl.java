@@ -196,67 +196,104 @@ public class EventTargetImpl extends AbstractScriptableDelegate implements Event
     }
 
     public Function getFunction(final Object obj, final String type) {
+        final Object callable = getCallable(obj, type);
+        return callable instanceof Function f ? f : null;
+    }
+
+    /**
+     * Engine-agnostic counterpart to {@link #getFunction(Object, String)}. Returns
+     * the registered callback for {@code type} as an opaque {@link Object} —
+     * a Rhino {@link Function} under Rhino, a GraalJS callable under GraalJS,
+     * or whatever the active engine produces. Use this when the caller needs
+     * to fire the handler regardless of engine; downcast only when a Rhino
+     * {@code Function} is specifically required (e.g. legacy W3C accessors).
+     */
+    public Object getCallable(final Object obj, final String type) {
         final String subType = type.startsWith("on") ? type.substring(2) : type;
         if (obj instanceof WindowImpl window) {
-            return window.getUserAgentContext().isScriptingEnabled() ? searchFunction(subType) : null;
+            return window.getUserAgentContext().isScriptingEnabled() ? searchCallable(subType) : null;
         }
 
         if (obj instanceof ElementImpl elem) {
             final UserAgentContext uac = elem.getUserAgentContext();
             if (uac.isScriptingEnabled()) {
-                final Function func = searchFunction(subType);
-                if (func == null) {
-                    return searchStringFunction(elem, subType);
+                final Object cb = searchCallable(subType);
+                if (cb == null) {
+                    return searchStringCallable(elem, subType);
                 }
-
-                return func;
+                return cb;
             }
         }
 
-        return searchFunction(subType);
+        return searchCallable(subType);
     }
 
-    private Function searchFunction(final String type) {
-        final AtomicReference<Function> function = new AtomicReference<>(null);
+    private Object searchCallable(final String type) {
         if (mListenerEntries != null) {
-            mListenerEntries.forEach(listenerEntry -> {
-                if (!listenerEntry.isUseCapture() && listenerEntry.getType().equals(type)) {
-                    function.set(listenerEntry.getFunction());
+            for (final EventListenerEntry entry : mListenerEntries) {
+                if (!entry.isUseCapture() && entry.getType().equals(type)) {
+                    return entry.getCallback();
                 }
-            });
+            }
         }
-        return function.get();
+        return null;
     }
 
-    private Function searchStringFunction(final ElementImpl elem, final String type) {
-        Function func = null;
+    /**
+     * Compiles an inline {@code on*} attribute handler string into a callable.
+     * Dispatches based on which engine owns the document so the resulting
+     * handler shares globals with the page's {@code <script>} content. Returns
+     * a Rhino {@link Function} under Rhino mode and a GraalJS callable under
+     * Graal mode.
+     */
+    private Object searchStringCallable(final ElementImpl elem, final String type) {
         final String normalAttributeName = "on" + type;
         final String attributeValue = elem.getAttribute(normalAttributeName);
-        if (Strings.isCssNotBlank(attributeValue)) {
-            final String functionCode = "function " + normalAttributeName + "_" + System.identityHashCode(this) + "() { " + attributeValue + " }";
-            final Document doc = elem.getDocumentNode();
-            if (doc == null) {
-                throw new IllegalStateException("Element does not belong to a document.");
-            }
+        if (!Strings.isCssNotBlank(attributeValue)) {
+            return null;
+        }
+        final Document doc = elem.getDocumentNode();
+        if (doc == null) {
+            throw new IllegalStateException("Element does not belong to a document.");
+        }
+        final WindowImpl window = (WindowImpl) doc.getDefaultView();
+        final String sourceName = elem.getTagName() + "[" + elem.getId() + "]." + normalAttributeName;
+        final JsEngine engine = JsEngineFactory.forDocument(doc, window);
 
-            final WindowImpl window = (WindowImpl) doc.getDefaultView();
+        if (engine instanceof org.loboevolution.html.js.engine.RhinoJsEngine) {
+            // Legacy Rhino path: compileFunction returns a Function bound to
+            // the document scope.
+            final String functionCode = "function " + normalAttributeName + "_"
+                    + System.identityHashCode(this) + "() { " + attributeValue + " }";
             try (Context ctx = Executor.createContext(window.getContextFactory())) {
                 final Scriptable scope = (Scriptable) doc.getUserData(Executor.SCOPE_KEY);
                 if (scope == null) {
-                    throw new IllegalStateException("Scriptable (scope) instance was expected to be keyed as UserData to document using " + Executor.SCOPE_KEY);
+                    throw new IllegalStateException(
+                            "Scriptable (scope) instance was expected to be keyed as UserData to document using "
+                                    + Executor.SCOPE_KEY);
                 }
                 final Scriptable thisScope = (Scriptable) JavaScript.getInstance().getJavascriptObject(this, scope);
                 try {
-                    func = ctx.compileFunction(thisScope, functionCode, elem.getTagName() + "[" + elem.getId() + "]." + normalAttributeName, 1, null);
+                    return ctx.compileFunction(thisScope, functionCode, sourceName, 1, null);
                 } catch (final RhinoException ecmaError) {
-                    final String error = ecmaError.sourceName() + ":" + ecmaError.lineNumber() + ": " + ecmaError.getMessage();
-                    log.error("Javascript error at {}", error);
+                    log.warn("Javascript error at {}:{}: {}",
+                            ecmaError.sourceName(), ecmaError.lineNumber(), ecmaError.getMessage());
                 } catch (final Throwable err) {
-                    log.error("Unable to evaluate Javascript code", err);
+                    log.warn("Unable to compile attribute handler {}: {}", sourceName, err.getMessage());
                 }
             }
+            return null;
         }
-        return func;
+
+        // GraalJS path: evaluate as an expression returning an anonymous
+        // function, so the result is a callable Value sharing the engine's
+        // global scope (where page <script>s defined their functions).
+        try {
+            return engine.eval("(function(){\n" + attributeValue + "\n})", sourceName);
+        } catch (final Throwable err) {
+            log.warn("Failed to compile attribute handler {}: {}", sourceName, err.getMessage());
+            return null;
+        }
     }
 
     private void onloadEvent(final Object onloadHandler) {

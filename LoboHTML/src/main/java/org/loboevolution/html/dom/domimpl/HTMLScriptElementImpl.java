@@ -235,7 +235,7 @@ public class HTMLScriptElementImpl extends HTMLElementImpl implements HTMLScript
 
 				try (InputStream in = getStream(scriptURL, scriptURI, info)) {
 					if (AlgorithmDigest.validate(IOUtil.readFully(in), getIntegrity())) {
-						final String body = readAll(in);
+						final String body = stripCdataMarkers(readAll(in));
 						evalAndLog(engine, body, scriptURI);
 					}
 				} catch (final SocketTimeoutException e) {
@@ -255,7 +255,7 @@ public class HTMLScriptElementImpl extends HTMLElementImpl implements HTMLScript
 			} else {
 				final String scriptURI = doc.getBaseURI();
 				text = getText();
-				evalAndLog(engine, text, scriptURI);
+				evalAndLog(engine, stripCdataMarkers(text), scriptURI);
 			}
 		}
 	}
@@ -275,6 +275,29 @@ public class HTMLScriptElementImpl extends HTMLElementImpl implements HTMLScript
 		} catch (final Throwable err) {
 			log.warn("Javascript error in {}: {}", sourceName, err.getMessage());
 		}
+	}
+
+	/**
+	 * Removes XML {@code <![CDATA[} and {@code ]]>} markers from a script body.
+	 * Pages that were authored as XHTML often wrap script content in a CDATA
+	 * section so the XML parser leaves it alone; when those pages are served
+	 * (or processed) as HTML the markers reach the JS parser verbatim, which
+	 * is a syntax error per ES spec. Real browsers' XHTML-as-HTML compat
+	 * layers strip these markers, and Rhino tolerates them by quirk; GraalJS
+	 * is strict and rejects them. Stripping here unifies the two engines'
+	 * behaviour without changing any valid JS program (those tokens are never
+	 * legal JS syntax).
+	 *
+	 * <p>Markers are replaced with spaces of the same length so error line
+	 * and column numbers continue to refer to positions in the original
+	 * source the author wrote.
+	 */
+	public static String stripCdataMarkers(final String src) {
+		if (src == null) return null;
+		if (src.indexOf('<') < 0 && src.indexOf(']') < 0) return src;
+		return src
+				.replace("<![CDATA[", "         ")  // 9 chars → 9 spaces
+				.replace("]]>", "   ");              // 3 chars → 3 spaces
 	}
 
 	private static String readAll(final InputStream in) throws IOException {

@@ -69,6 +69,13 @@ public final class LoboGraalHostAccess {
             .allowIteratorAccess(true)
             .allowBufferAccess(true)
             .allowImplementationsAnnotatedBy(FunctionalInterface.class)
+            // Mirror Rhino's automatic JS-to-String coercion so methods like
+            // window.alert(String) accept any value the script passes — number,
+            // boolean, DOM node, etc. Without this, GraalJS strictly checks
+            // parameter types and rejects alert(123) and friends. The mapping
+            // only fires when a Java method specifically requires String, so
+            // overloads taking Object continue to receive the original type.
+            .targetTypeMapping(Object.class, String.class, null, String::valueOf)
             .build();
 
     /**

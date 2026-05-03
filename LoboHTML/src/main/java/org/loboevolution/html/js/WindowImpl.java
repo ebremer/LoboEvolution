@@ -487,7 +487,8 @@ public class WindowImpl extends WindowEventHandlersImpl implements Window {
 	public Function getOnload() {
 		final HTMLDocumentImpl doc = this.document;
 		if (doc != null) {
-			return doc.getOnloadHandler();
+			final Object handler = doc.getOnloadHandler();
+			return handler instanceof Function f ? f : null;
 		} else {
 			return null;
 		}

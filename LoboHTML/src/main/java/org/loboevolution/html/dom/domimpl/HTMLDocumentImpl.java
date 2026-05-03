@@ -96,9 +96,15 @@ public class HTMLDocumentImpl extends DocumentImpl implements HTMLDocument, Docu
 	@Setter
 	private Set<Locale> locales;
 
+	/**
+	 * The body's compiled onload handler. Held as Object so it can carry a
+	 * Rhino {@link Function} (legacy path) or a GraalJS callable
+	 * ({@code org.graalvm.polyglot.Value}). Dispatch routes through the
+	 * active {@link org.loboevolution.html.js.engine.JsEngine}.
+	 */
 	@Getter
 	@Setter
-	private Function onloadHandler;
+	private Object onloadHandler;
 
 	@Getter
 	private final HtmlRendererContext rcontext;
@@ -524,12 +530,25 @@ public class HTMLDocumentImpl extends DocumentImpl implements HTMLDocument, Docu
 	/** {@inheritDoc} */
 	@Override
 	public Object setUserData(final String key, final Object data, final UserDataHandler handler) {
-		final Function onloadHandler = this.onloadHandler;
+		final Object onloadHandler = this.onloadHandler;
 		if (onloadHandler != null) {
 			if (XHtmlParser.MODIFYING_KEY.equals(key) && data == Boolean.FALSE) {
 				final Event domContentLoadedEvent = createEvent("DOMContentLoaded");
 				domContentLoadedEvent.initEvent("load");
-				HtmlController.getInstance().execute(this, onloadHandler, domContentLoadedEvent);
+				if (onloadHandler instanceof Function f) {
+					// Legacy Rhino path keeps the HtmlController side effect of
+					// publishing `event` as a global on the window scope.
+					HtmlController.getInstance().execute(this, f, domContentLoadedEvent);
+				} else {
+					// Engine-agnostic dispatch through the active JsEngine.
+					final org.loboevolution.html.js.WindowImpl window =
+							(org.loboevolution.html.js.WindowImpl) getDefaultView();
+					if (window != null) {
+						org.loboevolution.html.js.engine.JsEngineFactory
+								.forDocument(this, window)
+								.call(onloadHandler, domContentLoadedEvent);
+					}
+				}
 			}
 		}
 		return super.setUserData(key, data, handler);

@@ -259,6 +259,61 @@ class GraalDomAccessTest extends LoboWebDriver {
     }
 
     @Test
+    void instanceofHTMLDivElement() {
+        // Phase 9 follow-up: bound DOM type globals enable instanceof checks.
+        final Value isDiv = eval("document.getElementById('root') instanceof HTMLDivElement");
+        assertTrue(isDiv.asBoolean());
+        final Value isElement = eval("document.getElementById('root') instanceof Element");
+        assertTrue(isElement.asBoolean());
+    }
+
+    @Test
+    void instanceofWrongTypeReturnsFalse() {
+        final Value isImg = eval("document.getElementById('root') instanceof HTMLImageElement");
+        assertTrue(!isImg.asBoolean());
+    }
+
+    @Test
+    void elementByIdAvailableAsBareIdentifier() {
+        // Phase 9 follow-up: __noSuchProperty__ resolves bare identifiers to
+        // document.getElementById, mirroring the long-standing browser quirk.
+        final Value tag = eval("root.tagName");
+        assertEquals("DIV", tag.asString());
+    }
+
+    @Test
+    void undefinedIdentifierWithNoMatchingElementStaysUndefined() {
+        // If neither a real binding nor an element matches, identifier returns
+        // undefined (typeof check; bare reference would still throw).
+        final Value t = eval("typeof noSuchThing");
+        assertEquals("undefined", t.asString());
+    }
+
+    @Test
+    void focusAndBlurAvailableOnAllElements() {
+        // Phase 9 followup #4: focus() and blur() must exist on every
+        // HTMLElement under graal mode. Previously only Input/TextArea had
+        // them; calling focus() on a button or div threw "Unknown identifier".
+        eval("var b = document.createElement('button'); b.id = 'btn-focus';" +
+             "document.body.appendChild(b);");
+        // Should not throw — these are no-ops on the headless renderer
+        eval("document.getElementById('btn-focus').focus();");
+        eval("document.getElementById('btn-focus').blur();");
+        // And on a plain div too
+        eval("document.getElementById('root').focus();");
+        eval("document.getElementById('root').blur();");
+    }
+
+    @Test
+    void newDomParserViaProxyInstantiable() {
+        // DOMParser needs a Document at construction time; ProxyInstantiable
+        // wires that through so JS-side `new DOMParser()` works without args.
+        final Value parser = eval("new DOMParser()");
+        assertNotNull(parser);
+        assertTrue(!parser.isNull(), "new DOMParser() must produce an object");
+    }
+
+    @Test
     void chainedDomMutation() {
         // A moderately realistic mutation chain that combines several operations
         eval("var d = document.createElement('section');" +
