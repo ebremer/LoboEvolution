@@ -66,7 +66,11 @@
       "Bash(mvn -f D:/projects/LoboEvolution/pom.xml -pl LoboUnitTest -am test -Dtest='GraalEventListenerTest' -Dsurefire.failIfNoSpecifiedTests=false)",
       "Bash(mvn -f D:/projects/LoboEvolution/pom.xml -pl LoboUnitTest -am test -Dtest='GraalJsSmokeTest,LoboGraalHostAccessTest,JsEngineFactoryTest,GraalWindowGlobalsTest,GraalDomAccessTest,GraalEventListenerTest,HTMLScriptElementTest' -Dsurefire.failIfNoSpecifiedTests=false)",
       "Bash(mvn -f D:/projects/LoboEvolution/pom.xml -pl LoboUnitTest -am test -Dtest='GraalTimerTest' -Dsurefire.failIfNoSpecifiedTests=false)",
-      "Bash(mvn -f D:/projects/LoboEvolution/pom.xml -pl LoboUnitTest -am test -Dtest='GraalJsSmokeTest,LoboGraalHostAccessTest,JsEngineFactoryTest,GraalWindowGlobalsTest,GraalDomAccessTest,GraalEventListenerTest,GraalTimerTest,HTMLScriptElementTest' -Dsurefire.failIfNoSpecifiedTests=false)"
+      "Bash(mvn -f D:/projects/LoboEvolution/pom.xml -pl LoboUnitTest -am test -Dtest='GraalJsSmokeTest,LoboGraalHostAccessTest,JsEngineFactoryTest,GraalWindowGlobalsTest,GraalDomAccessTest,GraalEventListenerTest,GraalTimerTest,HTMLScriptElementTest' -Dsurefire.failIfNoSpecifiedTests=false)",
+      "Bash(mvn -f D:/projects/LoboEvolution/pom.xml -pl LoboUnitTest -am test -Dtest='HTMLScriptElementTest,HTMLElementTest' -Dsurefire.failIfNoSpecifiedTests=false)",
+      "Bash(mvn -f D:/projects/LoboEvolution/pom.xml -pl LoboUnitTest -am test -Dtest='HTMLScriptElementTest,HTMLElementTest' -Dsurefire.failIfNoSpecifiedTests=false -DargLine='-Dlobo.jsengine=graal')",
+      "Bash(mvn -f D:/projects/LoboEvolution/pom.xml -pl LoboUnitTest -am test -Dtest='HTMLScriptElementTest' -Dsurefire.failIfNoSpecifiedTests=false -DargLine='-Dlobo.jsengine=graal')",
+      "Bash(mvn -f D:/projects/LoboEvolution/pom.xml -pl LoboUnitTest -am test -Dtest='org.loboevolution.html.HTMLElementTest' -Dsurefire.failIfNoSpecifiedTests=false -DargLine='-Dlobo.jsengine=graal')"
     ]
   }
 }
