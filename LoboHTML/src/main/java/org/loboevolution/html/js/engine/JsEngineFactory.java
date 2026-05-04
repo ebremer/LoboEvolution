@@ -25,70 +25,41 @@
  */
 package org.loboevolution.html.js.engine;
 
-import org.loboevolution.html.js.Executor;
 import org.loboevolution.html.js.WindowImpl;
 import org.loboevolution.html.node.Document;
-import org.mozilla.javascript.Scriptable;
 
 /**
- * Selects the active {@link JsEngine} implementation. The choice is driven by
- * the system property {@value #PROPERTY}, with values {@code graal} (default)
- * or {@code rhino}. A bad value falls back to GraalJS — the new default after
- * Phase 10 of the migration. Set {@code -Dlobo.jsengine=rhino} to opt back
- * into the legacy vendored Rhino path.
+ * Builds {@link JsEngine} instances bound to a Lobo {@link Document}. Always
+ * GraalJS — Phase 12 of the migration removed the Rhino runtime engine, so
+ * this is now a thin factory rather than a true selector. The vendored Rhino
+ * classes still exist in the build because some W3C interfaces reference
+ * {@code org.mozilla.javascript.Function} as a type; nothing here evaluates
+ * JS through them anymore.
  */
 public final class JsEngineFactory {
 
+    /**
+     * Legacy system property that used to choose between Rhino and GraalJS.
+     * Kept as a public constant only so external scripts that set it don't
+     * fail compilation; the value is now ignored.
+     */
     public static final String PROPERTY = "lobo.jsengine";
 
     /** UserData key under which a document's cached {@link JsEngine} lives. */
     static final String DOCUMENT_ENGINE_KEY = "lobo.js.engine";
 
-    public enum Kind {
-        RHINO,
-        GRAAL;
-
-        static Kind parse(final String raw) {
-            if (raw == null) {
-                return GRAAL;
-            }
-            return switch (raw.trim().toLowerCase()) {
-                case "rhino" -> RHINO;
-                case "graal", "graaljs", "graalvm" -> GRAAL;
-                default -> GRAAL;
-            };
-        }
-    }
-
-    /** Returns the engine selected by {@value #PROPERTY}, defaulting to GraalJS. */
-    public static Kind defaultKind() {
-        return Kind.parse(System.getProperty(PROPERTY));
-    }
-
-    /** Builds a fresh {@link JsEngine} of the default kind. */
+    /** Builds a fresh, document-less {@link JsEngine}. */
     public static JsEngine create() {
-        return create(defaultKind());
-    }
-
-    /** Builds a fresh {@link JsEngine} of the requested kind. */
-    public static JsEngine create(final Kind kind) {
-        return switch (kind) {
-            case GRAAL -> new GraalJsEngine();
-            case RHINO -> new RhinoJsEngine();
-        };
+        return new GraalJsEngine();
     }
 
     /**
      * Returns the {@link JsEngine} bound to the given document, creating and
      * caching one on first use. Multiple {@code <script>} elements in the same
-     * document share the engine so they see each other's globals — exactly as
-     * the legacy Rhino-only path did.
+     * document share the engine so they see each other's globals.
      *
-     * <p>In Rhino mode the engine wraps the per-document scope already built
-     * by {@code WindowImpl.initWindowScope}, so DOM access continues to work.
-     * In GraalJS mode the engine is a fresh polyglot {@code Context} into
-     * which {@link #bindWindowGlobals(JsEngine, WindowImpl)} populates the
-     * core Window members ({@code window}, {@code document}, {@code navigator},
+     * <p>{@link #bindWindowGlobals(JsEngine, WindowImpl)} populates the core
+     * Window members ({@code window}, {@code document}, {@code navigator},
      * {@code location}, {@code console}, {@code performance}, {@code history},
      * {@code screen}, {@code localStorage}, {@code sessionStorage}).
      *
@@ -96,32 +67,12 @@ public final class JsEngineFactory {
      * its lifecycle is owned by the document.
      */
     public static JsEngine forDocument(final Document doc, final WindowImpl window) {
-        return forDocument(doc, window, defaultKind());
-    }
-
-    /** {@link #forDocument(Document, WindowImpl)} with an explicit engine choice. */
-    public static JsEngine forDocument(final Document doc, final WindowImpl window, final Kind kind) {
         final Object cached = doc.getUserData(DOCUMENT_ENGINE_KEY);
         if (cached instanceof JsEngine eng) {
             return eng;
         }
-        final JsEngine engine;
-        switch (kind) {
-            case GRAAL -> {
-                final GraalJsEngine ge = new GraalJsEngine();
-                bindWindowGlobals(ge, window);
-                engine = ge;
-            }
-            case RHINO -> {
-                final Scriptable scope = (Scriptable) doc.getUserData(Executor.SCOPE_KEY);
-                if (scope == null) {
-                    throw new IllegalStateException(
-                            "Document scope not initialised; expected UserData key " + Executor.SCOPE_KEY);
-                }
-                engine = new RhinoJsEngine(window.getContextFactory(), scope);
-            }
-            default -> throw new IllegalStateException("unknown engine kind");
-        }
+        final GraalJsEngine engine = new GraalJsEngine();
+        bindWindowGlobals(engine, window);
         doc.setUserData(DOCUMENT_ENGINE_KEY, engine, null);
         return engine;
     }
@@ -132,9 +83,6 @@ public final class JsEngineFactory {
      * {@link LoboGraalHostAccess} reflection rules so {@code navigator.userAgent},
      * {@code window.location.href}, {@code performance.now()} etc. resolve to
      * the underlying Java methods.
-     *
-     * <p>This is intentionally separate from {@link #forDocument} so it can be
-     * exercised in unit tests without the Rhino-side scope prerequisite.
      */
     public static void bindWindowGlobals(final JsEngine engine, final WindowImpl window) {
         engine.putGlobal("window", window);
@@ -161,11 +109,8 @@ public final class JsEngineFactory {
      * treats a bound {@link Class} as both a host type ({@code instanceof})
      * and, where the class has a no-arg constructor, a callable
      * ({@code new}). For types whose constructor needs context that lives on
-     * the {@link WindowImpl} (e.g. XHR's owning document), the existing
-     * Rhino-side instantiator pattern in {@code WindowImpl.setScope} still
-     * supplies them — this graal binding only covers types reachable via
-     * {@code instanceof} and parameterless construction, which accounts for
-     * the great majority of real-world script usage.
+     * the {@link WindowImpl} (e.g. XHR's owning document), a
+     * {@code ProxyInstantiable} closes over the right reference.
      */
     private static void bindDomTypes(final JsEngine engine, final WindowImpl window) {
         // No-arg / pure-instanceof types: bind the Class directly so JS can
@@ -193,22 +138,14 @@ public final class JsEngineFactory {
         engine.putGlobal("IntersectionObserver", org.loboevolution.html.js.observer.IntersectionObserverImpl.class);
         engine.putGlobal("ResizeObserver", org.loboevolution.html.js.observer.ResizeObserverImpl.class);
 
-        // Types whose constructor needs context only the WindowImpl owns
-        // (e.g. owning Document) — bind a ProxyInstantiable that closes over
-        // the right reference. These mirror the Rhino-side JavaInstantiator
-        // pattern in WindowImpl.setScope.
         final org.loboevolution.html.dom.domimpl.HTMLDocumentImpl doc =
                 (org.loboevolution.html.dom.domimpl.HTMLDocumentImpl) window.getDocumentNode();
         engine.putGlobal("DOMParser", (org.graalvm.polyglot.proxy.ProxyInstantiable) args ->
                 new org.loboevolution.html.js.DOMParserImpl(doc));
         engine.putGlobal("FormData", (org.graalvm.polyglot.proxy.ProxyInstantiable) args ->
                 new org.loboevolution.html.dom.nodeimpl.FormDataImpl(doc));
-        engine.putGlobal("XMLHttpRequest", (org.graalvm.polyglot.proxy.ProxyInstantiable) args -> {
-            // XHR needs (Document, Scriptable, WindowImpl). The Scriptable is
-            // Rhino-specific; in graal mode it's unused at construction time
-            // and downstream code paths that need it are out of scope here.
-            return new org.loboevolution.html.js.xml.XMLHttpRequestImpl(doc, null, window);
-        });
+        engine.putGlobal("XMLHttpRequest", (org.graalvm.polyglot.proxy.ProxyInstantiable) args ->
+                new org.loboevolution.html.js.xml.XMLHttpRequestImpl(doc, null, window));
     }
 
     private static final String WINDOW_FUNCTION_BRIDGE = String.join("\n",

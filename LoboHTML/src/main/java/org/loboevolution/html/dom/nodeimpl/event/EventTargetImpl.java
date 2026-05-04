@@ -260,32 +260,7 @@ public class EventTargetImpl extends AbstractScriptableDelegate implements Event
         final String sourceName = elem.getTagName() + "[" + elem.getId() + "]." + normalAttributeName;
         final JsEngine engine = JsEngineFactory.forDocument(doc, window);
 
-        if (engine instanceof org.loboevolution.html.js.engine.RhinoJsEngine) {
-            // Legacy Rhino path: compileFunction returns a Function bound to
-            // the document scope.
-            final String functionCode = "function " + normalAttributeName + "_"
-                    + System.identityHashCode(this) + "() { " + attributeValue + " }";
-            try (Context ctx = Executor.createContext(window.getContextFactory())) {
-                final Scriptable scope = (Scriptable) doc.getUserData(Executor.SCOPE_KEY);
-                if (scope == null) {
-                    throw new IllegalStateException(
-                            "Scriptable (scope) instance was expected to be keyed as UserData to document using "
-                                    + Executor.SCOPE_KEY);
-                }
-                final Scriptable thisScope = (Scriptable) JavaScript.getInstance().getJavascriptObject(this, scope);
-                try {
-                    return ctx.compileFunction(thisScope, functionCode, sourceName, 1, null);
-                } catch (final RhinoException ecmaError) {
-                    log.warn("Javascript error at {}:{}: {}",
-                            ecmaError.sourceName(), ecmaError.lineNumber(), ecmaError.getMessage());
-                } catch (final Throwable err) {
-                    log.warn("Unable to compile attribute handler {}: {}", sourceName, err.getMessage());
-                }
-            }
-            return null;
-        }
-
-        // GraalJS path: evaluate as an expression returning an anonymous
+        // Evaluate the attribute body as an expression returning an anonymous
         // function, so the result is a callable Value sharing the engine's
         // global scope (where page <script>s defined their functions).
         try {

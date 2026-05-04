@@ -189,7 +189,7 @@ class GraalWindowGlobalsTest extends LoboWebDriver {
         // Going through the public factory entry-point used by HTMLScriptElementImpl
         // — proves the script-element bridge will see the same globals when the
         // graal flag is selected.
-        final var engine = JsEngineFactory.forDocument(doc, window, JsEngineFactory.Kind.GRAAL);
+        final var engine = JsEngineFactory.forDocument(doc, window);
         final Value ua = (Value) engine.eval("navigator.userAgent", "<navigator>");
         assertTrue(ua.isString());
         assertTrue(ua.asString().length() > 0);

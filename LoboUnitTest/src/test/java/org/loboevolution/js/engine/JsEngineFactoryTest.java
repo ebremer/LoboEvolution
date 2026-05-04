@@ -28,93 +28,38 @@ package org.loboevolution.js.engine;
 
 import org.graalvm.polyglot.Value;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.EnumSource;
 import org.loboevolution.html.js.engine.GraalJsEngine;
 import org.loboevolution.html.js.engine.JsEngine;
 import org.loboevolution.html.js.engine.JsEngineFactory;
-import org.loboevolution.html.js.engine.RhinoJsEngine;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
-import static org.junit.jupiter.api.Assertions.assertSame;
 
 /**
- * Phase 2 of the GraalJS migration: prove both engines run behind the
- * {@link JsEngine} abstraction and that {@link JsEngineFactory} routes by the
- * {@code lobo.jsengine} system property. After Phase 10 the default is
- * GraalJS; Rhino is opt-in via {@code -Dlobo.jsengine=rhino}.
+ * After Phase 12 Part A there is no longer an engine selector — every call
+ * to {@link JsEngineFactory#create} produces a {@link GraalJsEngine}. These
+ * tests prove the factory still compiles, evaluates JS, and shares globals
+ * across consecutive evals on the same engine instance.
  */
 class JsEngineFactoryTest {
 
     @Test
-    void defaultKindIsGraal() {
-        final String original = System.getProperty(JsEngineFactory.PROPERTY);
-        try {
-            System.clearProperty(JsEngineFactory.PROPERTY);
-            assertSame(JsEngineFactory.Kind.GRAAL, JsEngineFactory.defaultKind());
-        } finally {
-            if (original != null) System.setProperty(JsEngineFactory.PROPERTY, original);
+    void createReturnsGraalJsEngine() {
+        try (JsEngine engine = JsEngineFactory.create()) {
+            assertInstanceOf(GraalJsEngine.class, engine);
         }
     }
 
     @Test
-    void propertySelectsRhino() {
-        final String original = System.getProperty(JsEngineFactory.PROPERTY);
-        try {
-            System.setProperty(JsEngineFactory.PROPERTY, "rhino");
-            assertSame(JsEngineFactory.Kind.RHINO, JsEngineFactory.defaultKind());
-            try (JsEngine engine = JsEngineFactory.create()) {
-                assertInstanceOf(RhinoJsEngine.class, engine);
-            }
-        } finally {
-            if (original == null) System.clearProperty(JsEngineFactory.PROPERTY);
-            else System.setProperty(JsEngineFactory.PROPERTY, original);
-        }
-    }
-
-    @Test
-    void propertySelectsGraal() {
-        final String original = System.getProperty(JsEngineFactory.PROPERTY);
-        try {
-            System.setProperty(JsEngineFactory.PROPERTY, "graal");
-            assertSame(JsEngineFactory.Kind.GRAAL, JsEngineFactory.defaultKind());
-            try (JsEngine engine = JsEngineFactory.create()) {
-                assertInstanceOf(GraalJsEngine.class, engine);
-            }
-        } finally {
-            if (original == null) System.clearProperty(JsEngineFactory.PROPERTY);
-            else System.setProperty(JsEngineFactory.PROPERTY, original);
-        }
-    }
-
-    @Test
-    void unknownPropertyFallsBackToGraal() {
-        final String original = System.getProperty(JsEngineFactory.PROPERTY);
-        try {
-            System.setProperty(JsEngineFactory.PROPERTY, "v8");
-            assertSame(JsEngineFactory.Kind.GRAAL, JsEngineFactory.defaultKind());
-            try (JsEngine engine = JsEngineFactory.create()) {
-                assertInstanceOf(GraalJsEngine.class, engine);
-            }
-        } finally {
-            if (original == null) System.clearProperty(JsEngineFactory.PROPERTY);
-            else System.setProperty(JsEngineFactory.PROPERTY, original);
-        }
-    }
-
-    @ParameterizedTest
-    @EnumSource(JsEngineFactory.Kind.class)
-    void bothEnginesEvaluateArithmetic(final JsEngineFactory.Kind kind) {
-        try (JsEngine engine = JsEngineFactory.create(kind)) {
+    void engineEvaluatesArithmetic() {
+        try (JsEngine engine = JsEngineFactory.create()) {
             assertEquals(6, asInt(engine.eval("2 * 3", "arith")));
         }
     }
 
-    @ParameterizedTest
-    @EnumSource(JsEngineFactory.Kind.class)
-    void bothEnginesExposeGlobals(final JsEngineFactory.Kind kind) {
-        try (JsEngine engine = JsEngineFactory.create(kind)) {
+    @Test
+    void engineExposesGlobals() {
+        try (JsEngine engine = JsEngineFactory.create()) {
             engine.putGlobal("greeting", "hi");
             assertEquals("hi from JS", asString(engine.eval("greeting + ' from JS'", "global")));
         }
@@ -122,20 +67,18 @@ class JsEngineFactoryTest {
 
     /**
      * Two consecutive {@code eval} calls on the same engine instance must
-     * share globals — this is the per-document caching invariant that
+     * share globals — the per-document caching invariant that
      * {@code HTMLScriptElementImpl} relies on so multiple {@code <script>}
      * tags on a page see each other's variables.
      */
-    @ParameterizedTest
-    @EnumSource(JsEngineFactory.Kind.class)
-    void sequentialScriptsShareScope(final JsEngineFactory.Kind kind) {
-        try (JsEngine engine = JsEngineFactory.create(kind)) {
+    @Test
+    void sequentialScriptsShareScope() {
+        try (JsEngine engine = JsEngineFactory.create()) {
             engine.eval("var shared = 7;", "<script1>");
             assertEquals(14, asInt(engine.eval("shared * 2", "<script2>")));
         }
     }
 
-    /** Small helper to read an integer back from either engine's return type. */
     private static int asInt(final Object o) {
         if (o instanceof Value v) return v.asInt();
         if (o instanceof Number n) return n.intValue();

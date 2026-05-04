@@ -26,13 +26,11 @@
 package org.loboevolution.html.js.engine;
 
 /**
- * Engine-agnostic surface used by Lobo to evaluate JavaScript. The two
- * implementations are {@link RhinoJsEngine} (the existing vendored Rhino) and
- * {@link GraalJsEngine} (org.graalvm.polyglot). Pick one through
- * {@link JsEngineFactory}.
- *
- * <p>The interface is intentionally minimal at this stage of the migration; we
- * grow it phase by phase as call sites move off direct Rhino API usage.
+ * Engine-agnostic surface used by Lobo to evaluate JavaScript. After
+ * Phase 12 Part A the only implementation is {@link GraalJsEngine}; the
+ * abstraction is preserved so call sites stay decoupled from polyglot
+ * specifics and to keep the door open for additional backends in the future.
+ * Build a context-bound engine through {@link JsEngineFactory#forDocument}.
  */
 public interface JsEngine extends AutoCloseable {
 
