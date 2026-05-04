@@ -32,13 +32,10 @@ import org.mozilla.javascript.Scriptable;
 
 /**
  * Selects the active {@link JsEngine} implementation. The choice is driven by
- * the system property {@value #PROPERTY}, with values {@code rhino} (default)
- * or {@code graal}. A bad value falls back to Rhino so that misconfiguration
- * cannot regress production behaviour.
- *
- * <p>Until Phase 4 wires DOM globals through this abstraction, the GraalJS
- * branch only evaluates standalone scripts; selecting it for a real page will
- * produce {@code ReferenceError}s for DOM lookups. That is by design.
+ * the system property {@value #PROPERTY}, with values {@code graal} (default)
+ * or {@code rhino}. A bad value falls back to GraalJS — the new default after
+ * Phase 10 of the migration. Set {@code -Dlobo.jsengine=rhino} to opt back
+ * into the legacy vendored Rhino path.
  */
 public final class JsEngineFactory {
 
@@ -53,16 +50,17 @@ public final class JsEngineFactory {
 
         static Kind parse(final String raw) {
             if (raw == null) {
-                return RHINO;
+                return GRAAL;
             }
             return switch (raw.trim().toLowerCase()) {
+                case "rhino" -> RHINO;
                 case "graal", "graaljs", "graalvm" -> GRAAL;
-                default -> RHINO;
+                default -> GRAAL;
             };
         }
     }
 
-    /** Returns the engine selected by {@value #PROPERTY}, defaulting to Rhino. */
+    /** Returns the engine selected by {@value #PROPERTY}, defaulting to GraalJS. */
     public static Kind defaultKind() {
         return Kind.parse(System.getProperty(PROPERTY));
     }

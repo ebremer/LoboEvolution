@@ -42,18 +42,34 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 /**
  * Phase 2 of the GraalJS migration: prove both engines run behind the
  * {@link JsEngine} abstraction and that {@link JsEngineFactory} routes by the
- * {@code lobo.jsengine} system property without affecting the legacy default.
+ * {@code lobo.jsengine} system property. After Phase 10 the default is
+ * GraalJS; Rhino is opt-in via {@code -Dlobo.jsengine=rhino}.
  */
 class JsEngineFactoryTest {
 
     @Test
-    void defaultKindIsRhino() {
+    void defaultKindIsGraal() {
         final String original = System.getProperty(JsEngineFactory.PROPERTY);
         try {
             System.clearProperty(JsEngineFactory.PROPERTY);
-            assertSame(JsEngineFactory.Kind.RHINO, JsEngineFactory.defaultKind());
+            assertSame(JsEngineFactory.Kind.GRAAL, JsEngineFactory.defaultKind());
         } finally {
             if (original != null) System.setProperty(JsEngineFactory.PROPERTY, original);
+        }
+    }
+
+    @Test
+    void propertySelectsRhino() {
+        final String original = System.getProperty(JsEngineFactory.PROPERTY);
+        try {
+            System.setProperty(JsEngineFactory.PROPERTY, "rhino");
+            assertSame(JsEngineFactory.Kind.RHINO, JsEngineFactory.defaultKind());
+            try (JsEngine engine = JsEngineFactory.create()) {
+                assertInstanceOf(RhinoJsEngine.class, engine);
+            }
+        } finally {
+            if (original == null) System.clearProperty(JsEngineFactory.PROPERTY);
+            else System.setProperty(JsEngineFactory.PROPERTY, original);
         }
     }
 
@@ -73,13 +89,13 @@ class JsEngineFactoryTest {
     }
 
     @Test
-    void unknownPropertyFallsBackToRhino() {
+    void unknownPropertyFallsBackToGraal() {
         final String original = System.getProperty(JsEngineFactory.PROPERTY);
         try {
             System.setProperty(JsEngineFactory.PROPERTY, "v8");
-            assertSame(JsEngineFactory.Kind.RHINO, JsEngineFactory.defaultKind());
+            assertSame(JsEngineFactory.Kind.GRAAL, JsEngineFactory.defaultKind());
             try (JsEngine engine = JsEngineFactory.create()) {
-                assertInstanceOf(RhinoJsEngine.class, engine);
+                assertInstanceOf(GraalJsEngine.class, engine);
             }
         } finally {
             if (original == null) System.clearProperty(JsEngineFactory.PROPERTY);

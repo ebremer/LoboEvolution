@@ -67,7 +67,15 @@ public class GraalJsEngine implements JsEngine {
         if (callback == null) {
             return null;
         }
-        final Value fn = (callback instanceof Value v) ? v : context.asValue(callback);
+        // A JS callable that came in through a Function-typed parameter is
+        // wrapped in our Rhino adapter. Unwrap so we can execute the polyglot
+        // Value directly — wrapping it as a host object via context.asValue
+        // would yield a non-executable value.
+        Object cb = callback;
+        if (cb instanceof GraalRhinoFunctionAdapter adapter) {
+            cb = adapter.getGraalCallable();
+        }
+        final Value fn = (cb instanceof Value v) ? v : context.asValue(cb);
         if (!fn.canExecute()) {
             return null;
         }

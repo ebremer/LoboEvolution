@@ -23,6 +23,9 @@ public interface CSSProperties {
 	/** The Constant BACKGROUND_ATTACHMENT. */
 	String BACKGROUND_ATTACHMENT = "background-attachment";
 
+	/** The Constant BACKGROUND_CLIP. */
+	String BACKGROUND_CLIP = "background-clip";
+
 	/** The Constant BACKGROUND_COLOR. */
 	String BACKGROUND_COLOR = "background-color";
 

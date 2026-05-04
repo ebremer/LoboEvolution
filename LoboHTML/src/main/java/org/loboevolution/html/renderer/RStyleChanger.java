@@ -59,6 +59,10 @@ final class RStyleChanger extends BaseRenderable {
 	@Override
 	public void paint(final Graphics g) {
 		final RenderState rs = (RenderState)this.modelNode.getRenderState();
+		// rs may be null when paint runs before layout has finished
+		// establishing render states for newly-inserted nodes; skip rather
+		// than NPE — paint will be called again on the next repaint cycle.
+		if (rs == null) return;
 		g.setColor(rs.getColor());
 		g.setFont(rs.getFont());
 	}

@@ -29,6 +29,8 @@
 package org.loboevolution.html.js;
 
 import lombok.Getter;
+import org.graalvm.polyglot.Value;
+import org.graalvm.polyglot.proxy.ProxyObject;
 import org.htmlunit.cssparser.dom.CSSRuleListImpl;
 import org.htmlunit.cssparser.dom.DOMException;
 import org.loboevolution.common.Nodes;
@@ -45,6 +47,7 @@ import org.loboevolution.html.dom.nodeimpl.traversal.NodeFilterImpl;
 import org.loboevolution.html.dom.xpath.XPathResultImpl;
 import org.loboevolution.html.js.audio.AudioContextImpl;
 import org.loboevolution.html.js.css.MediaQueryListImpl;
+import org.loboevolution.html.js.engine.DynamicMembers;
 import org.loboevolution.html.js.events.*;
 import org.loboevolution.html.js.storage.LocalStorage;
 import org.loboevolution.html.js.storage.SessionStorage;
@@ -75,8 +78,18 @@ import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * <p>WindowImpl class.</p>
+ *
+ * <p>Implements {@link ProxyObject} so the GraalJS bridge sees Window as a
+ * dynamic property bag — real browsers let scripts stick arbitrary properties
+ * on {@code window} (e.g. jQuery's {@code window.$ = jQuery}); a strict host
+ * object would reject those writes with {@code "Unknown identifier"} under
+ * strict-mode JS, aborting the script. The {@link DynamicMembers} helper
+ * delegates known names to JavaBean reflection on this class and stashes
+ * unknown names in an internal map so they read back consistently. Rhino is
+ * unaware of {@link ProxyObject} and continues to use its own reflection
+ * unchanged.
  */
-public class WindowImpl extends WindowEventHandlersImpl implements Window {
+public class WindowImpl extends WindowEventHandlersImpl implements Window, ProxyObject {
 
 	private static final Map<HtmlRendererContext, WeakReference<WindowImpl>> CONTEXT_WINDOWS = new WeakHashMap<>();
 
@@ -126,7 +139,9 @@ public class WindowImpl extends WindowEventHandlersImpl implements Window {
 	@Getter
 	private LoboContextFactory contextFactory;
 
-    
+	/** Lazily-initialised so Rhino-mode runs that never load polyglot still work. */
+	private DynamicMembers proxyMembers;
+
 	/**
 	 * <p>Constructor for WindowImpl.</p>
 	 *
@@ -140,6 +155,31 @@ public class WindowImpl extends WindowEventHandlersImpl implements Window {
 		this.config = config;
 		this.contextFactory = new LoboContextFactory();
 	}
+
+	private DynamicMembers proxy() {
+		DynamicMembers m = this.proxyMembers;
+		if (m == null) {
+			m = new DynamicMembers(this);
+			this.proxyMembers = m;
+		}
+		return m;
+	}
+
+	/** {@link ProxyObject} delegate. See class-level Javadoc. */
+	@Override
+	public Object getMember(final String key) { return proxy().getMember(key); }
+
+	/** {@link ProxyObject} delegate. See class-level Javadoc. */
+	@Override
+	public void putMember(final String key, final Value value) { proxy().putMember(key, value); }
+
+	/** {@link ProxyObject} delegate. See class-level Javadoc. */
+	@Override
+	public boolean hasMember(final String key) { return proxy().hasMember(key); }
+
+	/** {@link ProxyObject} delegate. See class-level Javadoc. */
+	@Override
+	public Object getMemberKeys() { return proxy().getMemberKeys(); }
 
 	/**
 	 * <p>getWindow.</p>

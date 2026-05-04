@@ -26,6 +26,8 @@
 
 package org.loboevolution.html.js.css;
 
+import org.graalvm.polyglot.Value;
+import org.graalvm.polyglot.proxy.ProxyObject;
 import org.htmlunit.cssparser.dom.CSSCharsetRuleImpl;
 import org.htmlunit.cssparser.dom.CSSFontFaceRuleImpl;
 import org.htmlunit.cssparser.dom.CSSImportRuleImpl;
@@ -35,6 +37,7 @@ import org.htmlunit.cssparser.dom.Property;
 import org.loboevolution.common.Strings;
 import org.loboevolution.html.CSSValues;
 import org.loboevolution.html.dom.domimpl.HTMLElementImpl;
+import org.loboevolution.html.js.engine.CssMembers;
 import org.loboevolution.html.node.Attr;
 import org.loboevolution.css.CSSStyleDeclaration;
 import org.loboevolution.html.parser.FontParser;
@@ -48,8 +51,20 @@ import java.util.regex.Pattern;
 
 /**
  * <p>CSSStyleDeclarationImpl class.</p>
+ *
+ * <p>Implements {@link ProxyObject} so the GraalJS bridge sees the style
+ * object as a dynamic CSS property bag — {@code element.style.backgroundClip
+ * = 'border-box'} routes through {@code setProperty("background-clip", ...)}
+ * even though {@code setBackgroundClip} doesn't exist on this class. Without
+ * this, every modern CSS property script-set via {@code style.X} that lacks
+ * an explicit setter throws {@code "Unknown identifier"} under GraalJS strict
+ * mode and aborts the script. Reflection takes precedence on both reads and
+ * writes so {@code BackgroundImageSetter}, {@code BorderSetter1}, and the
+ * other custom setters keep firing for properties that have them. Rhino is
+ * unaware of {@link ProxyObject} and continues using its own reflection
+ * unchanged. See {@link CssMembers} for the cascade details.
  */
-public class CSSStyleDeclarationImpl implements CSSStyleDeclaration {
+public class CSSStyleDeclarationImpl implements CSSStyleDeclaration, ProxyObject {
 
     private static final Pattern DOUBLE_PATTERN = Pattern.compile(
             "[\\x00-\\x20]*[+-]?(NaN|Infinity|((((\\d+)(\\.)?((\\d+)?)" +
@@ -149,6 +164,34 @@ public class CSSStyleDeclarationImpl implements CSSStyleDeclaration {
         this.element = new HTMLElementImpl("");
         this.style = style;
     }
+
+    /** Lazily-initialised so Rhino-mode runs that never load polyglot still work. */
+    private CssMembers proxyMembers;
+
+    private CssMembers proxy() {
+        CssMembers m = this.proxyMembers;
+        if (m == null) {
+            m = new CssMembers(this);
+            this.proxyMembers = m;
+        }
+        return m;
+    }
+
+    /** {@link ProxyObject} delegate. See class-level Javadoc. */
+    @Override
+    public Object getMember(final String key) { return proxy().getMember(key); }
+
+    /** {@link ProxyObject} delegate. See class-level Javadoc. */
+    @Override
+    public void putMember(final String key, final Value value) { proxy().putMember(key, value); }
+
+    /** {@link ProxyObject} delegate. See class-level Javadoc. */
+    @Override
+    public boolean hasMember(final String key) { return proxy().hasMember(key); }
+
+    /** {@link ProxyObject} delegate. See class-level Javadoc. */
+    @Override
+    public Object getMemberKeys() { return proxy().getMemberKeys(); }
 
     /** {@inheritDoc} */
     @Override

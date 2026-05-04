@@ -774,7 +774,12 @@ public abstract class NodeImpl extends EventTargetImpl implements Node, Cloneabl
 				case Node.ELEMENT_NODE:
 					HTMLElement element = (HTMLElement) child;
 					RenderState rs = (RenderState) element.getRenderState();
-					if (!(element instanceof HTMLScriptElement) && rs.getDisplay() != RenderState.DISPLAY_NONE) {
+					// rs may be null when getTextContent runs before layout has
+					// established a render state (e.g. during the initial
+					// declared-width computation). Treat null as visible so we
+					// don't crash with NPE.
+					final boolean visible = rs == null || rs.getDisplay() != RenderState.DISPLAY_NONE;
+					if (!(element instanceof HTMLScriptElement) && visible) {
 						final String textContent = child.getTextContent();
 						if (textContent != null) {
 							sb.append(textContent);

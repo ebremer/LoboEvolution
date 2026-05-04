@@ -35,6 +35,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
@@ -104,6 +105,42 @@ class LoboGraalHostAccessTest {
                     "let s=''; for (const x of bean.items) s += x; s");
             assertEquals("abc", joined.asString());
         }
+    }
+
+    @Test
+    void rhinoFunctionAdapterBridgesJsCallable() {
+        // Lobo APIs declaring org.mozilla.javascript.Function parameters
+        // (setOnload, setOnclick, …) must accept JS callables transparently.
+        // The targetTypeMapping in LoboGraalHostAccess produces a
+        // GraalRhinoFunctionAdapter on demand. Verify a host method taking
+        // Function actually receives one.
+        try (Context ctx = newContext()) {
+            ctx.getBindings("js").putMember("sink", new RhinoFunctionSink());
+            ctx.eval("js", "sink.set(function() { return 42; })");
+            final org.mozilla.javascript.Function f = RhinoFunctionSink.last;
+            assertNotNull(f);
+            // Invoke the wrapped JS function via Rhino's Function.call(ctx, ...)
+            final org.mozilla.javascript.Context rhinoCtx =
+                    org.mozilla.javascript.Context.enter();
+            try {
+                final Object result = f.call(rhinoCtx, null, null, new Object[0]);
+                assertNotNull(result);
+                // Result is a polyglot Value or Number wrapping 42
+                if (result instanceof org.graalvm.polyglot.Value v) {
+                    assertEquals(42, v.asInt());
+                } else if (result instanceof Number n) {
+                    assertEquals(42, n.intValue());
+                }
+            } finally {
+                org.mozilla.javascript.Context.exit();
+            }
+        }
+    }
+
+    /** Test sink with a Function-typed setter so the type mapping fires. */
+    public static class RhinoFunctionSink {
+        static org.mozilla.javascript.Function last;
+        public void set(final org.mozilla.javascript.Function f) { last = f; }
     }
 
     @Test

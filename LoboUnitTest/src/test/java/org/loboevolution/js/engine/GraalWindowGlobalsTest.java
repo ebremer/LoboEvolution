@@ -125,6 +125,66 @@ class GraalWindowGlobalsTest extends LoboWebDriver {
     }
 
     @Test
+    void arbitraryWindowPropertyWriteSucceedsAndReadsBack() {
+        // Phase 11 prep: WindowImpl is a ProxyObject so jQuery-style
+        // `window.$ = jQuery` writes succeed AND read back the stored value.
+        try (GraalJsEngine engine = new GraalJsEngine()) {
+            JsEngineFactory.bindWindowGlobals(engine, window);
+            engine.eval("window.$ = 'jquery-stub';", "<jquery-style>");
+            final Value back = (Value) engine.eval("window.$", "<read-back>");
+            assertEquals("jquery-stub", back.asString());
+        }
+    }
+
+    @Test
+    void strictModeWindowPropertyWriteDoesNotThrow() {
+        // jQuery's setup IIFE has "use strict"; the strict-mode TypeError on
+        // host-write failure is exactly what aborted scripts before this fix.
+        try (GraalJsEngine engine = new GraalJsEngine()) {
+            JsEngineFactory.bindWindowGlobals(engine, window);
+            engine.eval("'use strict'; window.fooBar = 42;", "<strict>");
+            final Value back = (Value) engine.eval("window.fooBar", "<read>");
+            assertEquals(42, back.asInt());
+        }
+    }
+
+    @Test
+    void existingWindowGetterStillReachableThroughProxy() {
+        // ProxyObject overrides reflection completely; the DynamicMembers
+        // delegate must still surface the existing bean getters.
+        try (GraalJsEngine engine = new GraalJsEngine()) {
+            JsEngineFactory.bindWindowGlobals(engine, window);
+            final Value ua = (Value) engine.eval("window.navigator.userAgent", "<reflection>");
+            assertTrue(ua.isString() && ua.asString().length() > 0);
+        }
+    }
+
+    @Test
+    void existingWindowMethodStillCallableThroughProxy() {
+        try (GraalJsEngine engine = new GraalJsEngine()) {
+            JsEngineFactory.bindWindowGlobals(engine, window);
+            // setTimeout returns a numeric id — proves the method routed
+            // through the ProxyExecutable produced by DynamicMembers.
+            final Value id = (Value) engine.eval("window.setTimeout(function(){}, 1000)", "<method>");
+            assertTrue(id.isNumber());
+        }
+    }
+
+    @Test
+    void dynamicPropertyShadowsBeanGetter() {
+        // If a script overrides a known bean accessor (`window.location = ...`),
+        // subsequent reads should see the override rather than the original
+        // host value — same behaviour real browsers have for non-built-in
+        // identifiers. Built-in non-writable properties are out of scope here.
+        try (GraalJsEngine engine = new GraalJsEngine()) {
+            JsEngineFactory.bindWindowGlobals(engine, window);
+            engine.eval("window.customField = 'first';", "<set1>");
+            engine.eval("window.customField = 'second';", "<set2>");
+            assertEquals("second", ((Value) engine.eval("window.customField", "<get>")).asString());
+        }
+    }
+
+    @Test
     void forDocumentInGraalModeBindsGlobals() {
         // Going through the public factory entry-point used by HTMLScriptElementImpl
         // — proves the script-element bridge will see the same globals when the

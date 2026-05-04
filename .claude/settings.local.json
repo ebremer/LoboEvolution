@@ -76,7 +76,30 @@
       "Bash(mvn -f D:/projects/LoboEvolution/pom.xml -pl LoboUnitTest -am test -Dtest='GraalCdataStrippingTest' -Dsurefire.failIfNoSpecifiedTests=false)",
       "Bash(mvn -f D:/projects/LoboEvolution/pom.xml -pl LoboUnitTest -am test -Dtest='GraalJsSmokeTest,LoboGraalHostAccessTest,JsEngineFactoryTest,GraalWindowGlobalsTest,GraalDomAccessTest,GraalEventListenerTest,GraalTimerTest,GraalCdataStrippingTest' -Dsurefire.failIfNoSpecifiedTests=false)",
       "Bash(mvn -f D:/projects/LoboEvolution/pom.xml -pl LoboUnitTest -am test -Dtest='HTMLElementTest' -Dsurefire.failIfNoSpecifiedTests=false -DargLine='-Dlobo.jsengine=graal')",
-      "Bash(mvn -f D:/projects/LoboEvolution/pom.xml -pl LoboUnitTest -am test -Dtest='HTMLElementTest' -Dsurefire.failIfNoSpecifiedTests=false)"
+      "Bash(mvn -f D:/projects/LoboEvolution/pom.xml -pl LoboUnitTest -am test -Dtest='HTMLElementTest' -Dsurefire.failIfNoSpecifiedTests=false)",
+      "Bash(mvn -f D:/projects/LoboEvolution/pom.xml -pl LoboUnitTest -am test -Dtest='HTMLScriptElementTest,HTMLElementTest' -Dsurefire.failIfNoSpecifiedTests=false -DargLine='-Dlobo.jsengine=rhino')",
+      "Bash(mvn -f D:/projects/LoboEvolution/pom.xml -DskipTests package)",
+      "Bash(unzip -p D:/projects/LoboEvolution/target/loboevolution-5.0.jar META-INF/MANIFEST.MF)",
+      "Bash(unzip -l D:/projects/LoboEvolution/target/loboevolution-5.0.jar)",
+      "Bash(timeout 8 java -jar target/loboevolution-5.0.jar)",
+      "Bash(echo \"\\(exit code $?\\)\")",
+      "Bash(unzip *)",
+      "Bash(mvn -f D:/projects/LoboEvolution/pom.xml dependency:tree -DincludeGroupIds=org.graalvm)",
+      "Bash(mvn -f D:/projects/LoboEvolution/pom.xml -DskipTests package -X)",
+      "Bash(xxd)",
+      "Bash(mvn -f D:/projects/LoboEvolution/pom.xml -DskipTests clean package)",
+      "Bash(mkdir -p /tmp/patch/META-INF/services)",
+      "Bash(jar uf *)",
+      "Bash(javac -cp D:/projects/LoboEvolution/target/loboevolution-5.0.jar -d /tmp /tmp/RegexTest.java)",
+      "Bash(java -cp \"D:/projects/LoboEvolution/target/loboevolution-5.0.jar;.\" RegexTest)",
+      "Bash(javap -c /tmp/NodeImpl.class)",
+      "Bash(grep -A2 'lambda$getTextContent')",
+      "Bash(javap -p -c D:/projects/LoboEvolution/target/LoboHTML/classes/org/loboevolution/html/dom/nodeimpl/NodeImpl.class)",
+      "Bash(javap -p -c /tmp/NodeImpl-fresh.class)",
+      "Bash(mvn -f D:/projects/LoboEvolution/pom.xml -pl LoboUnitTest -am test -Dtest='GraalWindowGlobalsTest,GraalDomAccessTest,GraalEventListenerTest,GraalTimerTest' -Dsurefire.failIfNoSpecifiedTests=false)",
+      "Bash(mvn -f D:/projects/LoboEvolution/pom.xml -pl LoboUnitTest -am test -Dtest='GraalCssStyleProxyTest' -Dsurefire.failIfNoSpecifiedTests=false)",
+      "Bash(mvn -f D:/projects/LoboEvolution/pom.xml -pl LoboUnitTest -am test -Dtest='GraalJsSmokeTest,LoboGraalHostAccessTest,JsEngineFactoryTest,GraalWindowGlobalsTest,GraalDomAccessTest,GraalEventListenerTest,GraalTimerTest,GraalCdataStrippingTest,GraalCssStyleProxyTest' -Dsurefire.failIfNoSpecifiedTests=false)",
+      "Bash(mvn -f D:/projects/LoboEvolution/pom.xml -pl LoboUnitTest -am test -Dtest='LoboGraalHostAccessTest' -Dsurefire.failIfNoSpecifiedTests=false)"
     ]
   }
 }

@@ -287,13 +287,19 @@ class RLine extends BaseRCollection {
 		// int oldHeight = this.height;
 		this.setHeight(newHeight);
 		final List<Renderable> renderables = this.renderables;
-		// Find max baseline
-		final FontMetrics firstFm = ((RenderState)this.modelNode.getRenderState()).getFontMetrics();
-		int maxDescent = firstFm.getDescent();
-		int maxAscentPlusLeading = firstFm.getAscent() + firstFm.getLeading();
+		// Find max baseline. Render state may be null when this runs before
+		// layout has established it; fall back to default ascent/descent (0)
+		// so we don't crash with NPE.
+		final RenderState modelRs = (RenderState) this.modelNode.getRenderState();
+		final FontMetrics firstFm = modelRs == null ? null : modelRs.getFontMetrics();
+		int maxDescent = firstFm == null ? 0 : firstFm.getDescent();
+		int maxAscentPlusLeading = firstFm == null ? 0 : firstFm.getAscent() + firstFm.getLeading();
 		for (final Object r : renderables) {
 			if (r instanceof RStyleChanger rstyleChanger) {
-                final FontMetrics fm = ((RenderState)rstyleChanger.getModelNode().getRenderState()).getFontMetrics();
+                final RenderState rs = (RenderState) rstyleChanger.getModelNode().getRenderState();
+                if (rs == null) continue;
+                final FontMetrics fm = rs.getFontMetrics();
+                if (fm == null) continue;
 				final int descent = fm.getDescent();
 				if (descent > maxDescent) {
 					maxDescent = descent;

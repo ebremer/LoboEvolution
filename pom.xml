@@ -190,31 +190,61 @@
 
     <build>
         <plugins>
+            <!--
+                Use maven-shade-plugin instead of maven-assembly-plugin for the
+                uber jar: assembly's jar-with-dependencies overwrites duplicate
+                files in META-INF/services so only one Truffle language /
+                instrument / runtime provider survives, and GraalJS then fails
+                with "No language for id regex found" when scripts use regex
+                literals. Shade's ServicesResourceTransformer concatenates them
+                correctly. ManifestResourceTransformer also lets us set the
+                Multi-Release flag so the JDK loads the version-specific Truffle
+                classes under META-INF/versions/.
+            -->
             <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
                 <version>3.6.0</version>
-                <configuration>
-                    <descriptorRefs>
-                        <descriptorRef>jar-with-dependencies</descriptorRef>
-                    </descriptorRefs>
-                    <finalName>loboevolution-5.0</finalName>
-                    <appendAssemblyId>false</appendAssemblyId>
-                    <archive>
-                        <manifest>
-                            <mainClass>org.loboevolution.init.PlatformInit</mainClass>
-                        </manifest>
-                        <manifestEntries>
-                            <Enable-Native-Access>ALL-UNNAMED</Enable-Native-Access>
-                        </manifestEntries>
-                    </archive>
-                </configuration>
                 <executions>
                     <execution>
-                        <id>make-assembly</id>
+                        <id>make-uber-jar</id>
                         <phase>package</phase>
                         <goals>
-                            <goal>single</goal>
+                            <goal>shade</goal>
                         </goals>
+                        <configuration>
+                            <finalName>loboevolution-5.0</finalName>
+                            <createDependencyReducedPom>false</createDependencyReducedPom>
+                            <shadedArtifactAttached>false</shadedArtifactAttached>
+                            <!--
+                                Root packaging is "pom", so without this shade
+                                writes the uber jar with a .pom extension —
+                                "Replacing original artifact with shaded
+                                artifact" replaces the pom file. Force the .jar
+                                output explicitly.
+                            -->
+                            <outputFile>${project.build.directory}/loboevolution-5.0.jar</outputFile>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>org.loboevolution.init.PlatformInit</mainClass>
+                                    <manifestEntries>
+                                        <Multi-Release>true</Multi-Release>
+                                        <Enable-Native-Access>ALL-UNNAMED</Enable-Native-Access>
+                                    </manifestEntries>
+                                </transformer>
+                            </transformers>
+                            <filters>
+                                <filter>
+                                    <artifact>*:*</artifact>
+                                    <excludes>
+                                        <exclude>META-INF/*.SF</exclude>
+                                        <exclude>META-INF/*.DSA</exclude>
+                                        <exclude>META-INF/*.RSA</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>

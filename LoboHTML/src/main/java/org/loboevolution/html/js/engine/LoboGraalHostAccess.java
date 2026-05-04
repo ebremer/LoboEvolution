@@ -27,6 +27,8 @@ package org.loboevolution.html.js.engine;
 
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.HostAccess;
+import org.graalvm.polyglot.Value;
+import org.mozilla.javascript.Function;
 
 /**
  * GraalJS host-access policy chosen to match Rhino's reflective binding model
@@ -76,6 +78,14 @@ public final class LoboGraalHostAccess {
             // only fires when a Java method specifically requires String, so
             // overloads taking Object continue to receive the original type.
             .targetTypeMapping(Object.class, String.class, null, String::valueOf)
+            // Bridge JS callables into Rhino's Function interface so the
+            // legacy event-handler setters (setOnclick, setOnload, etc.) and
+            // any other Lobo API declaring a Function-typed parameter can
+            // accept a JS function transparently. Without this the script
+            // dies with "Cannot convert ... to Java type 'org.mozilla.
+            // javascript.Function': Unsupported target type."
+            .targetTypeMapping(Value.class, Function.class,
+                    Value::canExecute, GraalRhinoFunctionAdapter::new)
             .build();
 
     /**
