@@ -25,6 +25,7 @@
  */
 package org.loboevolution.html.js.events;
 
+import java.util.Map;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.htmlunit.cssparser.dom.DOMException;
@@ -32,7 +33,6 @@ import org.loboevolution.events.EventTarget;
 import org.loboevolution.events.MouseEvent;
 import org.loboevolution.html.dom.domimpl.HTMLElementImpl;
 import org.loboevolution.js.Window;
-import org.mozilla.javascript.NativeObject;
 
 /**
  * MouseEventImpl class.
@@ -76,7 +76,7 @@ public class MouseEventImpl extends UIEventImpl implements MouseEvent {
         }
 
         if (params.length > 1) {
-            if (params[1] != null && params[1] instanceof NativeObject obj) {
+            if (params[1] != null && params[1] instanceof Map<?,?> obj) {
                 this.x = getLongVal(obj, "x");
                 this.y = getLongVal(obj, "y");
                 this.screenX = getLongVal(obj, "screenX");

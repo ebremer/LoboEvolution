@@ -31,7 +31,6 @@ import org.loboevolution.html.js.xml.XMLDocument;
 import org.loboevolution.html.node.Document;
 import org.loboevolution.js.DOMParser;
 import org.loboevolution.js.AbstractScriptableDelegate;
-import org.mozilla.javascript.Context;
 
 /**
  * <p>DOMParser class.</p>
@@ -55,7 +54,7 @@ public class DOMParserImpl extends AbstractScriptableDelegate implements DOMPars
 				!"application/xml".equals(type) &&
 				!"application/xhtml+xml".equals(type) &&
 				!"image/svg+xml".equals(type)) {
-			throw Context.reportRuntimeError("Invalid 'type' parameter: " + type);
+			throw new IllegalArgumentException("Invalid 'type' parameter: " + type);
 		}
 		final XMLDocument document = new XMLDocument();
 		document.loadXML(xml + ">");

@@ -26,15 +26,14 @@
 package org.loboevolution.js.xml;
 
 import org.loboevolution.html.node.Document;
-import org.mozilla.javascript.Function;
 
 import java.util.List;
 
 public interface XMLHttpRequest extends XMLHttpRequestEventTarget {
 
-    Function getOnreadystatechange();
+    Object getOnreadystatechange();
 
-    void setOnreadystatechange(Function onreadystatechange);
+    void setOnreadystatechange(Object onreadystatechange);
 
     int getReadyState();
 

@@ -25,14 +25,13 @@
  */
 package org.loboevolution.html.js.events;
 
+import java.util.Map;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.htmlunit.cssparser.dom.DOMException;
 import org.loboevolution.events.UIEvent;
-import org.loboevolution.js.JavaObjectWrapper;
 import org.loboevolution.js.Window;
-import org.mozilla.javascript.NativeObject;
 
 import java.awt.event.InputEvent;
 
@@ -61,21 +60,15 @@ public class UIEventImpl extends EventImpl implements UIEvent {
         } catch (DOMException e) {
             throw new RuntimeException("Failed to initialize Event", e);
         }
-
-        if (params.length < 3) {
-			if (params.length > 1 && params[1] != null) {
-				NativeObject obj = (NativeObject) params[1];
-				if(obj.get("view") == null)
-					throw new DOMException(DOMException.NOT_FOUND_ERR, "Failed : Required member is undefined");
-				this.view = (Window) ((JavaObjectWrapper) obj.get("view")).getJavaObject();
-				setUIEventParams(obj);
-			}
-		} else {
+		if (params.length >= 3) {
 			throw new DOMException(DOMException.NOT_SUPPORTED_ERR, "Failed : 2 argument required, but only " + params.length + " present.");
+		}
+		if (params.length > 1 && params[1] instanceof Window w) {
+			this.view = w;
 		}
 	}
 
-	protected void setUIEventParams(NativeObject obj) {
+	protected void setUIEventParams(Map<?,?> obj) {
 		this.detail = getDoubleVal(obj,"v");
 		this.which = getDoubleVal(obj,"which");
 	}

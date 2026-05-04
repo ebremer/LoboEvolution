@@ -36,14 +36,12 @@ import org.loboevolution.html.dom.input.FormInput;
 import org.loboevolution.html.dom.nodeimpl.NodeImpl;
 import org.loboevolution.html.dom.nodeimpl.NodeListImpl;
 import org.loboevolution.html.node.NodeVisitor;
-import org.loboevolution.html.js.Executor;
 import org.loboevolution.html.js.WindowImpl;
 import org.loboevolution.html.node.Element;
 import org.loboevolution.html.node.NamedNodeMap;
 import org.loboevolution.html.node.Node;
 import org.loboevolution.html.renderstate.FormRenderState;
 import org.loboevolution.html.renderstate.RenderState;
-import org.mozilla.javascript.Function;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -294,10 +292,13 @@ public class HTMLFormElementImpl extends HTMLElementImpl implements HTMLFormElem
 	 *                        e.g. the submit button parameter.
 	 */
 	public final void submit(final FormInput[] extraFormInputs) {
-		final Function onsubmit = getOnsubmit();
+		final Object onsubmit = getOnsubmit();
 		final WindowImpl window = (WindowImpl) this.getDocumentNode().getDefaultView();
 		if (onsubmit != null) {
-			if (!Executor.executeFunction(this, onsubmit, new Object[0], window.getContextFactory())) {
+			final Object result = org.loboevolution.html.js.engine.JsEngineFactory
+					.forDocument(this.getDocumentNode(), window)
+					.call(onsubmit);
+			if (Boolean.FALSE.equals(result)) {
 				return;
 			}
 		}

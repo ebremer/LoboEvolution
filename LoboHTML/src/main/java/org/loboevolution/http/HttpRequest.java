@@ -38,7 +38,6 @@ import org.loboevolution.html.dom.nodeimpl.FormDataImpl;
 import org.loboevolution.html.js.xml.XMLDocumentBuilder;
 import org.loboevolution.html.js.xml.XMLHttpRequestEventTargetImpl;
 import org.loboevolution.html.node.Document;
-import org.loboevolution.html.node.FormData;
 import org.loboevolution.html.parser.InputSourceImpl;
 import org.loboevolution.net.HttpNetwork;
 import org.loboevolution.net.ReadyStateType;
@@ -417,13 +416,11 @@ public class HttpRequest extends XMLHttpRequestEventTargetImpl {
 	}
 
 	private URLConnection postURLConnection(Object obj, URLConnection urlConnection) throws IOException {
-            if (obj instanceof FormData content) {
+            if (obj instanceof FormDataImpl content) {
                 final OutputStream outputStream = urlConnection.getOutputStream();
                 writer = new PrintWriter(new OutputStreamWriter(outputStream, StandardCharsets.UTF_8), true);
 
-                Iterator<FormDataImpl.Field> it = (Iterator<FormDataImpl.Field>) content.entries();
-                while (it.hasNext()) {
-                    FormDataImpl.Field field = it.next();
+                for (FormDataImpl.Field field : content) {
                     String boundary = urlConnection.getRequestProperty("Content-Type").split("boundary=")[1];
                     if (field.getValue() instanceof String) {
                         addFormField(field.getKey(), (String) field.getValue(), boundary);

@@ -34,7 +34,6 @@ import org.loboevolution.common.Urls;
 import org.loboevolution.gui.HtmlRendererContext;
 import org.loboevolution.html.dom.HTMLScriptElement;
 import org.loboevolution.gui.HtmlPanel;
-import org.loboevolution.html.js.Executor;
 import org.loboevolution.html.js.WindowImpl;
 import org.loboevolution.html.js.engine.JsEngine;
 import org.loboevolution.html.js.engine.JsEngineFactory;
@@ -48,7 +47,6 @@ import org.loboevolution.net.AlgorithmDigest;
 import org.loboevolution.net.HttpNetwork;
 import org.loboevolution.net.IOUtil;
 import org.loboevolution.net.UserAgent;
-import org.mozilla.javascript.RhinoException;
 import org.loboevolution.html.dom.UserDataHandler;
 
 import java.io.*;
@@ -260,18 +258,9 @@ public class HTMLScriptElementImpl extends HTMLElementImpl implements HTMLScript
 		}
 	}
 
-	/**
-	 * Runs {@code source} through {@code engine} and routes any failure to a
-	 * one-line warn log, matching the legacy Rhino-only behaviour. Engine-
-	 * specific exception types are unwrapped via {@link RhinoException} so the
-	 * Rhino path keeps its source-name / line-number formatting.
-	 */
 	private static void evalAndLog(final JsEngine engine, final String source, final String sourceName) {
 		try {
 			engine.eval(source, sourceName);
-		} catch (final RhinoException ecmaError) {
-			log.warn("Javascript error at {}:{}: {}",
-					ecmaError.sourceName(), ecmaError.lineNumber(), ecmaError.getMessage());
 		} catch (final Throwable err) {
 			log.warn("Javascript error in {}: {}", sourceName, err.getMessage());
 		}

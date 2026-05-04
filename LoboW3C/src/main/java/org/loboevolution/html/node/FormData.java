@@ -26,7 +26,7 @@
 
 package org.loboevolution.html.node;
 
-import org.mozilla.javascript.ES6Iterator;
+import java.util.Iterator;
 
 public interface FormData {
 
@@ -38,11 +38,11 @@ public interface FormData {
 
     boolean has(String name);
 
-    ES6Iterator keys();
+    Iterator<String> keys();
 
-    ES6Iterator values();
+    Iterator<Object> values();
 
-    ES6Iterator entries();
+    Iterator<Object[]> entries();
 
     Object get(Object name);
 

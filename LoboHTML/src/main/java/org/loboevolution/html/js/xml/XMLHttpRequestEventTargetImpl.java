@@ -29,7 +29,6 @@ package org.loboevolution.html.js.xml;
 import org.loboevolution.html.dom.nodeimpl.NodeImpl;
 import org.loboevolution.html.dom.nodeimpl.event.EventTargetImpl;
 import org.loboevolution.js.xml.XMLHttpRequestEventTarget;
-import org.mozilla.javascript.Function;
 
 /**
  * <p>XMLHttpRequestEventTargetImpl class.</p>
@@ -41,72 +40,72 @@ public class XMLHttpRequestEventTargetImpl extends EventTargetImpl implements XM
     }
 
     @Override
-    public Function getOnloadstart() {
-        return getFunction(this, "loadstart");
+    public Object getOnloadstart() {
+        return getCallable(this, "loadstart");
     }
 
     @Override
-    public void setOnloadstart(Function onloadstart) {
+    public void setOnloadstart(Object onloadstart) {
         addEventListener("loadstart", onloadstart);
     }
 
     @Override
-    public Function getOnprogress() {
-        return getFunction(this, "progress");
+    public Object getOnprogress() {
+        return getCallable(this, "progress");
     }
 
     @Override
-    public void setOnprogress(Function onprogress) {
+    public void setOnprogress(Object onprogress) {
         addEventListener("progress", onprogress);
     }
 
     @Override
-    public Function getOnabort() {
-        return getFunction(this, "abort");
+    public Object getOnabort() {
+        return getCallable(this, "abort");
     }
 
     @Override
-    public void setOnabort(Function onabort) {
+    public void setOnabort(Object onabort) {
         addEventListener("abort", onabort);
     }
 
     @Override
-    public Function getOnerror() {
-        return getFunction(this, "error");
+    public Object getOnerror() {
+        return getCallable(this, "error");
     }
 
     @Override
-    public void setOnerror(Function onerror) {
+    public void setOnerror(Object onerror) {
         addEventListener("error", onerror);
     }
 
     @Override
-    public Function getOnload() {
-        return getFunction(this, "load");
+    public Object getOnload() {
+        return getCallable(this, "load");
     }
 
     @Override
-    public void setOnload(Function onload) {
+    public void setOnload(Object onload) {
         addEventListener("load", onload);
     }
 
     @Override
-    public Function getOntimeout() {
-        return getFunction(this, "timeout");
+    public Object getOntimeout() {
+        return getCallable(this, "timeout");
     }
 
     @Override
-    public void setOntimeout(Function ontimeout) {
+    public void setOntimeout(Object ontimeout) {
         addEventListener("timeout", ontimeout);
     }
 
     @Override
-    public Function getOnloadend() {
-        return getFunction(this, "loadend");
+    public Object getOnloadend() {
+        return getCallable(this, "loadend");
     }
 
     @Override
-    public void setOnloadend(Function onloadend) {
+    public void setOnloadend(Object onloadend) {
         addEventListener("loadend", onloadend);
     }
 }

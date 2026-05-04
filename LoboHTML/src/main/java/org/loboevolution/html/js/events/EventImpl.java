@@ -25,13 +25,13 @@
  */
 package org.loboevolution.html.js.events;
 
+import java.util.Map;
 import lombok.*;
 import org.htmlunit.cssparser.dom.DOMException;
 import org.loboevolution.events.Event;
 import org.loboevolution.events.EventTarget;
 import org.loboevolution.html.dom.domimpl.HTMLElementImpl;
 import org.loboevolution.js.AbstractScriptableDelegate;
-import org.mozilla.javascript.NativeObject;
 
 import java.awt.event.InputEvent;
 import java.util.List;
@@ -82,7 +82,7 @@ public class EventImpl extends AbstractScriptableDelegate implements Event {
         if (params != null && params.length > 0) {
             this.type = params[0];
             if (params.length > 1) {
-                if (params[1] != null && params[1] instanceof NativeObject obj) {
+                if (params[1] != null && params[1] instanceof Map<?,?> obj) {
                     this.bubbles = obj.get("bubbles") != null;
                     this.cancelable = obj.get("cancelable") != null ? (Boolean) obj.get("cancelable") : false;
                     this.composed = obj.get("composed") != null ? (Boolean) obj.get("composed") : false;
@@ -174,19 +174,19 @@ public class EventImpl extends AbstractScriptableDelegate implements Event {
         }
     }
 
-    protected String getStringVal(NativeObject obj, String key) {
+    protected String getStringVal(Map<?,?> obj, String key) {
         return obj.get(key) != null ? (String) obj.get(key) : "";
     }
 
-    protected Double getDoubleVal(NativeObject obj, String key) {
+    protected Double getDoubleVal(Map<?,?> obj, String key) {
         return obj.get(key) != null ? ((Double) obj.get(key)) : 0d;
     }
 
-    protected Long getLongVal(NativeObject obj, String key) {
+    protected Long getLongVal(Map<?,?> obj, String key) {
         return obj.get(key) != null ? ((Double) obj.get(key)).longValue() : 0;
     }
 
-    protected Boolean getBoolVal(NativeObject obj, String key) {
+    protected Boolean getBoolVal(Map<?,?> obj, String key) {
         if (obj.get(key) instanceof String) {
             return "true".equals(obj.get(key)) || "1.0".equals(obj.get(key));
         }

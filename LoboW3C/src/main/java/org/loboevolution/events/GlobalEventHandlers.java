@@ -26,7 +26,6 @@
 
 package org.loboevolution.events;
 
-import org.mozilla.javascript.Function;
 
 /**
  * The interface Global event handlers.
@@ -37,14 +36,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the onabort
      */
-    Function getOnabort();
+    Object getOnabort();
 
     /**
      * Sets onabort.
      *
      * @param onabort the onabort
      */
-    void setOnabort(Function onabort);
+    void setOnabort(Object onabort);
 
     /**
      * Add abort event listener.
@@ -52,7 +51,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addAbortEventListener(Function listener, boolean options) {
+    default void addAbortEventListener(Object listener, boolean options) {
         addEventListener("abort", listener, options);
     }
 
@@ -61,7 +60,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addAbortEventListener(Function listener) {
+    default void addAbortEventListener(Object listener) {
         addEventListener("abort", listener);
     }
 
@@ -71,7 +70,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removeAbortEventListener(Function listener, boolean options) {
+    default void removeAbortEventListener(Object listener, boolean options) {
         removeEventListener("abort", listener, options);
     }
 
@@ -80,7 +79,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removeAbortEventListener(Function listener) {
+    default void removeAbortEventListener(Object listener) {
         removeEventListener("abort", listener);
     }
 
@@ -89,14 +88,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the onanimationcancel
      */
-    Function getOnanimationcancel();
+    Object getOnanimationcancel();
 
     /**
      * Sets onanimationcancel.
      *
      * @param onanimationcancel the onanimationcancel
      */
-    void setOnanimationcancel(Function onanimationcancel);
+    void setOnanimationcancel(Object onanimationcancel);
 
     /**
      * Add animation cancel event listener.
@@ -104,7 +103,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addAnimationCancelEventListener(Function listener, boolean options) {
+    default void addAnimationCancelEventListener(Object listener, boolean options) {
         addEventListener("animationcancel", listener, options);
     }
 
@@ -113,7 +112,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addAnimationCancelEventListener(Function listener) {
+    default void addAnimationCancelEventListener(Object listener) {
         addEventListener("animationcancel", listener);
     }
 
@@ -123,7 +122,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removeAnimationCancelEventListener(Function listener, boolean options) {
+    default void removeAnimationCancelEventListener(Object listener, boolean options) {
         removeEventListener("animationcancel", listener, options);
     }
 
@@ -132,7 +131,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removeAnimationCancelEventListener(Function listener) {
+    default void removeAnimationCancelEventListener(Object listener) {
         removeEventListener("animationcancel", listener);
     }
 
@@ -141,14 +140,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the onanimationend
      */
-    Function getOnanimationend();
+    Object getOnanimationend();
 
     /**
      * Sets onanimationend.
      *
      * @param onanimationend the onanimationend
      */
-    void setOnanimationend(Function onanimationend);
+    void setOnanimationend(Object onanimationend);
 
     /**
      * Add animation end event listener.
@@ -156,7 +155,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addAnimationEndEventListener(Function listener, boolean options) {
+    default void addAnimationEndEventListener(Object listener, boolean options) {
         addEventListener("animationend", listener, options);
     }
 
@@ -165,7 +164,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addAnimationEndEventListener(Function listener) {
+    default void addAnimationEndEventListener(Object listener) {
         addEventListener("animationend", listener);
     }
 
@@ -175,7 +174,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removeAnimationEndEventListener(Function listener, boolean options) {
+    default void removeAnimationEndEventListener(Object listener, boolean options) {
         removeEventListener("animationend", listener, options);
     }
 
@@ -184,7 +183,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removeAnimationEndEventListener(Function listener) {
+    default void removeAnimationEndEventListener(Object listener) {
         removeEventListener("animationend", listener);
     }
 
@@ -193,14 +192,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the onanimationiteration
      */
-    Function getOnanimationiteration();
+    Object getOnanimationiteration();
 
     /**
      * Sets onanimationiteration.
      *
      * @param onanimationiteration the onanimationiteration
      */
-    void setOnanimationiteration(Function onanimationiteration);
+    void setOnanimationiteration(Object onanimationiteration);
 
     /**
      * Add animation iteration event listener.
@@ -208,7 +207,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addAnimationIterationEventListener(Function listener, boolean options) {
+    default void addAnimationIterationEventListener(Object listener, boolean options) {
         addEventListener("animationiteration", listener, options);
     }
 
@@ -217,7 +216,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addAnimationIterationEventListener(Function listener) {
+    default void addAnimationIterationEventListener(Object listener) {
         addEventListener("animationiteration", listener);
     }
 
@@ -227,7 +226,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removeAnimationIterationEventListener(Function listener, boolean options) {
+    default void removeAnimationIterationEventListener(Object listener, boolean options) {
         removeEventListener("animationiteration", listener, options);
     }
 
@@ -236,7 +235,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removeAnimationIterationEventListener(Function listener) {
+    default void removeAnimationIterationEventListener(Object listener) {
         removeEventListener("animationiteration", listener);
     }
 
@@ -245,14 +244,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the onanimationstart
      */
-    Function getOnanimationstart();
+    Object getOnanimationstart();
 
     /**
      * Sets onanimationstart.
      *
      * @param onanimationstart the onanimationstart
      */
-    void setOnanimationstart(Function onanimationstart);
+    void setOnanimationstart(Object onanimationstart);
 
     /**
      * Add animation start event listener.
@@ -260,7 +259,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addAnimationStartEventListener(Function listener, boolean options) {
+    default void addAnimationStartEventListener(Object listener, boolean options) {
         addEventListener("animationstart", listener, options);
     }
 
@@ -269,7 +268,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addAnimationStartEventListener(Function listener) {
+    default void addAnimationStartEventListener(Object listener) {
         addEventListener("animationstart", listener);
     }
 
@@ -279,7 +278,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removeAnimationStartEventListener(Function listener, boolean options) {
+    default void removeAnimationStartEventListener(Object listener, boolean options) {
         removeEventListener("animationstart", listener, options);
     }
 
@@ -288,7 +287,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removeAnimationStartEventListener(Function listener) {
+    default void removeAnimationStartEventListener(Object listener) {
         removeEventListener("animationstart", listener);
     }
 
@@ -297,14 +296,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the onauxclick
      */
-    Function getOnauxclick();
+    Object getOnauxclick();
 
     /**
      * Sets onauxclick.
      *
      * @param onauxclick the onauxclick
      */
-    void setOnauxclick(Function onauxclick);
+    void setOnauxclick(Object onauxclick);
 
     /**
      * Add aux click event listener.
@@ -312,7 +311,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addAuxClickEventListener(Function listener, boolean options) {
+    default void addAuxClickEventListener(Object listener, boolean options) {
         addEventListener("auxclick", listener, options);
     }
 
@@ -321,7 +320,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addAuxClickEventListener(Function listener) {
+    default void addAuxClickEventListener(Object listener) {
         addEventListener("auxclick", listener);
     }
 
@@ -331,7 +330,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removeAuxClickEventListener(Function listener, boolean options) {
+    default void removeAuxClickEventListener(Object listener, boolean options) {
         removeEventListener("auxclick", listener, options);
     }
 
@@ -340,7 +339,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removeAuxClickEventListener(Function listener) {
+    default void removeAuxClickEventListener(Object listener) {
         removeEventListener("auxclick", listener);
     }
 
@@ -349,14 +348,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the onblur
      */
-    Function getOnblur();
+    Object getOnblur();
 
     /**
      * Sets onblur.
      *
      * @param onblur the onblur
      */
-    void setOnblur(Function onblur);
+    void setOnblur(Object onblur);
 
     /**
      * Add blur event listener.
@@ -364,7 +363,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addBlurEventListener(Function listener, boolean options) {
+    default void addBlurEventListener(Object listener, boolean options) {
         addEventListener("blur", listener, options);
     }
 
@@ -373,7 +372,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addBlurEventListener(Function listener) {
+    default void addBlurEventListener(Object listener) {
         addEventListener("blur", listener);
     }
 
@@ -383,7 +382,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removeBlurEventListener(Function listener, boolean options) {
+    default void removeBlurEventListener(Object listener, boolean options) {
         removeEventListener("blur", listener, options);
     }
 
@@ -392,7 +391,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removeBlurEventListener(Function listener) {
+    default void removeBlurEventListener(Object listener) {
         removeEventListener("blur", listener);
     }
 
@@ -401,14 +400,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the oncancel
      */
-    Function getOncancel();
+    Object getOncancel();
 
     /**
      * Sets oncancel.
      *
      * @param oncancel the oncancel
      */
-    void setOncancel(Function oncancel);
+    void setOncancel(Object oncancel);
 
     /**
      * Add cancel event listener.
@@ -416,7 +415,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addCancelEventListener(Function listener, boolean options) {
+    default void addCancelEventListener(Object listener, boolean options) {
         addEventListener("cancel", listener, options);
     }
 
@@ -425,7 +424,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addCancelEventListener(Function listener) {
+    default void addCancelEventListener(Object listener) {
         addEventListener("cancel", listener);
     }
 
@@ -435,7 +434,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removeCancelEventListener(Function listener, boolean options) {
+    default void removeCancelEventListener(Object listener, boolean options) {
         removeEventListener("cancel", listener, options);
     }
 
@@ -444,7 +443,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removeCancelEventListener(Function listener) {
+    default void removeCancelEventListener(Object listener) {
         removeEventListener("cancel", listener);
     }
 
@@ -453,14 +452,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the oncanplay
      */
-    Function getOncanplay();
+    Object getOncanplay();
 
     /**
      * Sets oncanplay.
      *
      * @param oncanplay the oncanplay
      */
-    void setOncanplay(Function oncanplay);
+    void setOncanplay(Object oncanplay);
 
     /**
      * Add can play event listener.
@@ -468,7 +467,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addCanPlayEventListener(Function listener, boolean options) {
+    default void addCanPlayEventListener(Object listener, boolean options) {
         addEventListener("canplay", listener, options);
     }
 
@@ -477,7 +476,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addCanPlayEventListener(Function listener) {
+    default void addCanPlayEventListener(Object listener) {
         addEventListener("canplay", listener);
     }
 
@@ -487,7 +486,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removeCanPlayEventListener(Function listener, boolean options) {
+    default void removeCanPlayEventListener(Object listener, boolean options) {
         removeEventListener("canplay", listener, options);
     }
 
@@ -496,7 +495,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removeCanPlayEventListener(Function listener) {
+    default void removeCanPlayEventListener(Object listener) {
         removeEventListener("canplay", listener);
     }
 
@@ -505,14 +504,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the oncanplaythrough
      */
-    Function getOncanplaythrough();
+    Object getOncanplaythrough();
 
     /**
      * Sets oncanplaythrough.
      *
      * @param oncanplaythrough the oncanplaythrough
      */
-    void setOncanplaythrough(Function oncanplaythrough);
+    void setOncanplaythrough(Object oncanplaythrough);
 
     /**
      * Add can play through event listener.
@@ -520,7 +519,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addCanPlayThroughEventListener(Function listener, boolean options) {
+    default void addCanPlayThroughEventListener(Object listener, boolean options) {
         addEventListener("canplaythrough", listener, options);
     }
 
@@ -529,7 +528,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addCanPlayThroughEventListener(Function listener) {
+    default void addCanPlayThroughEventListener(Object listener) {
         addEventListener("canplaythrough", listener);
     }
 
@@ -539,7 +538,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removeCanPlayThroughEventListener(Function listener, boolean options) {
+    default void removeCanPlayThroughEventListener(Object listener, boolean options) {
         removeEventListener("canplaythrough", listener, options);
     }
 
@@ -548,7 +547,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removeCanPlayThroughEventListener(Function listener) {
+    default void removeCanPlayThroughEventListener(Object listener) {
         removeEventListener("canplaythrough", listener);
     }
 
@@ -557,14 +556,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the onchange
      */
-    Function getOnchange();
+    Object getOnchange();
 
     /**
      * Sets onchange.
      *
      * @param onchange the onchange
      */
-    void setOnchange(Function onchange);
+    void setOnchange(Object onchange);
 
     /**
      * Add change event listener.
@@ -572,7 +571,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addChangeEventListener(Function listener, boolean options) {
+    default void addChangeEventListener(Object listener, boolean options) {
         addEventListener("change", listener, options);
     }
 
@@ -581,7 +580,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addChangeEventListener(Function listener) {
+    default void addChangeEventListener(Object listener) {
         addEventListener("change", listener);
     }
 
@@ -591,7 +590,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removeChangeEventListener(Function listener, boolean options) {
+    default void removeChangeEventListener(Object listener, boolean options) {
         removeEventListener("change", listener, options);
     }
 
@@ -600,7 +599,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removeChangeEventListener(Function listener) {
+    default void removeChangeEventListener(Object listener) {
         removeEventListener("change", listener);
     }
 
@@ -609,14 +608,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the onclick
      */
-    Function getOnclick();
+    Object getOnclick();
 
     /**
      * Sets onclick.
      *
      * @param onclick the onclick
      */
-    void setOnclick(Function onclick);
+    void setOnclick(Object onclick);
 
     /**
      * Add click event listener.
@@ -624,7 +623,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addClickEventListener(Function listener, boolean options) {
+    default void addClickEventListener(Object listener, boolean options) {
         addEventListener("click", listener, options);
     }
 
@@ -633,7 +632,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addClickEventListener(Function listener) {
+    default void addClickEventListener(Object listener) {
         addEventListener("click", listener);
     }
 
@@ -643,7 +642,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removeClickEventListener(Function listener, boolean options) {
+    default void removeClickEventListener(Object listener, boolean options) {
         removeEventListener("click", listener, options);
     }
 
@@ -652,7 +651,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removeClickEventListener(Function listener) {
+    default void removeClickEventListener(Object listener) {
         removeEventListener("click", listener);
     }
 
@@ -661,14 +660,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the onclose
      */
-    Function getOnclose();
+    Object getOnclose();
 
     /**
      * Sets onclose.
      *
      * @param onclose the onclose
      */
-    void setOnclose(Function onclose);
+    void setOnclose(Object onclose);
 
     /**
      * Add close event listener.
@@ -676,7 +675,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addCloseEventListener(Function listener, boolean options) {
+    default void addCloseEventListener(Object listener, boolean options) {
         addEventListener("close", listener, options);
     }
 
@@ -685,7 +684,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addCloseEventListener(Function listener) {
+    default void addCloseEventListener(Object listener) {
         addEventListener("close", listener);
     }
 
@@ -695,7 +694,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removeCloseEventListener(Function listener, boolean options) {
+    default void removeCloseEventListener(Object listener, boolean options) {
         removeEventListener("close", listener, options);
     }
 
@@ -704,7 +703,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removeCloseEventListener(Function listener) {
+    default void removeCloseEventListener(Object listener) {
         removeEventListener("close", listener);
     }
 
@@ -714,14 +713,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the oncontextmenu
      */
-    Function getOncontextmenu();
+    Object getOncontextmenu();
 
     /**
      * Sets oncontextmenu.
      *
      * @param oncontextmenu the oncontextmenu
      */
-    void setOncontextmenu(Function oncontextmenu);
+    void setOncontextmenu(Object oncontextmenu);
 
     /**
      * Add context menu event listener.
@@ -729,7 +728,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addContextMenuEventListener(Function listener, boolean options) {
+    default void addContextMenuEventListener(Object listener, boolean options) {
         addEventListener("contextmenu", listener, options);
     }
 
@@ -738,7 +737,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addContextMenuEventListener(Function listener) {
+    default void addContextMenuEventListener(Object listener) {
         addEventListener("contextmenu", listener);
     }
 
@@ -748,7 +747,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removeContextMenuEventListener(Function listener, boolean options) {
+    default void removeContextMenuEventListener(Object listener, boolean options) {
         removeEventListener("contextmenu", listener, options);
     }
 
@@ -757,7 +756,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removeContextMenuEventListener(Function listener) {
+    default void removeContextMenuEventListener(Object listener) {
         removeEventListener("contextmenu", listener);
     }
 
@@ -766,14 +765,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the oncuechange
      */
-    Function getOncuechange();
+    Object getOncuechange();
 
     /**
      * Sets oncuechange.
      *
      * @param oncuechange the oncuechange
      */
-    void setOncuechange(Function oncuechange);
+    void setOncuechange(Object oncuechange);
 
     /**
      * Add cue change event listener.
@@ -781,7 +780,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addCueChangeEventListener(Function listener, boolean options) {
+    default void addCueChangeEventListener(Object listener, boolean options) {
         addEventListener("cuechange", listener, options);
     }
 
@@ -790,7 +789,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addCueChangeEventListener(Function listener) {
+    default void addCueChangeEventListener(Object listener) {
         addEventListener("cuechange", listener);
     }
 
@@ -800,7 +799,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removeCueChangeEventListener(Function listener, boolean options) {
+    default void removeCueChangeEventListener(Object listener, boolean options) {
         removeEventListener("cuechange", listener, options);
     }
 
@@ -809,7 +808,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removeCueChangeEventListener(Function listener) {
+    default void removeCueChangeEventListener(Object listener) {
         removeEventListener("cuechange", listener);
     }
 
@@ -818,14 +817,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the ondblclick
      */
-    Function getOndblclick();
+    Object getOndblclick();
 
     /**
      * Sets ondblclick.
      *
      * @param ondblclick the ondblclick
      */
-    void setOndblclick(Function ondblclick);
+    void setOndblclick(Object ondblclick);
 
     /**
      * Add dbl click event listener.
@@ -833,7 +832,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addDblClickEventListener(Function listener, boolean options) {
+    default void addDblClickEventListener(Object listener, boolean options) {
         addEventListener("dblclick", listener, options);
     }
 
@@ -842,7 +841,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addDblClickEventListener(Function listener) {
+    default void addDblClickEventListener(Object listener) {
         addEventListener("dblclick", listener);
     }
 
@@ -852,7 +851,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removeDblClickEventListener(Function listener, boolean options) {
+    default void removeDblClickEventListener(Object listener, boolean options) {
         removeEventListener("dblclick", listener, options);
     }
 
@@ -861,7 +860,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removeDblClickEventListener(Function listener) {
+    default void removeDblClickEventListener(Object listener) {
         removeEventListener("dblclick", listener);
     }
 
@@ -870,14 +869,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the ondrag
      */
-    Function getOndrag();
+    Object getOndrag();
 
     /**
      * Sets ondrag.
      *
      * @param ondrag the ondrag
      */
-    void setOndrag(Function ondrag);
+    void setOndrag(Object ondrag);
 
     /**
      * Add drag event listener.
@@ -885,7 +884,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addDragEventListener(Function listener, boolean options) {
+    default void addDragEventListener(Object listener, boolean options) {
         addEventListener("drag", listener, options);
     }
 
@@ -894,7 +893,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addDragEventListener(Function listener) {
+    default void addDragEventListener(Object listener) {
         addEventListener("drag", listener);
     }
 
@@ -904,7 +903,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removeDragEventListener(Function listener, boolean options) {
+    default void removeDragEventListener(Object listener, boolean options) {
         removeEventListener("drag", listener, options);
     }
 
@@ -913,7 +912,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removeDragEventListener(Function listener) {
+    default void removeDragEventListener(Object listener) {
         removeEventListener("drag", listener);
     }
 
@@ -923,14 +922,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the ondragend
      */
-    Function getOndragend();
+    Object getOndragend();
 
     /**
      * Sets ondragend.
      *
      * @param ondragend the ondragend
      */
-    void setOndragend(Function ondragend);
+    void setOndragend(Object ondragend);
 
     /**
      * Add drag end event listener.
@@ -938,7 +937,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addDragEndEventListener(Function listener, boolean options) {
+    default void addDragEndEventListener(Object listener, boolean options) {
         addEventListener("dragend", listener, options);
     }
 
@@ -947,7 +946,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addDragEndEventListener(Function listener) {
+    default void addDragEndEventListener(Object listener) {
         addEventListener("dragend", listener);
     }
 
@@ -957,7 +956,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removeDragEndEventListener(Function listener, boolean options) {
+    default void removeDragEndEventListener(Object listener, boolean options) {
         removeEventListener("dragend", listener, options);
     }
 
@@ -966,7 +965,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removeDragEndEventListener(Function listener) {
+    default void removeDragEndEventListener(Object listener) {
         removeEventListener("dragend", listener);
     }
 
@@ -976,14 +975,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the ondragenter
      */
-    Function getOndragenter();
+    Object getOndragenter();
 
     /**
      * Sets ondragenter.
      *
      * @param ondragenter the ondragenter
      */
-    void setOndragenter(Function ondragenter);
+    void setOndragenter(Object ondragenter);
 
     /**
      * Add drag enter event listener.
@@ -991,7 +990,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addDragEnterEventListener(Function listener, boolean options) {
+    default void addDragEnterEventListener(Object listener, boolean options) {
         addEventListener("dragenter", listener, options);
     }
 
@@ -1000,7 +999,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addDragEnterEventListener(Function listener) {
+    default void addDragEnterEventListener(Object listener) {
         addEventListener("dragenter", listener);
     }
 
@@ -1010,7 +1009,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removeDragEnterEventListener(Function listener, boolean options) {
+    default void removeDragEnterEventListener(Object listener, boolean options) {
         removeEventListener("dragenter", listener, options);
     }
 
@@ -1019,7 +1018,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removeDragEnterEventListener(Function listener) {
+    default void removeDragEnterEventListener(Object listener) {
         removeEventListener("dragenter", listener);
     }
 
@@ -1028,14 +1027,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the ondragexit
      */
-    Function getOndragexit();
+    Object getOndragexit();
 
     /**
      * Sets ondragexit.
      *
      * @param ondragexit the ondragexit
      */
-    void setOndragexit(Function ondragexit);
+    void setOndragexit(Object ondragexit);
 
     /**
      * Add drag exit event listener.
@@ -1043,7 +1042,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addDragExitEventListener(Function listener, boolean options) {
+    default void addDragExitEventListener(Object listener, boolean options) {
         addEventListener("dragexit", listener, options);
     }
 
@@ -1052,7 +1051,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addDragExitEventListener(Function listener) {
+    default void addDragExitEventListener(Object listener) {
         addEventListener("dragexit", listener);
     }
 
@@ -1062,7 +1061,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removeDragExitEventListener(Function listener, boolean options) {
+    default void removeDragExitEventListener(Object listener, boolean options) {
         removeEventListener("dragexit", listener, options);
     }
 
@@ -1071,7 +1070,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removeDragExitEventListener(Function listener) {
+    default void removeDragExitEventListener(Object listener) {
         removeEventListener("dragexit", listener);
     }
 
@@ -1081,14 +1080,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the ondragleave
      */
-    Function getOndragleave();
+    Object getOndragleave();
 
     /**
      * Sets ondragleave.
      *
      * @param ondragleave the ondragleave
      */
-    void setOndragleave(Function ondragleave);
+    void setOndragleave(Object ondragleave);
 
     /**
      * Add drag leave event listener.
@@ -1096,7 +1095,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addDragLeaveEventListener(Function listener, boolean options) {
+    default void addDragLeaveEventListener(Object listener, boolean options) {
         addEventListener("dragleave", listener, options);
     }
 
@@ -1105,7 +1104,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addDragLeaveEventListener(Function listener) {
+    default void addDragLeaveEventListener(Object listener) {
         addEventListener("dragleave", listener);
     }
 
@@ -1115,7 +1114,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removeDragLeaveEventListener(Function listener, boolean options) {
+    default void removeDragLeaveEventListener(Object listener, boolean options) {
         removeEventListener("dragleave", listener, options);
     }
 
@@ -1124,7 +1123,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removeDragLeaveEventListener(Function listener) {
+    default void removeDragLeaveEventListener(Object listener) {
         removeEventListener("dragleave", listener);
     }
 
@@ -1134,14 +1133,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the ondragover
      */
-    Function getOndragover();
+    Object getOndragover();
 
     /**
      * Sets ondragover.
      *
      * @param ondragover the ondragover
      */
-    void setOndragover(Function ondragover);
+    void setOndragover(Object ondragover);
 
     /**
      * Add drag over event listener.
@@ -1149,7 +1148,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addDragOverEventListener(Function listener, boolean options) {
+    default void addDragOverEventListener(Object listener, boolean options) {
         addEventListener("dragover", listener, options);
     }
 
@@ -1158,7 +1157,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addDragOverEventListener(Function listener) {
+    default void addDragOverEventListener(Object listener) {
         addEventListener("dragover", listener);
     }
 
@@ -1168,7 +1167,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removeDragOverEventListener(Function listener, boolean options) {
+    default void removeDragOverEventListener(Object listener, boolean options) {
         removeEventListener("dragover", listener, options);
     }
 
@@ -1177,7 +1176,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removeDragOverEventListener(Function listener) {
+    default void removeDragOverEventListener(Object listener) {
         removeEventListener("dragover", listener);
     }
 
@@ -1187,14 +1186,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the ondragstart
      */
-    Function getOndragstart();
+    Object getOndragstart();
 
     /**
      * Sets ondragstart.
      *
      * @param ondragstart the ondragstart
      */
-    void setOndragstart(Function ondragstart);
+    void setOndragstart(Object ondragstart);
 
     /**
      * Add drag start event listener.
@@ -1202,7 +1201,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addDragStartEventListener(Function listener, boolean options) {
+    default void addDragStartEventListener(Object listener, boolean options) {
         addEventListener("dragstart", listener, options);
     }
 
@@ -1211,7 +1210,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addDragStartEventListener(Function listener) {
+    default void addDragStartEventListener(Object listener) {
         addEventListener("dragstart", listener);
     }
 
@@ -1221,7 +1220,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removeDragStartEventListener(Function listener, boolean options) {
+    default void removeDragStartEventListener(Object listener, boolean options) {
         removeEventListener("dragstart", listener, options);
     }
 
@@ -1230,7 +1229,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removeDragStartEventListener(Function listener) {
+    default void removeDragStartEventListener(Object listener) {
         removeEventListener("dragstart", listener);
     }
 
@@ -1239,14 +1238,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the ondrop
      */
-    Function getOndrop();
+    Object getOndrop();
 
     /**
      * Sets ondrop.
      *
      * @param ondrop the ondrop
      */
-    void setOndrop(Function ondrop);
+    void setOndrop(Object ondrop);
 
     /**
      * Add drop event listener.
@@ -1254,7 +1253,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addDropEventListener(Function listener, boolean options) {
+    default void addDropEventListener(Object listener, boolean options) {
         addEventListener("drop", listener, options);
     }
 
@@ -1263,7 +1262,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addDropEventListener(Function listener) {
+    default void addDropEventListener(Object listener) {
         addEventListener("drop", listener);
     }
 
@@ -1273,7 +1272,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removeDropEventListener(Function listener, boolean options) {
+    default void removeDropEventListener(Object listener, boolean options) {
         removeEventListener("drop", listener, options);
     }
 
@@ -1282,7 +1281,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removeDropEventListener(Function listener) {
+    default void removeDropEventListener(Object listener) {
         removeEventListener("drop", listener);
     }
 
@@ -1291,14 +1290,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the ondurationchange
      */
-    Function getOndurationchange();
+    Object getOndurationchange();
 
     /**
      * Sets ondurationchange.
      *
      * @param ondurationchange the ondurationchange
      */
-    void setOndurationchange(Function ondurationchange);
+    void setOndurationchange(Object ondurationchange);
 
     /**
      * Add duration change event listener.
@@ -1306,7 +1305,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addDurationChangeEventListener(Function listener, boolean options) {
+    default void addDurationChangeEventListener(Object listener, boolean options) {
         addEventListener("durationchange", listener, options);
     }
 
@@ -1315,7 +1314,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addDurationChangeEventListener(Function listener) {
+    default void addDurationChangeEventListener(Object listener) {
         addEventListener("durationchange", listener);
     }
 
@@ -1325,7 +1324,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removeDurationChangeEventListener(Function listener, boolean options) {
+    default void removeDurationChangeEventListener(Object listener, boolean options) {
         removeEventListener("durationchange", listener, options);
     }
 
@@ -1334,7 +1333,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removeDurationChangeEventListener(Function listener) {
+    default void removeDurationChangeEventListener(Object listener) {
         removeEventListener("durationchange", listener);
     }
 
@@ -1343,14 +1342,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the onemptied
      */
-    Function getOnemptied();
+    Object getOnemptied();
 
     /**
      * Sets onemptied.
      *
      * @param onemptied the onemptied
      */
-    void setOnemptied(Function onemptied);
+    void setOnemptied(Object onemptied);
 
     /**
      * Add emptied event listener.
@@ -1358,7 +1357,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addEmptiedEventListener(Function listener, boolean options) {
+    default void addEmptiedEventListener(Object listener, boolean options) {
         addEventListener("emptied", listener, options);
     }
 
@@ -1367,7 +1366,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addEmptiedEventListener(Function listener) {
+    default void addEmptiedEventListener(Object listener) {
         addEventListener("emptied", listener);
     }
 
@@ -1377,7 +1376,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removeEmptiedEventListener(Function listener, boolean options) {
+    default void removeEmptiedEventListener(Object listener, boolean options) {
         removeEventListener("emptied", listener, options);
     }
 
@@ -1386,7 +1385,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removeEmptiedEventListener(Function listener) {
+    default void removeEmptiedEventListener(Object listener) {
         removeEventListener("emptied", listener);
     }
 
@@ -1395,14 +1394,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the onended
      */
-    Function getOnended();
+    Object getOnended();
 
     /**
      * Sets onended.
      *
      * @param onended the onended
      */
-    void setOnended(Function onended);
+    void setOnended(Object onended);
 
     /**
      * Add ended event listener.
@@ -1410,7 +1409,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addEndedEventListener(Function listener, boolean options) {
+    default void addEndedEventListener(Object listener, boolean options) {
         addEventListener("ended", listener, options);
     }
 
@@ -1419,7 +1418,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addEndedEventListener(Function listener) {
+    default void addEndedEventListener(Object listener) {
         addEventListener("ended", listener);
     }
 
@@ -1429,7 +1428,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removeEndedEventListener(Function listener, boolean options) {
+    default void removeEndedEventListener(Object listener, boolean options) {
         removeEventListener("ended", listener, options);
     }
 
@@ -1438,7 +1437,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removeEndedEventListener(Function listener) {
+    default void removeEndedEventListener(Object listener) {
         removeEventListener("ended", listener);
     }
 
@@ -1447,14 +1446,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the onerror
      */
-    Function getOnerror();
+    Object getOnerror();
 
     /**
      * Sets onerror.
      *
      * @param onerror the onerror
      */
-    void setOnerror(Function onerror);
+    void setOnerror(Object onerror);
 
     /**
      * Add error event listener.
@@ -1462,7 +1461,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addErrorEventListener(Function listener, boolean options) {
+    default void addErrorEventListener(Object listener, boolean options) {
         addEventListener("error", listener, options);
     }
 
@@ -1471,7 +1470,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addErrorEventListener(Function listener) {
+    default void addErrorEventListener(Object listener) {
         addEventListener("error", listener);
     }
 
@@ -1481,7 +1480,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removeErrorEventListener(Function listener, boolean options) {
+    default void removeErrorEventListener(Object listener, boolean options) {
         removeEventListener("error", listener, options);
     }
 
@@ -1490,7 +1489,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removeErrorEventListener(Function listener) {
+    default void removeErrorEventListener(Object listener) {
         removeEventListener("error", listener);
     }
 
@@ -1499,14 +1498,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the onfocus
      */
-    Function getOnfocus();
+    Object getOnfocus();
 
     /**
      * Sets onfocus.
      *
      * @param onfocus the onfocus
      */
-    void setOnfocus(Function onfocus);
+    void setOnfocus(Object onfocus);
 
     /**
      * Add focus event listener.
@@ -1514,7 +1513,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addFocusEventListener(Function listener, boolean options) {
+    default void addFocusEventListener(Object listener, boolean options) {
         addEventListener("focus", listener, options);
     }
 
@@ -1523,7 +1522,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addFocusEventListener(Function listener) {
+    default void addFocusEventListener(Object listener) {
         addEventListener("focus", listener);
     }
 
@@ -1533,7 +1532,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removeFocusEventListener(Function listener, boolean options) {
+    default void removeFocusEventListener(Object listener, boolean options) {
         removeEventListener("focus", listener, options);
     }
 
@@ -1542,7 +1541,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removeFocusEventListener(Function listener) {
+    default void removeFocusEventListener(Object listener) {
         removeEventListener("focus", listener);
     }
 
@@ -1551,14 +1550,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the onfocusin
      */
-    Function getOnfocusin();
+    Object getOnfocusin();
 
     /**
      * Sets onfocusin.
      *
      * @param onfocusin the onfocusin
      */
-    void setOnfocusin(Function onfocusin);
+    void setOnfocusin(Object onfocusin);
 
     /**
      * Add focus in event listener.
@@ -1566,7 +1565,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addFocusInEventListener(Function listener, boolean options) {
+    default void addFocusInEventListener(Object listener, boolean options) {
         addEventListener("focusin", listener, options);
     }
 
@@ -1575,7 +1574,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addFocusInEventListener(Function listener) {
+    default void addFocusInEventListener(Object listener) {
         addEventListener("focusin", listener);
     }
 
@@ -1585,7 +1584,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removeFocusInEventListener(Function listener, boolean options) {
+    default void removeFocusInEventListener(Object listener, boolean options) {
         removeEventListener("focusin", listener, options);
     }
 
@@ -1594,7 +1593,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removeFocusInEventListener(Function listener) {
+    default void removeFocusInEventListener(Object listener) {
         removeEventListener("focusin", listener);
     }
 
@@ -1603,14 +1602,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the onfocusout
      */
-    Function getOnfocusout();
+    Object getOnfocusout();
 
     /**
      * Sets onfocusout.
      *
      * @param onfocusout the onfocusout
      */
-    void setOnfocusout(Function onfocusout);
+    void setOnfocusout(Object onfocusout);
 
     /**
      * Add focus out event listener.
@@ -1618,7 +1617,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addFocusOutEventListener(Function listener, boolean options) {
+    default void addFocusOutEventListener(Object listener, boolean options) {
         addEventListener("focusout", listener, options);
     }
 
@@ -1627,7 +1626,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addFocusOutEventListener(Function listener) {
+    default void addFocusOutEventListener(Object listener) {
         addEventListener("focusout", listener);
     }
 
@@ -1637,7 +1636,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removeFocusOutEventListener(Function listener, boolean options) {
+    default void removeFocusOutEventListener(Object listener, boolean options) {
         removeEventListener("focusout", listener, options);
     }
 
@@ -1646,7 +1645,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removeFocusOutEventListener(Function listener) {
+    default void removeFocusOutEventListener(Object listener) {
         removeEventListener("focusout", listener);
     }
 
@@ -1655,14 +1654,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the ongotpointercapture
      */
-    Function getOngotpointercapture();
+    Object getOngotpointercapture();
 
     /**
      * Sets ongotpointercapture.
      *
      * @param ongotpointercapture the ongotpointercapture
      */
-    void setOngotpointercapture(Function ongotpointercapture);
+    void setOngotpointercapture(Object ongotpointercapture);
 
     /**
      * Add got pointer capture event listener.
@@ -1670,7 +1669,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addGotPointerCaptureEventListener(Function listener, boolean options) {
+    default void addGotPointerCaptureEventListener(Object listener, boolean options) {
         addEventListener("gotpointercapture", listener, options);
     }
 
@@ -1679,7 +1678,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addGotPointerCaptureEventListener(Function listener) {
+    default void addGotPointerCaptureEventListener(Object listener) {
         addEventListener("gotpointercapture", listener);
     }
 
@@ -1689,7 +1688,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removeGotPointerCaptureEventListener(Function listener, boolean options) {
+    default void removeGotPointerCaptureEventListener(Object listener, boolean options) {
         removeEventListener("gotpointercapture", listener, options);
     }
 
@@ -1698,7 +1697,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removeGotPointerCaptureEventListener(Function listener) {
+    default void removeGotPointerCaptureEventListener(Object listener) {
         removeEventListener("gotpointercapture", listener);
     }
 
@@ -1707,14 +1706,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the oninput
      */
-    Function getOninput();
+    Object getOninput();
 
     /**
      * Sets oninput.
      *
      * @param oninput the oninput
      */
-    void setOninput(Function oninput);
+    void setOninput(Object oninput);
 
     /**
      * Add input event listener.
@@ -1722,7 +1721,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addInputEventListener(Function listener, boolean options) {
+    default void addInputEventListener(Object listener, boolean options) {
         addEventListener("input", listener, options);
     }
 
@@ -1731,7 +1730,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addInputEventListener(Function listener) {
+    default void addInputEventListener(Object listener) {
         addEventListener("input", listener);
     }
 
@@ -1741,7 +1740,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removeInputEventListener(Function listener, boolean options) {
+    default void removeInputEventListener(Object listener, boolean options) {
         removeEventListener("input", listener, options);
     }
 
@@ -1750,7 +1749,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removeInputEventListener(Function listener) {
+    default void removeInputEventListener(Object listener) {
         removeEventListener("input", listener);
     }
 
@@ -1759,14 +1758,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the oninvalid
      */
-    Function getOninvalid();
+    Object getOninvalid();
 
     /**
      * Sets oninvalid.
      *
      * @param oninvalid the oninvalid
      */
-    void setOninvalid(Function oninvalid);
+    void setOninvalid(Object oninvalid);
 
     /**
      * Add invalid event listener.
@@ -1774,7 +1773,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addInvalidEventListener(Function listener, boolean options) {
+    default void addInvalidEventListener(Object listener, boolean options) {
         addEventListener("invalid", listener, options);
     }
 
@@ -1783,7 +1782,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addInvalidEventListener(Function listener) {
+    default void addInvalidEventListener(Object listener) {
         addEventListener("invalid", listener);
     }
 
@@ -1793,7 +1792,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removeInvalidEventListener(Function listener, boolean options) {
+    default void removeInvalidEventListener(Object listener, boolean options) {
         removeEventListener("invalid", listener, options);
     }
 
@@ -1802,30 +1801,30 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removeInvalidEventListener(Function listener) {
+    default void removeInvalidEventListener(Object listener) {
         removeEventListener("invalid", listener);
     }
 
     /**
      * <p>getOnfullscreenchange.</p>
      *
-     * @return a {@link org.mozilla.javascript.Function} object.
+     * @return a {@link org.mozilla.javascript.Object} object.
      */
-    Function getOnfullscreenchange();
+    Object getOnfullscreenchange();
 
     /**
      * Fires when the user presses a key.
      *
      * @return the onkeydown
      */
-    Function getOnkeydown();
+    Object getOnkeydown();
 
     /**
      * Sets onkeydown.
      *
      * @param onkeydown the onkeydown
      */
-    void setOnkeydown(Function onkeydown);
+    void setOnkeydown(Object onkeydown);
 
     /**
      * Add key down event listener.
@@ -1833,7 +1832,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addKeyDownEventListener(Function listener, boolean options) {
+    default void addKeyDownEventListener(Object listener, boolean options) {
         addEventListener("keydown", listener, options);
     }
 
@@ -1842,7 +1841,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addKeyDownEventListener(Function listener) {
+    default void addKeyDownEventListener(Object listener) {
         addEventListener("keydown", listener);
     }
 
@@ -1852,7 +1851,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removeKeyDownEventListener(Function listener, boolean options) {
+    default void removeKeyDownEventListener(Object listener, boolean options) {
         removeEventListener("keydown", listener, options);
     }
 
@@ -1861,7 +1860,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removeKeyDownEventListener(Function listener) {
+    default void removeKeyDownEventListener(Object listener) {
         removeEventListener("keydown", listener);
     }
 
@@ -1870,14 +1869,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the onkeypress
      */
-    Function getOnkeypress();
+    Object getOnkeypress();
 
     /**
      * Sets onkeypress.
      *
      * @param onkeypress the onkeypress
      */
-    void setOnkeypress(Function onkeypress);
+    void setOnkeypress(Object onkeypress);
 
     /**
      * Add key press event listener.
@@ -1885,7 +1884,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addKeyPressEventListener(Function listener, boolean options) {
+    default void addKeyPressEventListener(Object listener, boolean options) {
         addEventListener("keypress", listener, options);
     }
 
@@ -1894,7 +1893,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addKeyPressEventListener(Function listener) {
+    default void addKeyPressEventListener(Object listener) {
         addEventListener("keypress", listener);
     }
 
@@ -1904,7 +1903,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removeKeyPressEventListener(Function listener, boolean options) {
+    default void removeKeyPressEventListener(Object listener, boolean options) {
         removeEventListener("keypress", listener, options);
     }
 
@@ -1913,7 +1912,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removeKeyPressEventListener(Function listener) {
+    default void removeKeyPressEventListener(Object listener) {
         removeEventListener("keypress", listener);
     }
 
@@ -1922,14 +1921,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the onkeyup
      */
-    Function getOnkeyup();
+    Object getOnkeyup();
 
     /**
      * Sets onkeyup.
      *
      * @param onkeyup the onkeyup
      */
-    void setOnkeyup(Function onkeyup);
+    void setOnkeyup(Object onkeyup);
 
     /**
      * Add key up event listener.
@@ -1937,7 +1936,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addKeyUpEventListener(Function listener, boolean options) {
+    default void addKeyUpEventListener(Object listener, boolean options) {
         addEventListener("keyup", listener, options);
     }
 
@@ -1946,7 +1945,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addKeyUpEventListener(Function listener) {
+    default void addKeyUpEventListener(Object listener) {
         addEventListener("keyup", listener);
     }
 
@@ -1956,7 +1955,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removeKeyUpEventListener(Function listener, boolean options) {
+    default void removeKeyUpEventListener(Object listener, boolean options) {
         removeEventListener("keyup", listener, options);
     }
 
@@ -1965,7 +1964,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removeKeyUpEventListener(Function listener) {
+    default void removeKeyUpEventListener(Object listener) {
         removeEventListener("keyup", listener);
     }
 
@@ -1974,14 +1973,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the onload
      */
-    Function getOnload();
+    Object getOnload();
 
     /**
      * Sets onload.
      *
      * @param onload the onload
      */
-    void setOnload(Function onload);
+    void setOnload(Object onload);
 
     /**
      * Add load event listener.
@@ -1989,7 +1988,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addLoadEventListener(Function listener, boolean options) {
+    default void addLoadEventListener(Object listener, boolean options) {
         addEventListener("load", listener, options);
     }
 
@@ -1998,7 +1997,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addLoadEventListener(Function listener) {
+    default void addLoadEventListener(Object listener) {
         addEventListener("load", listener);
     }
 
@@ -2008,7 +2007,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removeLoadEventListener(Function listener, boolean options) {
+    default void removeLoadEventListener(Object listener, boolean options) {
         removeEventListener("load", listener, options);
     }
 
@@ -2017,7 +2016,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removeLoadEventListener(Function listener) {
+    default void removeLoadEventListener(Object listener) {
         removeEventListener("load", listener);
     }
 
@@ -2026,14 +2025,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the onloadeddata
      */
-    Function getOnloadeddata();
+    Object getOnloadeddata();
 
     /**
      * Sets onloadeddata.
      *
      * @param onloadeddata the onloadeddata
      */
-    void setOnloadeddata(Function onloadeddata);
+    void setOnloadeddata(Object onloadeddata);
 
     /**
      * Add loaded data event listener.
@@ -2041,7 +2040,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addLoadedDataEventListener(Function listener, boolean options) {
+    default void addLoadedDataEventListener(Object listener, boolean options) {
         addEventListener("loadeddata", listener, options);
     }
 
@@ -2050,7 +2049,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addLoadedDataEventListener(Function listener) {
+    default void addLoadedDataEventListener(Object listener) {
         addEventListener("loadeddata", listener);
     }
 
@@ -2060,7 +2059,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removeLoadedDataEventListener(Function listener, boolean options) {
+    default void removeLoadedDataEventListener(Object listener, boolean options) {
         removeEventListener("loadeddata", listener, options);
     }
 
@@ -2069,7 +2068,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removeLoadedDataEventListener(Function listener) {
+    default void removeLoadedDataEventListener(Object listener) {
         removeEventListener("loadeddata", listener);
     }
 
@@ -2078,14 +2077,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the onloadedmetadata
      */
-    Function getOnloadedmetadata();
+    Object getOnloadedmetadata();
 
     /**
      * Sets onloadedmetadata.
      *
      * @param onloadedmetadata the onloadedmetadata
      */
-    void setOnloadedmetadata(Function onloadedmetadata);
+    void setOnloadedmetadata(Object onloadedmetadata);
 
     /**
      * Add loaded meta data event listener.
@@ -2093,7 +2092,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addLoadedMetaDataEventListener(Function listener, boolean options) {
+    default void addLoadedMetaDataEventListener(Object listener, boolean options) {
         addEventListener("loadedmetadata", listener, options);
     }
 
@@ -2102,7 +2101,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addLoadedMetaDataEventListener(Function listener) {
+    default void addLoadedMetaDataEventListener(Object listener) {
         addEventListener("loadedmetadata", listener);
     }
 
@@ -2112,7 +2111,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removeLoadedMetaDataEventListener(Function listener, boolean options) {
+    default void removeLoadedMetaDataEventListener(Object listener, boolean options) {
         removeEventListener("loadedmetadata", listener, options);
     }
 
@@ -2121,7 +2120,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removeLoadedMetaDataEventListener(Function listener) {
+    default void removeLoadedMetaDataEventListener(Object listener) {
         removeEventListener("loadedmetadata", listener);
     }
 
@@ -2130,14 +2129,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the onloadend
      */
-    Function getOnloadend();
+    Object getOnloadend();
 
     /**
      * Sets onloadend.
      *
      * @param onloadend the onloadend
      */
-    void setOnloadend(Function onloadend);
+    void setOnloadend(Object onloadend);
 
     /**
      * Add load end event listener.
@@ -2145,7 +2144,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addLoadEndEventListener(Function listener, boolean options) {
+    default void addLoadEndEventListener(Object listener, boolean options) {
         addEventListener("loadend", listener, options);
     }
 
@@ -2154,7 +2153,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addLoadEndEventListener(Function listener) {
+    default void addLoadEndEventListener(Object listener) {
         addEventListener("loadend", listener);
     }
 
@@ -2164,7 +2163,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removeLoadEndEventListener(Function listener, boolean options) {
+    default void removeLoadEndEventListener(Object listener, boolean options) {
         removeEventListener("loadend", listener, options);
     }
 
@@ -2173,7 +2172,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removeLoadEndEventListener(Function listener) {
+    default void removeLoadEndEventListener(Object listener) {
         removeEventListener("loadend", listener);
     }
 
@@ -2182,14 +2181,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the onloadstart
      */
-    Function getOnloadstart();
+    Object getOnloadstart();
 
     /**
      * Sets onloadstart.
      *
      * @param onloadstart the onloadstart
      */
-    void setOnloadstart(Function onloadstart);
+    void setOnloadstart(Object onloadstart);
 
     /**
      * Add load start event listener.
@@ -2197,7 +2196,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addLoadStartEventListener(Function listener, boolean options) {
+    default void addLoadStartEventListener(Object listener, boolean options) {
         addEventListener("loadstart", listener, options);
     }
 
@@ -2206,7 +2205,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addLoadStartEventListener(Function listener) {
+    default void addLoadStartEventListener(Object listener) {
         addEventListener("loadstart", listener);
     }
 
@@ -2216,7 +2215,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removeLoadStartEventListener(Function listener, boolean options) {
+    default void removeLoadStartEventListener(Object listener, boolean options) {
         removeEventListener("loadstart", listener, options);
     }
 
@@ -2225,7 +2224,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removeLoadStartEventListener(Function listener) {
+    default void removeLoadStartEventListener(Object listener) {
         removeEventListener("loadstart", listener);
     }
 
@@ -2234,14 +2233,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the onlostpointercapture
      */
-    Function getOnlostpointercapture();
+    Object getOnlostpointercapture();
 
     /**
      * Sets onlostpointercapture.
      *
      * @param onlostpointercapture the onlostpointercapture
      */
-    void setOnlostpointercapture(Function onlostpointercapture);
+    void setOnlostpointercapture(Object onlostpointercapture);
 
     /**
      * Add lost pointer capture event listener.
@@ -2249,7 +2248,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addLostPointerCaptureEventListener(Function listener, boolean options) {
+    default void addLostPointerCaptureEventListener(Object listener, boolean options) {
         addEventListener("lostpointercapture", listener, options);
     }
 
@@ -2258,7 +2257,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addLostPointerCaptureEventListener(Function listener) {
+    default void addLostPointerCaptureEventListener(Object listener) {
         addEventListener("lostpointercapture", listener);
     }
 
@@ -2268,7 +2267,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removeLostPointerCaptureEventListener(Function listener, boolean options) {
+    default void removeLostPointerCaptureEventListener(Object listener, boolean options) {
         removeEventListener("lostpointercapture", listener, options);
     }
 
@@ -2277,7 +2276,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removeLostPointerCaptureEventListener(Function listener) {
+    default void removeLostPointerCaptureEventListener(Object listener) {
         removeEventListener("lostpointercapture", listener);
     }
 
@@ -2286,14 +2285,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the onmousedown
      */
-    Function getOnmousedown();
+    Object getOnmousedown();
 
     /**
      * Sets onmousedown.
      *
      * @param onmousedown the onmousedown
      */
-    void setOnmousedown(Function onmousedown);
+    void setOnmousedown(Object onmousedown);
 
     /**
      * Add mouse down event listener.
@@ -2301,7 +2300,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addMouseDownEventListener(Function listener, boolean options) {
+    default void addMouseDownEventListener(Object listener, boolean options) {
         addEventListener("mousedown", listener, options);
     }
 
@@ -2310,7 +2309,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addMouseDownEventListener(Function listener) {
+    default void addMouseDownEventListener(Object listener) {
         addEventListener("mousedown", listener);
     }
 
@@ -2320,7 +2319,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removeMouseDownEventListener(Function listener, boolean options) {
+    default void removeMouseDownEventListener(Object listener, boolean options) {
         removeEventListener("mousedown", listener, options);
     }
 
@@ -2329,7 +2328,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removeMouseDownEventListener(Function listener) {
+    default void removeMouseDownEventListener(Object listener) {
         removeEventListener("mousedown", listener);
     }
 
@@ -2338,14 +2337,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the onmouseenter
      */
-    Function getOnmouseenter();
+    Object getOnmouseenter();
 
     /**
      * Sets onmouseenter.
      *
      * @param onmouseenter the onmouseenter
      */
-    void setOnmouseenter(Function onmouseenter);
+    void setOnmouseenter(Object onmouseenter);
 
     /**
      * Add mouse enter event listener.
@@ -2353,7 +2352,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addMouseEnterEventListener(Function listener, boolean options) {
+    default void addMouseEnterEventListener(Object listener, boolean options) {
         addEventListener("mouseenter", listener, options);
     }
 
@@ -2362,7 +2361,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addMouseEnterEventListener(Function listener) {
+    default void addMouseEnterEventListener(Object listener) {
         addEventListener("mouseenter", listener);
     }
 
@@ -2372,7 +2371,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removeMouseEnterEventListener(Function listener, boolean options) {
+    default void removeMouseEnterEventListener(Object listener, boolean options) {
         removeEventListener("mouseenter", listener, options);
     }
 
@@ -2381,7 +2380,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removeMouseEnterEventListener(Function listener) {
+    default void removeMouseEnterEventListener(Object listener) {
         removeEventListener("mouseenter", listener);
     }
 
@@ -2390,14 +2389,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the onmouseleave
      */
-    Function getOnmouseleave();
+    Object getOnmouseleave();
 
     /**
      * Sets onmouseleave.
      *
      * @param onmouseleave the onmouseleave
      */
-    void setOnmouseleave(Function onmouseleave);
+    void setOnmouseleave(Object onmouseleave);
 
     /**
      * Add mouse leave event listener.
@@ -2405,7 +2404,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addMouseLeaveEventListener(Function listener, boolean options) {
+    default void addMouseLeaveEventListener(Object listener, boolean options) {
         addEventListener("mouseleave", listener, options);
     }
 
@@ -2414,7 +2413,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addMouseLeaveEventListener(Function listener) {
+    default void addMouseLeaveEventListener(Object listener) {
         addEventListener("mouseleave", listener);
     }
 
@@ -2424,7 +2423,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removeMouseLeaveEventListener(Function listener, boolean options) {
+    default void removeMouseLeaveEventListener(Object listener, boolean options) {
         removeEventListener("mouseleave", listener, options);
     }
 
@@ -2433,7 +2432,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removeMouseLeaveEventListener(Function listener) {
+    default void removeMouseLeaveEventListener(Object listener) {
         removeEventListener("mouseleave", listener);
     }
 
@@ -2442,14 +2441,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the onmousemove
      */
-    Function getOnmousemove();
+    Object getOnmousemove();
 
     /**
      * Sets onmousemove.
      *
      * @param onmousemove the onmousemove
      */
-    void setOnmousemove(Function onmousemove);
+    void setOnmousemove(Object onmousemove);
 
     /**
      * Add mouse move event listener.
@@ -2457,7 +2456,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addMouseMoveEventListener(Function listener, boolean options) {
+    default void addMouseMoveEventListener(Object listener, boolean options) {
         addEventListener("mousemove", listener, options);
     }
 
@@ -2466,7 +2465,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addMouseMoveEventListener(Function listener) {
+    default void addMouseMoveEventListener(Object listener) {
         addEventListener("mousemove", listener);
     }
 
@@ -2476,7 +2475,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removeMouseMoveEventListener(Function listener, boolean options) {
+    default void removeMouseMoveEventListener(Object listener, boolean options) {
         removeEventListener("mousemove", listener, options);
     }
 
@@ -2485,7 +2484,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removeMouseMoveEventListener(Function listener) {
+    default void removeMouseMoveEventListener(Object listener) {
         removeEventListener("mousemove", listener);
     }
 
@@ -2495,14 +2494,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the onmouseout
      */
-    Function getOnmouseout();
+    Object getOnmouseout();
 
     /**
      * Sets onmouseout.
      *
      * @param onmouseout the onmouseout
      */
-    void setOnmouseout(Function onmouseout);
+    void setOnmouseout(Object onmouseout);
 
     /**
      * Add mouse out event listener.
@@ -2510,7 +2509,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addMouseOutEventListener(Function listener, boolean options) {
+    default void addMouseOutEventListener(Object listener, boolean options) {
         addEventListener("mouseout", listener, options);
     }
 
@@ -2519,7 +2518,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addMouseOutEventListener(Function listener) {
+    default void addMouseOutEventListener(Object listener) {
         addEventListener("mouseout", listener);
     }
 
@@ -2529,7 +2528,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removeMouseOutEventListener(Function listener, boolean options) {
+    default void removeMouseOutEventListener(Object listener, boolean options) {
         removeEventListener("mouseout", listener, options);
     }
 
@@ -2538,7 +2537,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removeMouseOutEventListener(Function listener) {
+    default void removeMouseOutEventListener(Object listener) {
         removeEventListener("mouseout", listener);
     }
 
@@ -2547,14 +2546,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the onmouseover
      */
-    Function getOnmouseover();
+    Object getOnmouseover();
 
     /**
      * Sets onmouseover.
      *
      * @param onmouseover the onmouseover
      */
-    void setOnmouseover(Function onmouseover);
+    void setOnmouseover(Object onmouseover);
 
     /**
      * Add mouse over event listener.
@@ -2562,7 +2561,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addMouseOverEventListener(Function listener, boolean options) {
+    default void addMouseOverEventListener(Object listener, boolean options) {
         addEventListener("mouseover", listener, options);
     }
 
@@ -2571,7 +2570,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addMouseOverEventListener(Function listener) {
+    default void addMouseOverEventListener(Object listener) {
         addEventListener("mouseover", listener);
     }
 
@@ -2581,7 +2580,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removeMouseOverEventListener(Function listener, boolean options) {
+    default void removeMouseOverEventListener(Object listener, boolean options) {
         removeEventListener("mouseover", listener, options);
     }
 
@@ -2590,7 +2589,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removeMouseOverEventListener(Function listener) {
+    default void removeMouseOverEventListener(Object listener) {
         removeEventListener("mouseover", listener);
     }
 
@@ -2600,14 +2599,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the onmouseup
      */
-    Function getOnmouseup();
+    Object getOnmouseup();
 
     /**
      * Sets onmouseup.
      *
      * @param onmouseup the onmouseup
      */
-    void setOnmouseup(Function onmouseup);
+    void setOnmouseup(Object onmouseup);
 
     /**
      * Add mouse up event listener.
@@ -2615,7 +2614,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addMouseUpEventListener(Function listener, boolean options) {
+    default void addMouseUpEventListener(Object listener, boolean options) {
         addEventListener("mouseup", listener, options);
     }
 
@@ -2624,7 +2623,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addMouseUpEventListener(Function listener) {
+    default void addMouseUpEventListener(Object listener) {
         addEventListener("mouseup", listener);
     }
 
@@ -2634,7 +2633,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removeMouseUpEventListener(Function listener, boolean options) {
+    default void removeMouseUpEventListener(Object listener, boolean options) {
         removeEventListener("mouseup", listener, options);
     }
 
@@ -2643,7 +2642,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removeMouseUpEventListener(Function listener) {
+    default void removeMouseUpEventListener(Object listener) {
         removeEventListener("mouseup", listener);
     }
 
@@ -2652,14 +2651,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the onpause
      */
-    Function getOnpause();
+    Object getOnpause();
 
     /**
      * Sets onpause.
      *
      * @param onpause the onpause
      */
-    void setOnpause(Function onpause);
+    void setOnpause(Object onpause);
 
     /**
      * Add pause event listener.
@@ -2667,7 +2666,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addPauseEventListener(Function listener, boolean options) {
+    default void addPauseEventListener(Object listener, boolean options) {
         addEventListener("pause", listener, options);
     }
 
@@ -2676,7 +2675,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addPauseEventListener(Function listener) {
+    default void addPauseEventListener(Object listener) {
         addEventListener("pause", listener);
     }
 
@@ -2686,7 +2685,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removePauseEventListener(Function listener, boolean options) {
+    default void removePauseEventListener(Object listener, boolean options) {
         removeEventListener("pause", listener, options);
     }
 
@@ -2695,7 +2694,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removePauseEventListener(Function listener) {
+    default void removePauseEventListener(Object listener) {
         removeEventListener("pause", listener);
     }
 
@@ -2704,14 +2703,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the onplay
      */
-    Function getOnplay();
+    Object getOnplay();
 
     /**
      * Sets onplay.
      *
      * @param onplay the onplay
      */
-    void setOnplay(Function onplay);
+    void setOnplay(Object onplay);
 
     /**
      * Add play event listener.
@@ -2719,7 +2718,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addPlayEventListener(Function listener, boolean options) {
+    default void addPlayEventListener(Object listener, boolean options) {
         addEventListener("play", listener, options);
     }
 
@@ -2728,7 +2727,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addPlayEventListener(Function listener) {
+    default void addPlayEventListener(Object listener) {
         addEventListener("play", listener);
     }
 
@@ -2738,7 +2737,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removePlayEventListener(Function listener, boolean options) {
+    default void removePlayEventListener(Object listener, boolean options) {
         removeEventListener("play", listener, options);
     }
 
@@ -2747,7 +2746,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removePlayEventListener(Function listener) {
+    default void removePlayEventListener(Object listener) {
         removeEventListener("play", listener);
     }
 
@@ -2756,14 +2755,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the onplaying
      */
-    Function getOnplaying();
+    Object getOnplaying();
 
     /**
      * Sets onplaying.
      *
      * @param onplaying the onplaying
      */
-    void setOnplaying(Function onplaying);
+    void setOnplaying(Object onplaying);
 
     /**
      * Add playing event listener.
@@ -2771,7 +2770,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addPlayingEventListener(Function listener, boolean options) {
+    default void addPlayingEventListener(Object listener, boolean options) {
         addEventListener("playing", listener, options);
     }
 
@@ -2780,7 +2779,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addPlayingEventListener(Function listener) {
+    default void addPlayingEventListener(Object listener) {
         addEventListener("playing", listener);
     }
 
@@ -2790,7 +2789,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removePlayingEventListener(Function listener, boolean options) {
+    default void removePlayingEventListener(Object listener, boolean options) {
         removeEventListener("playing", listener, options);
     }
 
@@ -2799,7 +2798,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removePlayingEventListener(Function listener) {
+    default void removePlayingEventListener(Object listener) {
         removeEventListener("playing", listener);
     }
 
@@ -2808,14 +2807,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the onpointercancel
      */
-    Function getOnpointercancel();
+    Object getOnpointercancel();
 
     /**
      * Sets onpointercancel.
      *
      * @param onpointercancel the onpointercancel
      */
-    void setOnpointercancel(Function onpointercancel);
+    void setOnpointercancel(Object onpointercancel);
 
     /**
      * Add pointer cancel event listener.
@@ -2823,7 +2822,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addPointerCancelEventListener(Function listener, boolean options) {
+    default void addPointerCancelEventListener(Object listener, boolean options) {
         addEventListener("pointercancel", listener, options);
     }
 
@@ -2832,7 +2831,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addPointerCancelEventListener(Function listener) {
+    default void addPointerCancelEventListener(Object listener) {
         addEventListener("pointercancel", listener);
     }
 
@@ -2842,7 +2841,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removePointerCancelEventListener(Function listener, boolean options) {
+    default void removePointerCancelEventListener(Object listener, boolean options) {
         removeEventListener("pointercancel", listener, options);
     }
 
@@ -2851,7 +2850,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removePointerCancelEventListener(Function listener) {
+    default void removePointerCancelEventListener(Object listener) {
         removeEventListener("pointercancel", listener);
     }
 
@@ -2860,14 +2859,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the onpointerdown
      */
-    Function getOnpointerdown();
+    Object getOnpointerdown();
 
     /**
      * Sets onpointerdown.
      *
      * @param onpointerdown the onpointerdown
      */
-    void setOnpointerdown(Function onpointerdown);
+    void setOnpointerdown(Object onpointerdown);
 
     /**
      * Add pointer down event listener.
@@ -2875,7 +2874,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addPointerDownEventListener(Function listener, boolean options) {
+    default void addPointerDownEventListener(Object listener, boolean options) {
         addEventListener("pointerdown", listener, options);
     }
 
@@ -2884,7 +2883,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addPointerDownEventListener(Function listener) {
+    default void addPointerDownEventListener(Object listener) {
         addEventListener("pointerdown", listener);
     }
 
@@ -2894,7 +2893,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removePointerDownEventListener(Function listener, boolean options) {
+    default void removePointerDownEventListener(Object listener, boolean options) {
         removeEventListener("pointerdown", listener, options);
     }
 
@@ -2903,7 +2902,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removePointerDownEventListener(Function listener) {
+    default void removePointerDownEventListener(Object listener) {
         removeEventListener("pointerdown", listener);
     }
 
@@ -2912,14 +2911,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the onpointerenter
      */
-    Function getOnpointerenter();
+    Object getOnpointerenter();
 
     /**
      * Sets onpointerenter.
      *
      * @param onpointerenter the onpointerenter
      */
-    void setOnpointerenter(Function onpointerenter);
+    void setOnpointerenter(Object onpointerenter);
 
     /**
      * Add pointer enter event listener.
@@ -2927,7 +2926,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addPointerEnterEventListener(Function listener, boolean options) {
+    default void addPointerEnterEventListener(Object listener, boolean options) {
         addEventListener("pointerenter", listener, options);
     }
 
@@ -2936,7 +2935,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addPointerEnterEventListener(Function listener) {
+    default void addPointerEnterEventListener(Object listener) {
         addEventListener("pointerenter", listener);
 
     }
@@ -2947,7 +2946,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removePointerEnterEventListener(Function listener, boolean options) {
+    default void removePointerEnterEventListener(Object listener, boolean options) {
         removeEventListener("pointerenter", listener, options);
     }
 
@@ -2956,7 +2955,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removePointerEnterEventListener(Function listener) {
+    default void removePointerEnterEventListener(Object listener) {
         removeEventListener("pointerenter", listener);
     }
 
@@ -2965,14 +2964,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the onpointerleave
      */
-    Function getOnpointerleave();
+    Object getOnpointerleave();
 
     /**
      * Sets onpointerleave.
      *
      * @param onpointerleave the onpointerleave
      */
-    void setOnpointerleave(Function onpointerleave);
+    void setOnpointerleave(Object onpointerleave);
 
     /**
      * Add pointer leave event listener.
@@ -2980,7 +2979,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addPointerLeaveEventListener(Function listener, boolean options) {
+    default void addPointerLeaveEventListener(Object listener, boolean options) {
         addEventListener("pointerleave", listener, options);
     }
 
@@ -2989,7 +2988,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addPointerLeaveEventListener(Function listener) {
+    default void addPointerLeaveEventListener(Object listener) {
         addEventListener("pointerleave", listener);
     }
 
@@ -2999,7 +2998,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removePointerLeaveEventListener(Function listener, boolean options) {
+    default void removePointerLeaveEventListener(Object listener, boolean options) {
         removeEventListener("pointerleave", listener, options);
     }
 
@@ -3008,7 +3007,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removePointerLeaveEventListener(Function listener) {
+    default void removePointerLeaveEventListener(Object listener) {
         removeEventListener("pointerleave", listener);
     }
 
@@ -3017,14 +3016,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the onpointermove
      */
-    Function getOnpointermove();
+    Object getOnpointermove();
 
     /**
      * Sets onpointermove.
      *
      * @param onpointermove the onpointermove
      */
-    void setOnpointermove(Function onpointermove);
+    void setOnpointermove(Object onpointermove);
 
     /**
      * Add pointer move event listener.
@@ -3032,7 +3031,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addPointerMoveEventListener(Function listener, boolean options) {
+    default void addPointerMoveEventListener(Object listener, boolean options) {
         addEventListener("pointermove", listener, options);
     }
 
@@ -3041,7 +3040,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addPointerMoveEventListener(Function listener) {
+    default void addPointerMoveEventListener(Object listener) {
         addEventListener("pointermove", listener);
     }
 
@@ -3051,7 +3050,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removePointerMoveEventListener(Function listener, boolean options) {
+    default void removePointerMoveEventListener(Object listener, boolean options) {
         removeEventListener("pointermove", listener, options);
     }
 
@@ -3060,7 +3059,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removePointerMoveEventListener(Function listener) {
+    default void removePointerMoveEventListener(Object listener) {
         removeEventListener("pointermove", listener);
     }
 
@@ -3069,14 +3068,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the onpointerout
      */
-    Function getOnpointerout();
+    Object getOnpointerout();
 
     /**
      * Sets onpointerout.
      *
      * @param onpointerout the onpointerout
      */
-    void setOnpointerout(Function onpointerout);
+    void setOnpointerout(Object onpointerout);
 
     /**
      * Add pointer out event listener.
@@ -3084,7 +3083,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addPointerOutEventListener(Function listener, boolean options) {
+    default void addPointerOutEventListener(Object listener, boolean options) {
         addEventListener("pointerout", listener, options);
     }
 
@@ -3093,7 +3092,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addPointerOutEventListener(Function listener) {
+    default void addPointerOutEventListener(Object listener) {
         addEventListener("pointerout", listener);
     }
 
@@ -3103,7 +3102,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removePointerOutEventListener(Function listener, boolean options) {
+    default void removePointerOutEventListener(Object listener, boolean options) {
         removeEventListener("pointerout", listener, options);
     }
 
@@ -3112,7 +3111,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removePointerOutEventListener(Function listener) {
+    default void removePointerOutEventListener(Object listener) {
         removeEventListener("pointerout", listener);
     }
 
@@ -3121,14 +3120,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the onpointerover
      */
-    Function getOnpointerover();
+    Object getOnpointerover();
 
     /**
      * Sets onpointerover.
      *
      * @param onpointerover the onpointerover
      */
-    void setOnpointerover(Function onpointerover);
+    void setOnpointerover(Object onpointerover);
 
     /**
      * Add pointer over event listener.
@@ -3136,7 +3135,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addPointerOverEventListener(Function listener, boolean options) {
+    default void addPointerOverEventListener(Object listener, boolean options) {
         addEventListener("pointerover", listener, options);
     }
 
@@ -3145,7 +3144,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addPointerOverEventListener(Function listener) {
+    default void addPointerOverEventListener(Object listener) {
         addEventListener("pointerover", listener);
     }
 
@@ -3155,7 +3154,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removePointerOverEventListener(Function listener, boolean options) {
+    default void removePointerOverEventListener(Object listener, boolean options) {
         removeEventListener("pointerover", listener, options);
     }
 
@@ -3164,7 +3163,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removePointerOverEventListener(Function listener) {
+    default void removePointerOverEventListener(Object listener) {
         removeEventListener("pointerover", listener);
     }
 
@@ -3173,14 +3172,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the onpointerup
      */
-    Function getOnpointerup();
+    Object getOnpointerup();
 
     /**
      * Sets onpointerup.
      *
      * @param onpointerup the onpointerup
      */
-    void setOnpointerup(Function onpointerup);
+    void setOnpointerup(Object onpointerup);
 
     /**
      * Add pointer up event listener.
@@ -3188,7 +3187,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addPointerUpEventListener(Function listener, boolean options) {
+    default void addPointerUpEventListener(Object listener, boolean options) {
         addEventListener("pointerup", listener, options);
     }
 
@@ -3197,7 +3196,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addPointerUpEventListener(Function listener) {
+    default void addPointerUpEventListener(Object listener) {
         addEventListener("pointerup", listener);
     }
 
@@ -3207,7 +3206,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removePointerUpEventListener(Function listener, boolean options) {
+    default void removePointerUpEventListener(Object listener, boolean options) {
         removeEventListener("pointerup", listener, options);
     }
 
@@ -3216,7 +3215,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removePointerUpEventListener(Function listener) {
+    default void removePointerUpEventListener(Object listener) {
         removeEventListener("pointerup", listener);
     }
 
@@ -3225,14 +3224,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the onprogress
      */
-    Function getOnprogress();
+    Object getOnprogress();
 
     /**
      * Sets onprogress.
      *
      * @param onprogress the onprogress
      */
-    void setOnprogress(Function onprogress);
+    void setOnprogress(Object onprogress);
 
     /**
      * Add progress event listener.
@@ -3240,7 +3239,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addProgressEventListener(Function listener, boolean options) {
+    default void addProgressEventListener(Object listener, boolean options) {
         addEventListener("progress", listener, options);
     }
 
@@ -3249,7 +3248,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addProgressEventListener(Function listener) {
+    default void addProgressEventListener(Object listener) {
         addEventListener("progress", listener);
     }
 
@@ -3259,7 +3258,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removeProgressEventListener(Function listener, boolean options) {
+    default void removeProgressEventListener(Object listener, boolean options) {
         removeEventListener("progress", listener, options);
     }
 
@@ -3268,7 +3267,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removeProgressEventListener(Function listener) {
+    default void removeProgressEventListener(Object listener) {
         removeEventListener("progress", listener);
     }
 
@@ -3277,14 +3276,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the onratechange
      */
-    Function getOnratechange();
+    Object getOnratechange();
 
     /**
      * Sets onratechange.
      *
      * @param onratechange the onratechange
      */
-    void setOnratechange(Function onratechange);
+    void setOnratechange(Object onratechange);
 
     /**
      * Add rate change event listener.
@@ -3292,7 +3291,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addRateChangeEventListener(Function listener, boolean options) {
+    default void addRateChangeEventListener(Object listener, boolean options) {
         addEventListener("ratechange", listener, options);
     }
 
@@ -3301,7 +3300,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addRateChangeEventListener(Function listener) {
+    default void addRateChangeEventListener(Object listener) {
         addEventListener("ratechange", listener);
     }
 
@@ -3311,7 +3310,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removeRateChangeEventListener(Function listener, boolean options) {
+    default void removeRateChangeEventListener(Object listener, boolean options) {
         removeEventListener("ratechange", listener, options);
     }
 
@@ -3320,7 +3319,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removeRateChangeEventListener(Function listener) {
+    default void removeRateChangeEventListener(Object listener) {
         removeEventListener("ratechange", listener);
     }
 
@@ -3329,14 +3328,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the onreset
      */
-    Function getOnreset();
+    Object getOnreset();
 
     /**
      * Sets onreset.
      *
      * @param onreset the onreset
      */
-    void setOnreset(Function onreset);
+    void setOnreset(Object onreset);
 
     /**
      * Add reset event listener.
@@ -3344,7 +3343,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addResetEventListener(Function listener, boolean options) {
+    default void addResetEventListener(Object listener, boolean options) {
         addEventListener("reset", listener, options);
     }
 
@@ -3353,7 +3352,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addResetEventListener(Function listener) {
+    default void addResetEventListener(Object listener) {
         addEventListener("reset", listener);
     }
 
@@ -3363,7 +3362,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removeResetEventListener(Function listener, boolean options) {
+    default void removeResetEventListener(Object listener, boolean options) {
         removeEventListener("reset", listener, options);
     }
 
@@ -3372,7 +3371,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removeResetEventListener(Function listener) {
+    default void removeResetEventListener(Object listener) {
         removeEventListener("reset", listener);
     }
 
@@ -3381,14 +3380,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the onresize
      */
-    Function getOnresize();
+    Object getOnresize();
 
     /**
      * Sets onresize.
      *
      * @param onresize the onresize
      */
-    void setOnresize(Function onresize);
+    void setOnresize(Object onresize);
 
     /**
      * Add resize event listener.
@@ -3396,7 +3395,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addResizeEventListener(Function listener, boolean options) {
+    default void addResizeEventListener(Object listener, boolean options) {
         addEventListener("resize", listener, options);
     }
 
@@ -3405,7 +3404,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addResizeEventListener(Function listener) {
+    default void addResizeEventListener(Object listener) {
         addEventListener("resize", listener);
     }
 
@@ -3415,7 +3414,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removeResizeEventListener(Function listener, boolean options) {
+    default void removeResizeEventListener(Object listener, boolean options) {
         removeEventListener("resize", listener, options);
     }
 
@@ -3424,7 +3423,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removeResizeEventListener(Function listener) {
+    default void removeResizeEventListener(Object listener) {
         removeEventListener("resize", listener);
     }
 
@@ -3434,14 +3433,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the onscroll
      */
-    Function getOnscroll();
+    Object getOnscroll();
 
     /**
      * Sets onscroll.
      *
      * @param onscroll the onscroll
      */
-    void setOnscroll(Function onscroll);
+    void setOnscroll(Object onscroll);
 
     /**
      * Add scroll event listener.
@@ -3449,7 +3448,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addScrollEventListener(Function listener, boolean options) {
+    default void addScrollEventListener(Object listener, boolean options) {
         addEventListener("scroll", listener, options);
     }
 
@@ -3458,7 +3457,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addScrollEventListener(Function listener) {
+    default void addScrollEventListener(Object listener) {
         addEventListener("scroll", listener);
     }
 
@@ -3468,7 +3467,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removeScrollEventListener(Function listener, boolean options) {
+    default void removeScrollEventListener(Object listener, boolean options) {
         removeEventListener("scroll", listener, options);
     }
 
@@ -3477,7 +3476,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removeScrollEventListener(Function listener) {
+    default void removeScrollEventListener(Object listener) {
         removeEventListener("scroll", listener);
     }
 
@@ -3486,14 +3485,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the onsecuritypolicyviolation
      */
-    Function getOnsecuritypolicyviolation();
+    Object getOnsecuritypolicyviolation();
 
     /**
      * Sets onsecuritypolicyviolation.
      *
      * @param onsecuritypolicyviolation the onsecuritypolicyviolation
      */
-    void setOnsecuritypolicyviolation(Function onsecuritypolicyviolation);
+    void setOnsecuritypolicyviolation(Object onsecuritypolicyviolation);
 
     /**
      * Add security policy violation event listener.
@@ -3501,7 +3500,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addSecurityPolicyViolationEventListener(Function listener, boolean options) {
+    default void addSecurityPolicyViolationEventListener(Object listener, boolean options) {
         addEventListener("securitypolicyviolation", listener, options);
     }
 
@@ -3510,7 +3509,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addSecurityPolicyViolationEventListener(Function listener) {
+    default void addSecurityPolicyViolationEventListener(Object listener) {
         addEventListener("securitypolicyviolation", listener);
     }
 
@@ -3520,7 +3519,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removeSecurityPolicyViolationEventListener(Function listener, boolean options) {
+    default void removeSecurityPolicyViolationEventListener(Object listener, boolean options) {
         removeEventListener("securitypolicyviolation", listener, options);
     }
 
@@ -3529,7 +3528,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removeSecurityPolicyViolationEventListener(Function listener) {
+    default void removeSecurityPolicyViolationEventListener(Object listener) {
         removeEventListener("securitypolicyviolation", listener);
     }
 
@@ -3538,14 +3537,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the onseeked
      */
-    Function getOnseeked();
+    Object getOnseeked();
 
     /**
      * Sets onseeked.
      *
      * @param onseeked the onseeked
      */
-    void setOnseeked(Function onseeked);
+    void setOnseeked(Object onseeked);
 
     /**
      * Add seeked event listener.
@@ -3553,7 +3552,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addSeekedEventListener(Function listener, boolean options) {
+    default void addSeekedEventListener(Object listener, boolean options) {
         addEventListener("seeked", listener, options);
     }
 
@@ -3562,7 +3561,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addSeekedEventListener(Function listener) {
+    default void addSeekedEventListener(Object listener) {
         addEventListener("seeked", listener);
     }
 
@@ -3572,7 +3571,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removeSeekedEventListener(Function listener, boolean options) {
+    default void removeSeekedEventListener(Object listener, boolean options) {
         removeEventListener("seeked", listener, options);
     }
 
@@ -3581,7 +3580,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removeSeekedEventListener(Function listener) {
+    default void removeSeekedEventListener(Object listener) {
         removeEventListener("seeked", listener);
     }
 
@@ -3590,14 +3589,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the onseeking
      */
-    Function getOnseeking();
+    Object getOnseeking();
 
     /**
      * Sets onseeking.
      *
      * @param onseeking the onseeking
      */
-    void setOnseeking(Function onseeking);
+    void setOnseeking(Object onseeking);
 
     /**
      * Add seeking event listener.
@@ -3605,7 +3604,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addSeekingEventListener(Function listener, boolean options) {
+    default void addSeekingEventListener(Object listener, boolean options) {
         addEventListener("seeking", listener, options);
     }
 
@@ -3614,7 +3613,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addSeekingEventListener(Function listener) {
+    default void addSeekingEventListener(Object listener) {
         addEventListener("seeking", listener);
     }
 
@@ -3624,7 +3623,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removeSeekingEventListener(Function listener, boolean options) {
+    default void removeSeekingEventListener(Object listener, boolean options) {
         removeEventListener("seeking", listener, options);
     }
 
@@ -3633,7 +3632,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removeSeekingEventListener(Function listener) {
+    default void removeSeekingEventListener(Object listener) {
         removeEventListener("seeking", listener);
     }
 
@@ -3642,14 +3641,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the onselect
      */
-    Function getOnselect();
+    Object getOnselect();
 
     /**
      * Sets onselect.
      *
      * @param onselect the onselect
      */
-    void setOnselect(Function onselect);
+    void setOnselect(Object onselect);
 
     /**
      * Add select event listener.
@@ -3657,7 +3656,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addSelectEventListener(Function listener, boolean options) {
+    default void addSelectEventListener(Object listener, boolean options) {
         addEventListener("select", listener, options);
     }
 
@@ -3666,7 +3665,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addSelectEventListener(Function listener) {
+    default void addSelectEventListener(Object listener) {
         addEventListener("select", listener);
     }
 
@@ -3676,7 +3675,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removeSelectEventListener(Function listener, boolean options) {
+    default void removeSelectEventListener(Object listener, boolean options) {
         removeEventListener("select", listener, options);
     }
 
@@ -3685,7 +3684,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removeSelectEventListener(Function listener) {
+    default void removeSelectEventListener(Object listener) {
         removeEventListener("select", listener);
     }
 
@@ -3694,14 +3693,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the onselectionchange
      */
-    Function getOnselectionchange();
+    Object getOnselectionchange();
 
     /**
      * Sets onselectionchange.
      *
      * @param onselectionchange the onselectionchange
      */
-    void setOnselectionchange(Function onselectionchange);
+    void setOnselectionchange(Object onselectionchange);
 
     /**
      * Add selection change event listener.
@@ -3709,7 +3708,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addSelectionChangeEventListener(Function listener, boolean options) {
+    default void addSelectionChangeEventListener(Object listener, boolean options) {
         addEventListener("selectionchange", listener, options);
     }
 
@@ -3718,7 +3717,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addSelectionChangeEventListener(Function listener) {
+    default void addSelectionChangeEventListener(Object listener) {
         addEventListener("selectionchange", listener);
     }
 
@@ -3728,7 +3727,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removeSelectionChangeEventListener(Function listener, boolean options) {
+    default void removeSelectionChangeEventListener(Object listener, boolean options) {
         removeEventListener("selectionchange", listener, options);
     }
 
@@ -3737,7 +3736,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removeSelectionChangeEventListener(Function listener) {
+    default void removeSelectionChangeEventListener(Object listener) {
         removeEventListener("selectionchange", listener);
     }
 
@@ -3746,14 +3745,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the onselectstart
      */
-    Function getOnselectstart();
+    Object getOnselectstart();
 
     /**
      * Sets onselectstart.
      *
      * @param onselectstart the onselectstart
      */
-    void setOnselectstart(Function onselectstart);
+    void setOnselectstart(Object onselectstart);
 
     /**
      * Add select start event listener.
@@ -3761,7 +3760,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addSelectStartEventListener(Function listener, boolean options) {
+    default void addSelectStartEventListener(Object listener, boolean options) {
         addEventListener("selectstart", listener, options);
     }
 
@@ -3770,7 +3769,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addSelectStartEventListener(Function listener) {
+    default void addSelectStartEventListener(Object listener) {
         addEventListener("selectstart", listener);
     }
 
@@ -3780,7 +3779,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removeSelectStartEventListener(Function listener, boolean options) {
+    default void removeSelectStartEventListener(Object listener, boolean options) {
         removeEventListener("selectstart", listener, options);
     }
 
@@ -3789,7 +3788,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removeSelectStartEventListener(Function listener) {
+    default void removeSelectStartEventListener(Object listener) {
         removeEventListener("selectstart", listener);
     }
 
@@ -3798,14 +3797,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the onstalled
      */
-    Function getOnstalled();
+    Object getOnstalled();
 
     /**
      * Sets onstalled.
      *
      * @param onstalled the onstalled
      */
-    void setOnstalled(Function onstalled);
+    void setOnstalled(Object onstalled);
 
     /**
      * Add stalled event listener.
@@ -3813,7 +3812,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addStalledEventListener(Function listener, boolean options) {
+    default void addStalledEventListener(Object listener, boolean options) {
         addEventListener("stalled", listener, options);
     }
 
@@ -3822,7 +3821,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addStalledEventListener(Function listener) {
+    default void addStalledEventListener(Object listener) {
         addEventListener("stalled", listener);
     }
 
@@ -3832,7 +3831,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removeStalledEventListener(Function listener, boolean options) {
+    default void removeStalledEventListener(Object listener, boolean options) {
         removeEventListener("stalled", listener, options);
     }
 
@@ -3841,7 +3840,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removeStalledEventListener(Function listener) {
+    default void removeStalledEventListener(Object listener) {
         removeEventListener("stalled", listener);
     }
 
@@ -3850,14 +3849,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the onsubmit
      */
-    Function getOnsubmit();
+    Object getOnsubmit();
 
     /**
      * Sets onsubmit.
      *
      * @param onsubmit the onsubmit
      */
-    void setOnsubmit(Function onsubmit);
+    void setOnsubmit(Object onsubmit);
 
     /**
      * Add submit event listener.
@@ -3865,7 +3864,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addSubmitEventListener(Function listener, boolean options) {
+    default void addSubmitEventListener(Object listener, boolean options) {
         addEventListener("submit", listener, options);
     }
 
@@ -3874,7 +3873,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addSubmitEventListener(Function listener) {
+    default void addSubmitEventListener(Object listener) {
         addEventListener("submit", listener);
     }
 
@@ -3884,7 +3883,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removeSubmitEventListener(Function listener, boolean options) {
+    default void removeSubmitEventListener(Object listener, boolean options) {
         removeEventListener("submit", listener, options);
     }
 
@@ -3893,7 +3892,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removeSubmitEventListener(Function listener) {
+    default void removeSubmitEventListener(Object listener) {
         removeEventListener("submit", listener);
     }
 
@@ -3902,14 +3901,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the onsuspend
      */
-    Function getOnsuspend();
+    Object getOnsuspend();
 
     /**
      * Sets onsuspend.
      *
      * @param onsuspend the onsuspend
      */
-    void setOnsuspend(Function onsuspend);
+    void setOnsuspend(Object onsuspend);
 
     /**
      * Add suspend event listener.
@@ -3917,7 +3916,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addSuspendEventListener(Function listener, boolean options) {
+    default void addSuspendEventListener(Object listener, boolean options) {
         addEventListener("suspend", listener, options);
     }
 
@@ -3926,7 +3925,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addSuspendEventListener(Function listener) {
+    default void addSuspendEventListener(Object listener) {
         addEventListener("suspend", listener);
     }
 
@@ -3936,7 +3935,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removeSuspendEventListener(Function listener, boolean options) {
+    default void removeSuspendEventListener(Object listener, boolean options) {
         removeEventListener("suspend", listener, options);
     }
 
@@ -3945,7 +3944,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removeSuspendEventListener(Function listener) {
+    default void removeSuspendEventListener(Object listener) {
         removeEventListener("suspend", listener);
     }
 
@@ -3954,14 +3953,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the ontimeupdate
      */
-    Function getOntimeupdate();
+    Object getOntimeupdate();
 
     /**
      * Sets ontimeupdate.
      *
      * @param ontimeupdate the ontimeupdate
      */
-    void setOntimeupdate(Function ontimeupdate);
+    void setOntimeupdate(Object ontimeupdate);
 
     /**
      * Add time update event listener.
@@ -3969,7 +3968,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addTimeUpdateEventListener(Function listener, boolean options) {
+    default void addTimeUpdateEventListener(Object listener, boolean options) {
         addEventListener("timeupdate", listener, options);
     }
 
@@ -3978,7 +3977,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addTimeUpdateEventListener(Function listener) {
+    default void addTimeUpdateEventListener(Object listener) {
         addEventListener("timeupdate", listener);
     }
 
@@ -3988,7 +3987,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removeTimeUpdateEventListener(Function listener, boolean options) {
+    default void removeTimeUpdateEventListener(Object listener, boolean options) {
         removeEventListener("timeupdate", listener, options);
     }
 
@@ -3997,7 +3996,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removeTimeUpdateEventListener(Function listener) {
+    default void removeTimeUpdateEventListener(Object listener) {
         removeEventListener("timeupdate", listener);
     }
 
@@ -4006,14 +4005,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the ontoggle
      */
-    Function getOntoggle();
+    Object getOntoggle();
 
     /**
      * Sets ontoggle.
      *
      * @param ontoggle the ontoggle
      */
-    void setOntoggle(Function ontoggle);
+    void setOntoggle(Object ontoggle);
 
     /**
      * Add toggle event listener.
@@ -4021,7 +4020,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addToggleEventListener(Function listener, boolean options) {
+    default void addToggleEventListener(Object listener, boolean options) {
         addEventListener("toggle", listener, options);
     }
 
@@ -4030,7 +4029,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addToggleEventListener(Function listener) {
+    default void addToggleEventListener(Object listener) {
         addEventListener("toggle", listener);
     }
 
@@ -4040,7 +4039,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removeToggleEventListener(Function listener, boolean options) {
+    default void removeToggleEventListener(Object listener, boolean options) {
         removeEventListener("toggle", listener, options);
     }
 
@@ -4049,7 +4048,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removeToggleEventListener(Function listener) {
+    default void removeToggleEventListener(Object listener) {
         removeEventListener("toggle", listener);
     }
 
@@ -4058,14 +4057,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the ontouchcancel
      */
-    Function getOntouchcancel();
+    Object getOntouchcancel();
 
     /**
      * Sets ontouchcancel.
      *
      * @param ontouchcancel the ontouchcancel
      */
-    void setOntouchcancel(Function ontouchcancel);
+    void setOntouchcancel(Object ontouchcancel);
 
     /**
      * Add touch cancel event listener.
@@ -4073,7 +4072,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addTouchCancelEventListener(Function listener, boolean options) {
+    default void addTouchCancelEventListener(Object listener, boolean options) {
         addEventListener("touchcancel", listener, options);
     }
 
@@ -4082,7 +4081,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addTouchCancelEventListener(Function listener) {
+    default void addTouchCancelEventListener(Object listener) {
         addEventListener("touchcancel", listener);
     }
 
@@ -4092,7 +4091,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removeTouchCancelEventListener(Function listener, boolean options) {
+    default void removeTouchCancelEventListener(Object listener, boolean options) {
         removeEventListener("touchcancel", listener, options);
     }
 
@@ -4101,7 +4100,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removeTouchCancelEventListener(Function listener) {
+    default void removeTouchCancelEventListener(Object listener) {
         removeEventListener("touchcancel", listener);
     }
 
@@ -4110,14 +4109,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the ontouchend
      */
-    Function getOntouchend();
+    Object getOntouchend();
 
     /**
      * Sets ontouchend.
      *
      * @param ontouchend the ontouchend
      */
-    void setOntouchend(Function ontouchend);
+    void setOntouchend(Object ontouchend);
 
     /**
      * Add touch end event listener.
@@ -4125,7 +4124,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addTouchEndEventListener(Function listener, boolean options) {
+    default void addTouchEndEventListener(Object listener, boolean options) {
         addEventListener("touchend", listener, options);
     }
 
@@ -4134,7 +4133,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addTouchEndEventListener(Function listener) {
+    default void addTouchEndEventListener(Object listener) {
         addEventListener("touchend", listener);
     }
 
@@ -4144,7 +4143,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removeTouchEndEventListener(Function listener, boolean options) {
+    default void removeTouchEndEventListener(Object listener, boolean options) {
         removeEventListener("touchend", listener, options);
     }
 
@@ -4153,7 +4152,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removeTouchEndEventListener(Function listener) {
+    default void removeTouchEndEventListener(Object listener) {
         removeEventListener("touchend", listener);
     }
 
@@ -4162,14 +4161,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the ontouchmove
      */
-    Function getOntouchmove();
+    Object getOntouchmove();
 
     /**
      * Sets ontouchmove.
      *
      * @param ontouchmove the ontouchmove
      */
-    void setOntouchmove(Function ontouchmove);
+    void setOntouchmove(Object ontouchmove);
 
     /**
      * Add touch move event listener.
@@ -4177,7 +4176,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addTouchMoveEventListener(Function listener, boolean options) {
+    default void addTouchMoveEventListener(Object listener, boolean options) {
         addEventListener("touchmove", listener, options);
     }
 
@@ -4186,7 +4185,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addTouchMoveEventListener(Function listener) {
+    default void addTouchMoveEventListener(Object listener) {
         addEventListener("touchmove", listener);
     }
 
@@ -4196,7 +4195,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removeTouchMoveEventListener(Function listener, boolean options) {
+    default void removeTouchMoveEventListener(Object listener, boolean options) {
         removeEventListener("touchmove", listener, options);
     }
 
@@ -4205,7 +4204,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removeTouchMoveEventListener(Function listener) {
+    default void removeTouchMoveEventListener(Object listener) {
         removeEventListener("touchmove", listener);
     }
 
@@ -4214,14 +4213,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the ontouchstart
      */
-    Function getOntouchstart();
+    Object getOntouchstart();
 
     /**
      * Sets ontouchstart.
      *
      * @param ontouchstart the ontouchstart
      */
-    void setOntouchstart(Function ontouchstart);
+    void setOntouchstart(Object ontouchstart);
 
     /**
      * Add touch start event listener.
@@ -4229,7 +4228,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addTouchStartEventListener(Function listener, boolean options) {
+    default void addTouchStartEventListener(Object listener, boolean options) {
         addEventListener("touchstart", listener, options);
     }
 
@@ -4238,7 +4237,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addTouchStartEventListener(Function listener) {
+    default void addTouchStartEventListener(Object listener) {
         addEventListener("touchstart", listener);
     }
 
@@ -4248,7 +4247,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removeTouchStartEventListener(Function listener, boolean options) {
+    default void removeTouchStartEventListener(Object listener, boolean options) {
         removeEventListener("touchstart", listener, options);
     }
 
@@ -4257,7 +4256,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removeTouchStartEventListener(Function listener) {
+    default void removeTouchStartEventListener(Object listener) {
         removeEventListener("touchstart", listener);
     }
 
@@ -4266,14 +4265,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the ontransitioncancel
      */
-    Function getOntransitioncancel();
+    Object getOntransitioncancel();
 
     /**
      * Sets ontransitioncancel.
      *
      * @param ontransitioncancel the ontransitioncancel
      */
-    void setOntransitioncancel(Function ontransitioncancel);
+    void setOntransitioncancel(Object ontransitioncancel);
 
     /**
      * Add transition cancel event listener.
@@ -4281,7 +4280,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addTransitionCancelEventListener(Function listener, boolean options) {
+    default void addTransitionCancelEventListener(Object listener, boolean options) {
         addEventListener("transitioncancel", listener, options);
     }
 
@@ -4290,7 +4289,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addTransitionCancelEventListener(Function listener) {
+    default void addTransitionCancelEventListener(Object listener) {
         addEventListener("transitioncancel", listener);
     }
 
@@ -4300,7 +4299,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removeTransitionCancelEventListener(Function listener, boolean options) {
+    default void removeTransitionCancelEventListener(Object listener, boolean options) {
         removeEventListener("transitioncancel", listener, options);
     }
 
@@ -4309,7 +4308,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removeTransitionCancelEventListener(Function listener) {
+    default void removeTransitionCancelEventListener(Object listener) {
         removeEventListener("transitioncancel", listener);
     }
 
@@ -4318,14 +4317,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the ontransitionend
      */
-    Function getOntransitionend();
+    Object getOntransitionend();
 
     /**
      * Sets ontransitionend.
      *
      * @param ontransitionend the ontransitionend
      */
-    void setOntransitionend(Function ontransitionend);
+    void setOntransitionend(Object ontransitionend);
 
     /**
      * Add transition end event listener.
@@ -4333,7 +4332,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addTransitionEndEventListener(Function listener, boolean options) {
+    default void addTransitionEndEventListener(Object listener, boolean options) {
         addEventListener("transitionend", listener, options);
     }
 
@@ -4342,7 +4341,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addTransitionEndEventListener(Function listener) {
+    default void addTransitionEndEventListener(Object listener) {
         addEventListener("transitionend", listener);
     }
 
@@ -4352,7 +4351,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removeTransitionEndEventListener(Function listener, boolean options) {
+    default void removeTransitionEndEventListener(Object listener, boolean options) {
         removeEventListener("transitionend", listener, options);
     }
 
@@ -4361,7 +4360,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removeTransitionEndEventListener(Function listener) {
+    default void removeTransitionEndEventListener(Object listener) {
         removeEventListener("transitionend", listener);
     }
 
@@ -4370,14 +4369,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the ontransitionrun
      */
-    Function getOntransitionrun();
+    Object getOntransitionrun();
 
     /**
      * Sets ontransitionrun.
      *
      * @param ontransitionrun the ontransitionrun
      */
-    void setOntransitionrun(Function ontransitionrun);
+    void setOntransitionrun(Object ontransitionrun);
 
     /**
      * Add transition run event listener.
@@ -4385,7 +4384,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addTransitionRunEventListener(Function listener, boolean options) {
+    default void addTransitionRunEventListener(Object listener, boolean options) {
         addEventListener("transitionrun", listener, options);
     }
 
@@ -4394,7 +4393,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addTransitionRunEventListener(Function listener) {
+    default void addTransitionRunEventListener(Object listener) {
         addEventListener("transitionrun", listener);
     }
 
@@ -4404,7 +4403,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removeTransitionRunEventListener(Function listener, boolean options) {
+    default void removeTransitionRunEventListener(Object listener, boolean options) {
         removeEventListener("transitionrun", listener, options);
     }
 
@@ -4413,7 +4412,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removeTransitionRunEventListener(Function listener) {
+    default void removeTransitionRunEventListener(Object listener) {
         removeEventListener("transitionrun", listener);
     }
 
@@ -4422,14 +4421,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the ontransitionstart
      */
-    Function getOntransitionstart();
+    Object getOntransitionstart();
 
     /**
      * Sets ontransitionstart.
      *
      * @param ontransitionstart the ontransitionstart
      */
-    void setOntransitionstart(Function ontransitionstart);
+    void setOntransitionstart(Object ontransitionstart);
 
     /**
      * Add transition start event listener.
@@ -4437,7 +4436,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addTransitionStartEventListener(Function listener, boolean options) {
+    default void addTransitionStartEventListener(Object listener, boolean options) {
         addEventListener("transitionstart", listener, options);
     }
 
@@ -4446,7 +4445,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addTransitionStartEventListener(Function listener) {
+    default void addTransitionStartEventListener(Object listener) {
         addEventListener("transitionstart", listener);
     }
 
@@ -4456,7 +4455,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removeTransitionStartEventListener(Function listener, boolean options) {
+    default void removeTransitionStartEventListener(Object listener, boolean options) {
         removeEventListener("transitionstart", listener, options);
     }
 
@@ -4465,7 +4464,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removeTransitionStartEventListener(Function listener) {
+    default void removeTransitionStartEventListener(Object listener) {
         removeEventListener("transitionstart", listener);
     }
 
@@ -4474,14 +4473,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the onvolumechange
      */
-    Function getOnvolumechange();
+    Object getOnvolumechange();
 
     /**
      * Sets onvolumechange.
      *
      * @param onvolumechange the onvolumechange
      */
-    void setOnvolumechange(Function onvolumechange);
+    void setOnvolumechange(Object onvolumechange);
 
     /**
      * Add volume change event listener.
@@ -4489,7 +4488,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addVolumeChangeEventListener(Function listener, boolean options) {
+    default void addVolumeChangeEventListener(Object listener, boolean options) {
         addEventListener("volumechange", listener, options);
     }
 
@@ -4498,7 +4497,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addVolumeChangeEventListener(Function listener) {
+    default void addVolumeChangeEventListener(Object listener) {
         addEventListener("volumechange", listener);
     }
 
@@ -4508,7 +4507,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removeVolumeChangeEventListener(Function listener, boolean options) {
+    default void removeVolumeChangeEventListener(Object listener, boolean options) {
         removeEventListener("volumechange", listener, options);
     }
 
@@ -4517,7 +4516,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removeVolumeChangeEventListener(Function listener) {
+    default void removeVolumeChangeEventListener(Object listener) {
         removeEventListener("volumechange", listener);
     }
 
@@ -4527,14 +4526,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the onwaiting
      */
-    Function getOnwaiting();
+    Object getOnwaiting();
 
     /**
      * Sets onwaiting.
      *
      * @param onwaiting the onwaiting
      */
-    void setOnwaiting(Function onwaiting);
+    void setOnwaiting(Object onwaiting);
 
     /**
      * Add waiting event listener.
@@ -4542,7 +4541,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addWaitingEventListener(Function listener, boolean options) {
+    default void addWaitingEventListener(Object listener, boolean options) {
         addEventListener("waiting", listener, options);
     }
 
@@ -4551,7 +4550,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addWaitingEventListener(Function listener) {
+    default void addWaitingEventListener(Object listener) {
         addEventListener("waiting", listener);
     }
 
@@ -4561,7 +4560,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removeWaitingEventListener(Function listener, boolean options) {
+    default void removeWaitingEventListener(Object listener, boolean options) {
         removeEventListener("waiting", listener, options);
     }
 
@@ -4570,7 +4569,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removeWaitingEventListener(Function listener) {
+    default void removeWaitingEventListener(Object listener) {
         removeEventListener("waiting", listener);
     }
 
@@ -4579,14 +4578,14 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @return the onwheel
      */
-    Function getOnwheel();
+    Object getOnwheel();
 
     /**
      * Sets onwheel.
      *
      * @param onwheel the onwheel
      */
-    void setOnwheel(Function onwheel);
+    void setOnwheel(Object onwheel);
 
     /**
      * Add wheel event listener.
@@ -4594,7 +4593,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void addWheelEventListener(Function listener, boolean options) {
+    default void addWheelEventListener(Object listener, boolean options) {
         addEventListener("wheel", listener, options);
     }
 
@@ -4603,7 +4602,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void addWheelEventListener(Function listener) {
+    default void addWheelEventListener(Object listener) {
         addEventListener("wheel", listener);
     }
 
@@ -4613,7 +4612,7 @@ public interface GlobalEventHandlers extends EventTarget {
      * @param listener the listener
      * @param options  the options
      */
-    default void removeWheelEventListener(Function listener, boolean options) {
+    default void removeWheelEventListener(Object listener, boolean options) {
         removeEventListener("wheel", listener, options);
     }
 
@@ -4622,7 +4621,7 @@ public interface GlobalEventHandlers extends EventTarget {
      *
      * @param listener the listener
      */
-    default void removeWheelEventListener(Function listener) {
+    default void removeWheelEventListener(Object listener) {
         removeEventListener("wheel", listener);
     }
 }

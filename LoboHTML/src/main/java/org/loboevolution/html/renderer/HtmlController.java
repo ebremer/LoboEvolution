@@ -34,16 +34,9 @@ import org.loboevolution.gui.HtmlRendererContext;
 import org.loboevolution.html.dom.domimpl.*;
 import org.loboevolution.html.node.ModelNode;
 import org.loboevolution.html.dom.nodeimpl.NodeImpl;
-import org.loboevolution.html.js.Executor;
 import org.loboevolution.html.js.WindowImpl;
 import org.loboevolution.html.js.events.EventImpl;
 import org.loboevolution.html.js.events.MouseEventImpl;
-import org.loboevolution.js.JavaScript;
-import org.loboevolution.js.LoboContextFactory;
-import org.mozilla.javascript.Context;
-import org.mozilla.javascript.Function;
-import org.mozilla.javascript.Scriptable;
-import org.mozilla.javascript.ScriptableObject;
 import java.awt.event.MouseEvent;
 
 /**
@@ -63,7 +56,7 @@ public class HtmlController {
 	 */
 	public boolean onChange(final ModelNode node) {
 		if (node instanceof HTMLSelectElementImpl uiElement) {
-            final Function f = uiElement.getOnchange();
+            final Object f = uiElement.getOnchange();
 			if (f != null) {
 				final EventImpl evt = new EventImpl();
 				evt.initEvent("change", false, false);
@@ -86,7 +79,7 @@ public class HtmlController {
 	 */
 	public boolean onContextMenu(final ModelNode node, final MouseEvent event, final int x, final int y) {
 		if (node instanceof HTMLElementImpl uiElement) {
-            final Function f = uiElement.getOncontextmenu();
+            final Object f = uiElement.getOncontextmenu();
 			if (f != null) {
 				final MouseEventImpl evt = new MouseEventImpl(event);
 				evt.initMouseEvent("contextmenu", false, false, null, 0, 0, 0,
@@ -119,7 +112,7 @@ public class HtmlController {
 	 */
 	public boolean onDoubleClick(final ModelNode node, final MouseEvent event, final int x, final int y) {
 		if (node instanceof HTMLElementImpl uiElement) {
-            final Function f = uiElement.getOndblclick();
+            final Object f = uiElement.getOndblclick();
 			if (f != null) {
 				final MouseEventImpl evt = new MouseEventImpl(event);
 				evt.initMouseEvent("dblclick", false, false, null, 0, 0,
@@ -158,7 +151,7 @@ public class HtmlController {
 	 */
 	public boolean onMouseClick(final ModelNode node, final MouseEvent event, final int x, final int y) {
 		if (node instanceof HTMLElementImpl uiElement) {
-			final Function f = uiElement.getOnclick();
+			final Object f = uiElement.getOnclick();
 			if (f != null) {
 				final MouseEventImpl evt = new MouseEventImpl(event);
 				evt.initMouseEvent("click", true, true, null, 0, 0, 0,
@@ -224,7 +217,7 @@ public class HtmlController {
 	public boolean onMouseDown(final ModelNode node, final MouseEvent event, final int x, final int y) {
 
 		if (node instanceof HTMLElementImpl uiElement) {
-            final Function f = uiElement.getOnmousedown();
+            final Object f = uiElement.getOnmousedown();
 			if (f != null) {
 				final MouseEventImpl evt = new MouseEventImpl(event);
 				evt.initMouseEvent("mousedown", false, false, null, 0, 0, 0,
@@ -263,7 +256,7 @@ public class HtmlController {
 			}
 			if (node instanceof HTMLElementImpl uiElement) {
                 uiElement.setMouseOver(false);
-				final Function f = uiElement.getOnmouseout();
+				final Object f = uiElement.getOnmouseout();
 				if (f != null) {
 					final MouseEventImpl evt = new MouseEventImpl(event);
 					evt.initMouseEvent("mouseout", false, false, null, 0, 0,
@@ -289,7 +282,7 @@ public class HtmlController {
 		while (node != null) {
 			if (node instanceof HTMLElementImpl uiElement) {
                 uiElement.setMouseOver(true);
-				final Function f = uiElement.getOnmousemove();
+				final Object f = uiElement.getOnmousemove();
 				if (f != null) {
 					final MouseEventImpl evt = new MouseEventImpl(event);
 					evt.initMouseEvent("mousemove", false, false, null, 0,
@@ -318,7 +311,7 @@ public class HtmlController {
 			}
 			if (node instanceof HTMLElementImpl uiElement) {
                 uiElement.setMouseOver(true);
-				final Function f = uiElement.getOnmouseover();
+				final Object f = uiElement.getOnmouseover();
 				if (f != null) {
 					final MouseEventImpl evt = new MouseEventImpl(event);
 					evt.initMouseEvent("mouseover", false, false, null, 0,
@@ -336,7 +329,7 @@ public class HtmlController {
 	 */
 	public void onMouseScroll(final ModelNode node) {
 		if (node instanceof HTMLElementImpl uiElement) {
-            final Function f = uiElement.getOnscroll();
+            final Object f = uiElement.getOnscroll();
 			final MouseEventImpl evt = new MouseEventImpl();
 			evt.initMouseEvent("scroll", false, false, null, 0, 0, 0,
 					0, 0, true, true, true, true, 0, uiElement);
@@ -355,7 +348,7 @@ public class HtmlController {
 	 */
 	public boolean onMouseUp(final ModelNode node, final MouseEvent event, final int x, final int y) {
 		if (node instanceof HTMLElementImpl uiElement) {
-            final Function f = uiElement.getOnmouseup();
+            final Object f = uiElement.getOnmouseup();
 			if (f != null) {
 				final MouseEventImpl evt = new MouseEventImpl(event);
 				evt.initMouseEvent("mouseup", false, false, null, 0, 0, 0,
@@ -388,7 +381,7 @@ public class HtmlController {
 	public boolean onPressed(final ModelNode node, final MouseEvent event, final int x, final int y) {
 
 		if (node instanceof HTMLElementImpl uiElement) {
-            final Function f = uiElement.getOnclick();
+            final Object f = uiElement.getOnclick();
 			if (f != null) {
 				final MouseEventImpl evt = new MouseEventImpl(event);
 				evt.initMouseEvent("click", false, false, null, 0, 0, 0,
@@ -417,22 +410,25 @@ public class HtmlController {
 		return false;
 	}
 
-	public boolean execute(final NodeImpl node, final Function f, Event evt) {
-		WindowImpl win = getWindow(node);
-		LoboContextFactory contextFactory = win.getContextFactory();
-		try (Context ctx = contextFactory.enterContext()) {
-			Scriptable windowScope = win.getWindowScope(ctx);
-			final Object eventJSObj = JavaScript.getInstance().getJavascriptObject(evt, windowScope);
-			ScriptableObject.putProperty(windowScope, "event", eventJSObj);
-			if (!Executor.executeFunction(node, f, new Object[0], contextFactory)) {
-				return false;
-			}
+	public boolean execute(final NodeImpl node, final Object handler, Event evt) {
+		if (handler == null) return true;
+		final HTMLDocumentImpl doc = (HTMLDocumentImpl) node.getOwnerDocument();
+		if (doc == null) return true;
+		final WindowImpl win = (WindowImpl) doc.getDefaultView();
+		if (win == null) return true;
+		final org.loboevolution.html.js.engine.JsEngine engine =
+				org.loboevolution.html.js.engine.JsEngineFactory.forDocument(doc, win);
+		// Preserve the long-standing convenience that legacy attribute
+		// handlers can read `event` as a global; modern listeners receive it
+		// as the call argument.
+		engine.putGlobal("event", evt);
+		try {
+			final Object result = engine.call(handler, evt);
+			if (result instanceof Boolean b) return b;
+		} catch (final Throwable err) {
+			// Fall through — the script crashed but we don't want to abort
+			// the dispatch chain on its account.
 		}
 		return true;
-	}
-
-	private WindowImpl getWindow(final NodeImpl e) {
-		final HTMLDocumentImpl doc = (HTMLDocumentImpl) e.getOwnerDocument();
-		return (WindowImpl) doc.getDefaultView();
 	}
 }

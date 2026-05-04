@@ -63,7 +63,6 @@ import org.loboevolution.js.webstorage.Storage;
 import org.loboevolution.traversal.NodeFilter;
 import org.loboevolution.views.DocumentView;
 import org.loboevolution.http.UserAgentContext;
-import org.mozilla.javascript.*;
 import org.w3c.dom.events.EventException;
 
 import javax.swing.Timer;
@@ -128,18 +127,12 @@ public class WindowImpl extends WindowEventHandlersImpl implements Window, Proxy
 
 	private ScreenImpl screen;
 
-	private Scriptable windowScope;
-
 	@Getter
 	private final UserAgentContext uaContext;
 
 	@Getter
 	private final HtmlRendererConfig config;
 
-	@Getter
-	private LoboContextFactory contextFactory;
-
-	/** Lazily-initialised so Rhino-mode runs that never load polyglot still work. */
 	private DynamicMembers proxyMembers;
 
 	/**
@@ -153,7 +146,6 @@ public class WindowImpl extends WindowEventHandlersImpl implements Window, Proxy
 		this.rcontext = rcontext;
 		this.uaContext = uaContext;
 		this.config = config;
-		this.contextFactory = new LoboContextFactory();
 	}
 
 	private DynamicMembers proxy() {
@@ -213,21 +205,19 @@ public class WindowImpl extends WindowEventHandlersImpl implements Window, Proxy
 	public void setDocument(final HTMLDocumentImpl document) {
 		final HTMLDocumentImpl prevDocument = this.document;
 		if (prevDocument != document) {
-			try (Context ctx = contextFactory.enterContext()) {
-				final Function onunload = getOnunload();
-				if (onunload != null) {
-					Executor.executeFunction(this.getWindowScope(ctx), onunload, contextFactory);
-					setOnunload(null);
+			final Object onunload = getOnunload();
+			if (onunload != null && prevDocument != null) {
+				try {
+					org.loboevolution.html.js.engine.JsEngineFactory
+							.forDocument(prevDocument, this)
+							.call(onunload);
+				} catch (final Throwable ignored) {
+					// onunload handlers are best-effort.
 				}
-
-				if (prevDocument != null) {
-					this.clearState();
-				}
-				this.forgetAllTasks();
-				this.initWindowScope(document);
-				document.setUserData(Executor.SCOPE_KEY, getWindowScope(ctx), null);
-				this.document = document;
+				setOnunload(null);
 			}
+			this.forgetAllTasks();
+			this.document = document;
 		}
 	}
 
@@ -305,25 +295,6 @@ public class WindowImpl extends WindowEventHandlersImpl implements Window, Proxy
 				findChild(nde, find);
 			}
 		});
-	}
-
-	/**
-	 * <p>Getter for the field windowScope.</p>
-	 *
-	 * @param context a {@link Context} object.
-	 * @return a {@link org.mozilla.javascript.Scriptable} object.
-	 */
-	public Scriptable getWindowScope(Context context) {
-		synchronized (this) {
-			Scriptable windowScope = this.windowScope;
-			if (windowScope != null) {
-				return windowScope;
-			}
-			windowScope = (Scriptable) JavaScript.getInstance().getJavascriptObject(this, null);
-			windowScope = context.initSafeStandardObjects((ScriptableObject) windowScope);
-			this.windowScope = windowScope;
-			return windowScope;
-		}
 	}
 
 	/**
@@ -524,11 +495,10 @@ public class WindowImpl extends WindowEventHandlersImpl implements Window, Proxy
 
 	/** {@inheritDoc} */
 	@Override
-	public Function getOnload() {
+	public Object getOnload() {
 		final HTMLDocumentImpl doc = this.document;
 		if (doc != null) {
-			final Object handler = doc.getOnloadHandler();
-			return handler instanceof Function f ? f : null;
+			return doc.getOnloadHandler();
 		} else {
 			return null;
 		}
@@ -719,12 +689,9 @@ public class WindowImpl extends WindowEventHandlersImpl implements Window, Proxy
 		final Integer timeIDInt = timeID;
 		ActionListener task = null;
 
-		if(aFunction instanceof Function function){
-            task = new FunctionTimerTask(this, timeIDInt, function, false);
-		} else if(aFunction instanceof String aExpression){
+		if (aFunction instanceof String aExpression) {
             task = new ExpressionTimerTask(this, timeIDInt, aExpression, false);
 		} else if (aFunction != null) {
-			// Engine-agnostic callback (e.g. a GraalJS polyglot Value)
 			task = new CallableTimerTask(this, timeIDInt, aFunction, false);
 		}
 
@@ -766,7 +733,7 @@ public class WindowImpl extends WindowEventHandlersImpl implements Window, Proxy
 
 	/** {@inheritDoc} */
 	@Override
-	public void setOnload(final Function onload) {
+	public void setOnload(final Object onload) {
 		final HTMLDocumentImpl doc = this.document;
 		if (doc != null) {
 			doc.setOnloadHandler(onload);
@@ -812,12 +779,9 @@ public class WindowImpl extends WindowEventHandlersImpl implements Window, Proxy
 		final Integer timeIDInt = timeID;
 		ActionListener task = null;
 
-		if(function instanceof Function fun) {
-            task = new FunctionTimerTask(this, timeIDInt, fun, true);
-		} else if(function instanceof String expr){
+		if (function instanceof String expr) {
             task = new ExpressionTimerTask(this, timeIDInt, expr, true);
 		} else if (function != null) {
-			// Engine-agnostic callback (e.g. a GraalJS polyglot Value)
 			task = new CallableTimerTask(this, timeIDInt, function, true);
 		}
 
@@ -833,13 +797,13 @@ public class WindowImpl extends WindowEventHandlersImpl implements Window, Proxy
 
 	/** {@inheritDoc} */
 	@Override
-	public void addEventListener(final String type, final Function listener) {
+	public void addEventListener(final String type, final Object listener) {
 		addEventListener(type, listener, false);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void addEventListener(final String type, final Function listener, final boolean useCapture) {
+	public void addEventListener(final String type, final Object listener, final boolean useCapture) {
 		final HTMLDocumentImpl doc = (HTMLDocumentImpl) this.getDocument();
 		if (doc != null) {
 			doc.addEventListener(type, listener, useCapture);
@@ -858,13 +822,13 @@ public class WindowImpl extends WindowEventHandlersImpl implements Window, Proxy
 
 	/** {@inheritDoc} */
 	@Override
-	public void removeEventListener(final String type, final Function listener) {
+	public void removeEventListener(final String type, final Object listener) {
 		removeEventListener(type, listener, false);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void removeEventListener(final String type, final Function listener, final boolean useCapture) {
+	public void removeEventListener(final String type, final Object listener, final boolean useCapture) {
 		final HTMLDocumentImpl doc = (HTMLDocumentImpl) this.getDocument();
 		if (doc != null) {
 			doc.removeEventListener(type, listener, useCapture);
@@ -1260,142 +1224,6 @@ public class WindowImpl extends WindowEventHandlersImpl implements Window, Proxy
 		return this;
 	}
 
-	private void initWindowScope(final Document doc) {
-		try (Context cx = contextFactory.enterContext()) {
-			final Scriptable ws = this.getWindowScope(cx);
-			setScope(doc, ws);
-		}
-	}
-
-	private void setScope(final Document doc, Scriptable ws) {
-		final JavaScript js = JavaScript.getInstance();
-		final JavaInstantiator jiInputEvent = InputEventImpl::new;
-		final JavaInstantiator jiUIEvent = UIEventImpl::new;
-		final JavaInstantiator jiEvent = EventImpl::new;
-		final JavaInstantiator jiSubmitEvent = SubmitEventImpl::new;
-		final JavaInstantiator jiMouseEvent = MouseEventImpl::new;
-		final JavaInstantiator jiWheelEvent = WheelEventImpl::new;
-		final JavaInstantiator jiKeyboardEvent = KeyboardEventImpl::new;
-		final JavaInstantiator jiAnimationEvent = AnimationEventImpl::new;
-		final JavaInstantiator jiMessageEvent = MessageEventImpl::new;
-		final JavaInstantiator jiMutationEvent = MutationEventImpl::new;
-		final JavaInstantiator jiCustomEvent = CustomEventImpl::new;
-		final JavaInstantiator jiCloseEvent = CloseEventImpl::new;
-		final JavaInstantiator jiCompositionEvent = CompositionEventImpl::new;
-		final JavaInstantiator jiPointerEvent = PointerEventImpl::new;
-		final JavaInstantiator jiPopStateEvent = PopStateEventImpl::new;
-		final JavaInstantiator jiProgressEvent = ProgressEventImpl::new;
-		final JavaInstantiator jiFocusEvent = FocusEventImpl::new;
-		final JavaInstantiator jiBeforeInstallPromptEvent = BeforeInstallPromptEventImpl::new;
-		final JavaInstantiator jiBeforeUnloadEvent = BeforeUnloadEventImpl::new;
-		final JavaInstantiator jiBlobEvent = BlobEventImpl::new;
-		final JavaInstantiator jiTransitionEvent = TransitionEventImpl::new;
-		final JavaInstantiator jiDragEvent = DragEventImpl::new;
-		final JavaInstantiator jiGamepadEvent = GamepadEventimpl::new;
-		final JavaInstantiator jiAudioProcessingEvent = AudioProcessingEventImpl::new;
-		final JavaInstantiator jiTouchEvent = TouchEventImpl::new;
-		final JavaInstantiator jiDeviceMotionEvent = DeviceMotionEventImpl::new;
-		final JavaInstantiator jiDeviceOrientationEvent = DeviceOrientationEventImpl::new;
-		final JavaInstantiator jiHashChangeEvent = HashChangeEventImpl::new;
-		final JavaInstantiator jiPageTransitionEvent = PageTransitionEventImpl::new;
-		final JavaInstantiator jiStorageEvent = StorageEventImpl::new;
-		final JavaInstantiator jiTrackEvent = TrackEventImpl::new;
-		final JavaInstantiator jiErrorEvent = ErrorEventImpl::new;
-
-		final JavaInstantiator jiXTarget = (args) -> new XMLHttpRequestEventTargetImpl(document);
-		final JavaInstantiator jiXUpload = (args) -> new XMLHttpRequestUploadImpl(document);
-		final JavaInstantiator jiXhttp = (args) -> new XMLHttpRequestImpl(document, ws, this);
-		final JavaInstantiator jiDomp = (args) -> new DOMParserImpl(document);
-		final JavaInstantiator jiform = (args) -> new FormDataImpl(document);
-		final JavaInstantiator jiloc = (args) -> new LocalStorage(this);
-		final JavaInstantiator jiElement = (args) -> new ElementImpl("");
-		final JavaInstantiator jiXSeralizer = (args) -> new XMLSerializerImpl();
-		final JavaInstantiator jiXPath = (args) -> new XPathResultImpl();
-		final JavaInstantiator jiXMLDocument = (args) -> new XMLDocument();
-		final JavaInstantiator jiText = (args) -> new TextImpl();
-		final JavaInstantiator jiAudioContext = (args) -> new AudioContextImpl();
-		final JavaInstantiator jiBlob = (args) -> new BlobImpl();
-		final JavaInstantiator jiImageData = (args) -> new ImageDataImpl();
-		final JavaInstantiator jiMutationObserver = org.loboevolution.html.js.observer.MutationObserverImpl::new;
-		final JavaInstantiator jiIntersectionObserver = org.loboevolution.html.js.observer.IntersectionObserverImpl::new;
-		final JavaInstantiator jiResizeObserver = org.loboevolution.html.js.observer.ResizeObserverImpl::new;
-
-
-		js.defineJsObject(ws, "Event", EventImpl.class, jiEvent);
-		js.defineJsObject(ws, "UIEvent", UIEventImpl.class, jiUIEvent);
-		js.defineJsObject(ws, "InputEvent", InputEventImpl.class, jiInputEvent);
-		js.defineJsObject(ws, "MouseEvent", MouseEventImpl.class, jiMouseEvent);
-		js.defineJsObject(ws, "WheelEvent", WheelEventImpl.class, jiWheelEvent);
-		js.defineJsObject(ws, "SubmitEvent", SubmitEventImpl.class, jiSubmitEvent);
-		js.defineJsObject(ws, "KeyboardEvent", KeyboardEventImpl.class, jiKeyboardEvent);
-		js.defineJsObject(ws, "AnimationEvent", AnimationEventImpl.class, jiAnimationEvent);
-		js.defineJsObject(ws, "MessageEvent", MessageEventImpl.class, jiMessageEvent);
-		js.defineJsObject(ws, "MutationEvent", MutationEventImpl.class, jiMutationEvent);
-		js.defineJsObject(ws, "CustomEvent", CustomEventImpl.class, jiCustomEvent);
-		js.defineJsObject(ws, "CloseEvent", CloseEventImpl.class, jiCloseEvent);
-		js.defineJsObject(ws, "CompositionEvent", CompositionEventImpl.class, jiCompositionEvent);
-		js.defineJsObject(ws, "PointerEvent", PointerEventImpl.class, jiPointerEvent);
-		js.defineJsObject(ws, "PopStateEvent", PopStateEventImpl.class, jiPopStateEvent);
-		js.defineJsObject(ws, "ProgressEvent", ProgressEventImpl.class, jiProgressEvent);
-		js.defineJsObject(ws, "FocusEvent", FocusEventImpl.class, jiFocusEvent);
-		js.defineJsObject(ws, "BeforeInstallPromptEvent", BeforeInstallPromptEventImpl.class, jiBeforeInstallPromptEvent);
-		js.defineJsObject(ws, "BeforeUnloadEvent", BeforeUnloadEventImpl.class, jiBeforeUnloadEvent);
-		js.defineJsObject(ws, "BlobEvent", BlobEventImpl.class, jiBlobEvent);
-		js.defineJsObject(ws, "TransitionEvent", TransitionEventImpl.class, jiTransitionEvent);
-		js.defineJsObject(ws, "DragEvent", DragEventImpl.class, jiDragEvent);
-		js.defineJsObject(ws, "GamepadEvent", GamepadEventimpl.class, jiGamepadEvent);
-		js.defineJsObject(ws, "AudioProcessingEvent", AudioProcessingEventImpl.class, jiAudioProcessingEvent);
-		js.defineJsObject(ws, "TouchEvent", TouchEventImpl.class, jiTouchEvent);
-		js.defineJsObject(ws, "DeviceMotionEvent", DeviceMotionEventImpl.class, jiDeviceMotionEvent);
-		js.defineJsObject(ws, "DeviceOrientationEvent", DeviceOrientationEventImpl.class, jiDeviceOrientationEvent);
-		js.defineJsObject(ws, "HashChangeEvent", HashChangeEventImpl.class, jiHashChangeEvent);
-		js.defineJsObject(ws, "PageTransitionEvent", PageTransitionEventImpl.class, jiPageTransitionEvent);
-		js.defineJsObject(ws, "StorageEvent", StorageEventImpl.class, jiStorageEvent);
-		js.defineJsObject(ws, "TrackEvent", TrackEventImpl.class, jiTrackEvent);
-		js.defineJsObject(ws, "ErrorEvent", ErrorEventImpl.class, jiErrorEvent);
-
-		js.defineJsObject(ws, "XMLHttpRequestEventTarget", XMLHttpRequestEventTargetImpl.class, jiXTarget);
-		js.defineJsObject(ws, "XMLHttpRequestUpload", XMLHttpRequestUploadImpl.class, jiXUpload);
-		js.defineJsObject(ws, "XMLHttpRequest", XMLHttpRequestImpl.class, jiXhttp);
-		js.defineJsObject(ws, "DOMParser", DOMParserImpl.class, jiDomp);
-		js.defineJsObject(ws, "InputEvent", InputEventImpl.class, jiInputEvent);
-		js.defineJsObject(ws, "FormData", FormDataImpl.class, jiform);
-		js.defineJsObject(ws, "LocalStorage", LocalStorage.class, jiloc);
-		js.defineJsObject(ws, "XMLSerializer", XMLSerializerImpl.class, jiXSeralizer);
-		js.defineJsObject(ws, "XPathResult", XPathResultImpl.class, jiXPath);
-		js.defineJsObject(ws, "XMLDocument", XMLDocument.class, jiXMLDocument);
-		js.defineJsObject(ws, "Element", ElementImpl.class, jiElement);
-		js.defineJsObject(ws, "Text", TextImpl.class, jiText);
-		js.defineJsObject(ws, "AudioContext", AudioContextImpl.class, jiAudioContext);
-		js.defineJsObject(ws, "Blob", BlobImpl.class, jiBlob);
-		js.defineJsObject(ws, "ImageData", ImageDataImpl.class, jiImageData);
-		js.defineJsObject(ws, "MutationObserver", org.loboevolution.html.js.observer.MutationObserverImpl.class, jiMutationObserver);
-		js.defineJsObject(ws, "IntersectionObserver", org.loboevolution.html.js.observer.IntersectionObserverImpl.class, jiIntersectionObserver);
-		js.defineJsObject(ws, "ResizeObserver", org.loboevolution.html.js.observer.ResizeObserverImpl.class, jiResizeObserver);
-
-		js.defineElementClass(ws, doc, "Comment", "comment", CommentImpl.class);
-		js.defineElementClass(ws, doc, "Image", "img", HTMLImageElementImpl.class);
-		js.defineElementClass(ws, doc, "Script", "script", HTMLScriptElementImpl.class);
-		js.defineElementClass(ws, doc, "IFrame", "iframe", HTMLIFrameElementImpl.class);
-		js.defineElementClass(ws, doc, "Option", "option", HTMLOptionElementImpl.class);
-		js.defineElementClass(ws, doc, "Select", "select", HTMLSelectElementImpl.class);
-		js.defineElementClass(ws, doc, "HTMLDivElement", "div", HTMLDivElementImpl.class);
-		js.defineElementClass(ws, doc, "HTMLElement", "html", HTMLElementImpl.class);
-		js.defineElementClass(ws, doc, "NodeFilter", "NodeFilter", NodeFilterImpl.class);
-		js.defineElementClass(ws, doc, "HTMLDialogElement", "HTMLDialogElement", HTMLDialogElementImpl.class);
-		js.defineElementClass(ws, doc, "HTMLDocument", "HTMLDocument", HTMLDocumentImpl.class);
-		js.defineElementClass(ws, doc, "HTMLBaseElement", "HTMLBaseElement", HTMLBaseElementImpl.class);
-		js.defineElementClass(ws, doc, "HTMLAllCollection", "HTMLAllCollection", HTMLAllCollectionImpl.class);
-		js.defineElementClass(ws, doc, "HTMLAnchorElement", "HTMLAnchorElement", HTMLAnchorElementImpl.class);
-		js.defineElementClass(ws, doc, "HTMLBodyElement", "HTMLBodyElement", HTMLBodyElementImpl.class);
-		js.defineElementClass(ws, doc, "HTMLHtmlElement", "HTMLHtmlElement", HTMLHtmlElementImpl.class);
-		js.defineElementClass(ws, doc, "HTMLVideoElement", "HTMLVideoElement", HTMLVideoElementImpl.class);
-		js.defineElementClass(ws, doc, "Node", "Node", NodeImpl.class);
-		js.defineElementClass(ws, doc, "Range", "Range", RangeImpl.class);
-
-
-
-	}
 
 	private void forgetAllTasks() {
 		TaskWrapper[] oldTaskWrappers = null;
@@ -1409,22 +1237,6 @@ public class WindowImpl extends WindowEventHandlersImpl implements Window, Proxy
 		if (oldTaskWrappers != null) {
 			for (final TaskWrapper taskWrapper : oldTaskWrappers) {
 				taskWrapper.timer.stop();
-			}
-		}
-	}
-
-	private void clearState() {
-		try (final Context cx = contextFactory.enterContext()) {
-			final Scriptable s = this.getWindowScope(cx);
-			if (s != null) {
-				final Object[] ids = s.getIds();
-				for (final Object id : ids) {
-					if (id instanceof String) {
-						s.delete((String) id);
-					} else if (id instanceof Integer) {
-						s.delete((Integer) id);
-					}
-				}
 			}
 		}
 	}

@@ -26,12 +26,12 @@
 
 package org.loboevolution.html.js.events;
 
+import java.util.Map;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.htmlunit.cssparser.dom.DOMException;
 import org.loboevolution.audio.AudioBuffer;
 import org.loboevolution.events.AudioProcessingEvent;
-import org.mozilla.javascript.NativeObject;
 
 /**
  * AudioProcessingEventImpl class.
@@ -57,7 +57,7 @@ public class AudioProcessingEventImpl extends UIEventImpl implements AudioProces
         }
 
         if (params.length < 3) {
-            if (params[1] != null && params[1] instanceof NativeObject obj) {
+            if (params[1] != null && params[1] instanceof Map<?,?> obj) {
                 this.inputBuffer = (AudioBuffer) obj.get("inputBuffer");
                 this.outputBuffer = (AudioBuffer) obj.get("cancelaoutputBufferle");
                 this.playbackTime = (Double) obj.get("playbackTime");

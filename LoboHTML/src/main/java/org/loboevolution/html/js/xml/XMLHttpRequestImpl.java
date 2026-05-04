@@ -30,15 +30,11 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.loboevolution.html.dom.domimpl.HTMLDocumentImpl;
-import org.loboevolution.html.js.Executor;
 import org.loboevolution.html.js.WindowImpl;
 import org.loboevolution.http.HttpRequest;
 import org.loboevolution.js.Window;
 import org.loboevolution.js.xml.XMLHttpRequest;
 import org.loboevolution.js.xml.XMLHttpRequestUpload;
-import org.mozilla.javascript.Context;
-import org.mozilla.javascript.Function;
-import org.mozilla.javascript.Scriptable;
 
 import java.net.Proxy;
 
@@ -52,25 +48,20 @@ public class XMLHttpRequestImpl extends HttpRequest implements XMLHttpRequest {
 
     private int timeout = 0;
     private boolean listenerAdded = false;
-    private final Scriptable scriptable;
     private final WindowImpl window;
 
-    /**
-     * <p>Constructor for XMLHttpRequestImpl.</p>
-     */
-    public XMLHttpRequestImpl(HTMLDocumentImpl document, Scriptable scriptable, Window window) {
+    public XMLHttpRequestImpl(HTMLDocumentImpl document, Window window) {
         super(Proxy.NO_PROXY, document.getDocumentURI());
-        this.scriptable = scriptable;
         this.window = (WindowImpl) window;
     }
 
     @Override
-    public Function getOnreadystatechange() {
-        return getFunction(this, "readystatechange");
+    public Object getOnreadystatechange() {
+        return getCallable(this, "readystatechange");
     }
 
     @Override
-    public void setOnreadystatechange(final Function readystatechange) {
+    public void setOnreadystatechange(final Object readystatechange) {
         synchronized (this) {
             if (readystatechange != null && !this.listenerAdded) {
                 addEventListener("readystatechange", readystatechange);
@@ -81,13 +72,14 @@ public class XMLHttpRequestImpl extends HttpRequest implements XMLHttpRequest {
     }
 
     private void executeReadyStateChange() {
-        final Function f = getOnreadystatechange();
-        if (f != null) {
-            try (Context ctx = Executor.createContext(window.getContextFactory())) {
-                f.call(ctx, scriptable, scriptable, new Object[0]);
-            } catch (final Exception err) {
-                log.error("Error processing ready state change.", err);
-            }
+        final Object handler = getOnreadystatechange();
+        if (handler == null) return;
+        try {
+            org.loboevolution.html.js.engine.JsEngineFactory
+                    .forDocument(window.getDocumentNode(), window)
+                    .call(handler);
+        } catch (final Exception err) {
+            log.error("Error processing ready state change.", err);
         }
     }
 

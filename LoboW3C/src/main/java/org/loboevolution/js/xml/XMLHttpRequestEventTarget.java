@@ -26,35 +26,34 @@
 package org.loboevolution.js.xml;
 
 import org.loboevolution.events.EventTarget;
-import org.mozilla.javascript.Function;
 
 public interface XMLHttpRequestEventTarget extends EventTarget {
 
-    Function getOnloadstart();
+    Object getOnloadstart();
 
-    Function getOnprogress();
+    Object getOnprogress();
 
-    Function getOnabort();
+    Object getOnabort();
 
-    Function getOnerror();
+    Object getOnerror();
 
-    Function getOnload();
+    Object getOnload();
 
-    Function getOntimeout();
+    Object getOntimeout();
 
-    Function getOnloadend();
+    Object getOnloadend();
 
-    void setOntimeout(Function ontimeout);
+    void setOntimeout(Object ontimeout);
 
-    void setOnload(Function onload);
+    void setOnload(Object onload);
 
-    void setOnerror(Function onerror);
+    void setOnerror(Object onerror);
 
-    void setOnabort(Function onabort);
+    void setOnabort(Object onabort);
 
-    void setOnloadstart(Function onloadstart);
+    void setOnloadstart(Object onloadstart);
 
-    void setOnprogress(Function onprogress);
+    void setOnprogress(Object onprogress);
 
-    void setOnloadend(Function onloadend);
+    void setOnloadend(Object onloadend);
 }

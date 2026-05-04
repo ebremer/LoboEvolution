@@ -37,7 +37,6 @@ import org.loboevolution.html.node.DocumentType;
 import org.loboevolution.html.node.Node;
 import org.loboevolution.html.renderstate.BodyRenderState;
 import org.loboevolution.html.renderstate.RenderState;
-import org.mozilla.javascript.Function;
 
 /**
  * <p>HTMLBodyElementImpl class.</p>
@@ -94,19 +93,11 @@ public class HTMLBodyElementImpl extends HTMLElementImpl implements HTMLBodyElem
 		return getAttribute("link");
 	}
 
-	/**
-	 * <p>getOnload.</p>
-	 *
-	 * @return a {@link org.mozilla.javascript.Function} object.
-	 */
-	public Function getOnload() {
-		final Object document = this.document;
-		if (document instanceof HTMLDocument) {
-			final Object handler = ((HTMLDocumentImpl) document).getOnloadHandler();
-			return handler instanceof Function f ? f : null;
-		} else {
-			return null;
+	public Object getOnload() {
+		if (this.document instanceof HTMLDocument) {
+			return ((HTMLDocumentImpl) this.document).getOnloadHandler();
 		}
+		return null;
 	}
 
 	/** {@inheritDoc} */
@@ -165,7 +156,7 @@ public class HTMLBodyElementImpl extends HTMLElementImpl implements HTMLBodyElem
 	 *
 	 * <p>setOnload.</p>
 	 */
-	public void setOnload(final Function onload) {
+	public void setOnload(final Object onload) {
 		final Object document = this.document;
 		if (document instanceof HTMLDocument) {
 			((HTMLDocumentImpl) document).setOnloadHandler(onload);
@@ -222,67 +213,67 @@ public class HTMLBodyElementImpl extends HTMLElementImpl implements HTMLBodyElem
 
 	/** {@inheritDoc} */
 	@Override
-	public Function getOnafterprint() {
-		return getFunction(this, "afterprint");
+	public Object getOnafterprint() {
+		return getCallable(this, "afterprint");
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void setOnafterprint(final Function onafterprint) {
+	public void setOnafterprint(final Object onafterprint) {
 		addEventListener("afterprint", onafterprint, false);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public Function getOnbeforeprint() {
-		return getFunction(this, "afterprint");
+	public Object getOnbeforeprint() {
+		return getCallable(this, "afterprint");
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void setOnbeforeprint(final Function onbeforeprint) {
+	public void setOnbeforeprint(final Object onbeforeprint) {
 		addEventListener("beforeprint", onbeforeprint, false);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public Function getOnlanguagechange() {
-		return getFunction(this, "languagechange");
+	public Object getOnlanguagechange() {
+		return getCallable(this, "languagechange");
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void setOnlanguagechange(final Function onlanguagechange) {
+	public void setOnlanguagechange(final Object onlanguagechange) {
 		addEventListener("languagechange", onlanguagechange, false);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public Function getOnoffline() {
-		return getFunction(this, "offline");
+	public Object getOnoffline() {
+		return getCallable(this, "offline");
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public Function getOnonline() {
-		return getFunction(this, "online");
+	public Object getOnonline() {
+		return getCallable(this, "online");
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void setOnonline(final Function ononline) {
+	public void setOnonline(final Object ononline) {
 		addEventListener("online", ononline, false);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public Function getOnunload() {
-		return getFunction(this, "unload");
+	public Object getOnunload() {
+		return getCallable(this, "unload");
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void setOnunload(final Function onunload) {
+	public void setOnunload(final Object onunload) {
 		addEventListener("unload", onunload, false);
 	}
 

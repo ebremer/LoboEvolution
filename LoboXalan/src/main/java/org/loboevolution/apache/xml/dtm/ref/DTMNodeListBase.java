@@ -27,58 +27,40 @@ package org.loboevolution.apache.xml.dtm.ref;
 
 import org.loboevolution.html.node.Node;
 import org.loboevolution.html.node.NodeList;
-import org.mozilla.javascript.ES6Iterator;
-import org.mozilla.javascript.Function;
+
+import java.util.Collections;
+import java.util.Iterator;
 
 /**
- * <code>DTMNodeList</code> gives us an implementation of the DOM's NodeList interface wrapped
- * around a DTM Iterator. The author considers this something of an abominations, since NodeList was
- * not intended to be a general purpose "list of nodes" API and is generally considered by the DOM
- * WG to have be a mistake... but I'm told that some of the XPath/XSLT folks say they must have this
- * solution.
- *
- * <p>Please note that this is not necessarily equivlaent to a DOM NodeList operating over the same
- * document. In particular:
- *
- * <ul>
- *   <li>If there are several Text nodes in logical succession (ie, across CDATASection and
- *       EntityReference boundaries), we will return only the first; the caller is responsible for
- *       stepping through them. (%REVIEW% Provide a convenience routine here to assist, pending
- *       proposed DOM Level 3 getAdjacentText() operation?)
- *   <li>Since the whole XPath/XSLT architecture assumes that the source document is not altered
- *       while we're working with it, we do not promise to implement the DOM NodeList's "live view"
- *       response to document mutation.
- * </ul>
- *
- * <p>State: In progress!!
+ * Base implementation of DOM's NodeList wrapped around a DTM iterator. After
+ * Phase 12 the iterator/forEach signatures use plain Java types instead of
+ * Rhino's {@code ES6Iterator}/{@code Function}.
  */
 public class DTMNodeListBase implements NodeList {
   public DTMNodeListBase() {}
 
-  /** {@inheritDoc} */
   @Override
   public Node item(final int index) {
     return null;
   }
 
   @Override
-  public ES6Iterator entries() {
-    return null;
+  public Iterator<Object> entries() {
+    return Collections.emptyIterator();
   }
 
   @Override
-  public ES6Iterator keys() {
-    return null;
+  public Iterator<Integer> keys() {
+    return Collections.emptyIterator();
   }
 
   @Override
-  public ES6Iterator values() {
-    return null;
+  public Iterator<Node> values() {
+    return Collections.emptyIterator();
   }
 
   @Override
-  public void forEach(final Function function) {
-
+  public void forEach(final Object function) {
   }
 
   @Override
@@ -86,7 +68,6 @@ public class DTMNodeListBase implements NodeList {
     return new Node[0];
   }
 
-  /** {@inheritDoc} */
   @Override
   public int getLength() {
     return 0;

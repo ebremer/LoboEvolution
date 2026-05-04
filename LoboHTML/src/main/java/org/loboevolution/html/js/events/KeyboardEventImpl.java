@@ -26,13 +26,13 @@
 
 package org.loboevolution.html.js.events;
 
+import java.util.Map;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.htmlunit.cssparser.dom.DOMException;
 import org.loboevolution.events.KeyboardEvent;
 import org.loboevolution.js.Window;
-import org.mozilla.javascript.NativeObject;
 
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
@@ -66,7 +66,7 @@ public class KeyboardEventImpl extends UIEventImpl implements KeyboardEvent {
         }
 
         if (params.length > 1) {
-            if (params[1] != null && params[1] instanceof NativeObject obj) {
+            if (params[1] != null && params[1] instanceof Map<?,?> obj) {
                 setUIEventParams(obj);
                 this.key = getStringVal(obj,"key");
                 this.location = getDoubleVal(obj,"location");

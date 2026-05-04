@@ -27,7 +27,6 @@
 package org.loboevolution.js;
 
 import org.loboevolution.events.EventTarget;
-import org.mozilla.javascript.Function;
 
 /**
  * <p>WindowEventHandlers interface.</p>
@@ -37,350 +36,350 @@ public interface WindowEventHandlers extends EventTarget {
 	/**
 	 * <p>getOnafterprint.</p>
 	 *
-	 * @return a {@link org.mozilla.javascript.Function} object.
+	 * @return a {@link org.mozilla.javascript.Object} object.
 	 */
-	Function getOnafterprint();
+	Object getOnafterprint();
 
 	/**
 	 * <p>getOnbeforeprint.</p>
 	 *
-	 * @return a {@link org.mozilla.javascript.Function} object.
+	 * @return a {@link org.mozilla.javascript.Object} object.
 	 */
-	Function getOnbeforeprint();
+	Object getOnbeforeprint();
 
 	/**
 	 * <p>getOnlanguagechange.</p>
 	 *
-	 * @return a {@link org.mozilla.javascript.Function} object.
+	 * @return a {@link org.mozilla.javascript.Object} object.
 	 */
-	Function getOnlanguagechange();
+	Object getOnlanguagechange();
 
 	/**
 	 * <p>getOnoffline.</p>
 	 *
-	 * @return a {@link org.mozilla.javascript.Function} object.
+	 * @return a {@link org.mozilla.javascript.Object} object.
 	 */
-	Function getOnoffline();
+	Object getOnoffline();
 
 	/**
 	 * <p>getOnonline.</p>
 	 *
-	 * @return a {@link org.mozilla.javascript.Function} object.
+	 * @return a {@link org.mozilla.javascript.Object} object.
 	 */
-	Function getOnonline();
+	Object getOnonline();
 
 	/**
 	 * <p>getOnunload.</p>
 	 *
-	 * @return a {@link org.mozilla.javascript.Function} object.
+	 * @return a {@link org.mozilla.javascript.Object} object.
 	 */
-	Function getOnunload();
+	Object getOnunload();
 
 	/**
 	 * <p>setOnunload.</p>
 	 *
-	 * @param onunload a {@link org.mozilla.javascript.Function} object.
+	 * @param onunload a {@link org.mozilla.javascript.Object} object.
 	 */
-	void setOnunload(Function onunload);
+	void setOnunload(Object onunload);
 
 	/**
 	 * <p>setOnonline.</p>
 	 *
-	 * @param ononline a {@link org.mozilla.javascript.Function} object.
+	 * @param ononline a {@link org.mozilla.javascript.Object} object.
 	 */
-	void setOnonline(Function ononline);
+	void setOnonline(Object ononline);
 
 	/**
 	 * <p>setOnoffline.</p>
 	 *
-	 * @param onoffline a {@link org.mozilla.javascript.Function} object.
+	 * @param onoffline a {@link org.mozilla.javascript.Object} object.
 	 */
-	void setOnoffline(Function onoffline);
+	void setOnoffline(Object onoffline);
 
 	/**
 	 * <p>setOnlanguagechange.</p>
 	 *
-	 * @param onlanguagechange a {@link org.mozilla.javascript.Function} object.
+	 * @param onlanguagechange a {@link org.mozilla.javascript.Object} object.
 	 */
-	void setOnlanguagechange(Function onlanguagechange);
+	void setOnlanguagechange(Object onlanguagechange);
 
 	/**
 	 * <p>setOnbeforeprint.</p>
 	 *
-	 * @param onbeforeprint a {@link org.mozilla.javascript.Function} object.
+	 * @param onbeforeprint a {@link org.mozilla.javascript.Object} object.
 	 */
-	void setOnbeforeprint(Function onbeforeprint);
+	void setOnbeforeprint(Object onbeforeprint);
 
 	/**
 	 * <p>setOnafterprint.</p>
 	 *
-	 * @param onafterprint a {@link org.mozilla.javascript.Function} object.
+	 * @param onafterprint a {@link org.mozilla.javascript.Object} object.
 	 */
-	void setOnafterprint(Function onafterprint);
+	void setOnafterprint(Object onafterprint);
 
 	/**
 	 * <p>addAfterPrintEventListener.</p>
 	 *
-	 * @param listener a {@link org.mozilla.javascript.Function} object.
+	 * @param listener a {@link org.mozilla.javascript.Object} object.
 	 * @param options a boolean.
 	 */
-	default void addAfterPrintEventListener(Function listener, boolean options) {
+	default void addAfterPrintEventListener(Object listener, boolean options) {
 		addEventListener("afterprint", listener, options);
 	}
 
 	/**
 	 * <p>addAfterPrintEventListener.</p>
 	 *
-	 * @param listener a {@link org.mozilla.javascript.Function} object.
+	 * @param listener a {@link org.mozilla.javascript.Object} object.
 	 */
-	default void addAfterPrintEventListener(Function listener) {
+	default void addAfterPrintEventListener(Object listener) {
 		addEventListener("afterprint", listener);
 	}
 
 	/**
 	 * <p>removeAfterPrintEventListener.</p>
 	 *
-	 * @param listener a {@link org.mozilla.javascript.Function} object.
+	 * @param listener a {@link org.mozilla.javascript.Object} object.
 	 * @param options a boolean.
 	 */
-	default void removeAfterPrintEventListener(Function listener, boolean options) {
+	default void removeAfterPrintEventListener(Object listener, boolean options) {
 		removeEventListener("afterprint", listener, options);
 	}
 
 	/**
 	 * <p>removeAfterPrintEventListener.</p>
 	 *
-	 * @param listener a {@link org.mozilla.javascript.Function} object.
+	 * @param listener a {@link org.mozilla.javascript.Object} object.
 	 */
-	default void removeAfterPrintEventListener(Function listener) {
+	default void removeAfterPrintEventListener(Object listener) {
 		removeEventListener("afterprint", listener);
 	}
 
 	/**
 	 * <p>addBeforePrintEventListener.</p>
 	 *
-	 * @param listener a {@link org.mozilla.javascript.Function} object.
+	 * @param listener a {@link org.mozilla.javascript.Object} object.
 	 * @param options a boolean.
 	 */
-	default void addBeforePrintEventListener(Function listener, boolean options) {
+	default void addBeforePrintEventListener(Object listener, boolean options) {
 		addEventListener("beforeprint", listener, options);
 	}
 
 	/**
 	 * <p>addBeforePrintEventListener.</p>
 	 *
-	 * @param listener a {@link org.mozilla.javascript.Function} object.
+	 * @param listener a {@link org.mozilla.javascript.Object} object.
 	 */
-	default void addBeforePrintEventListener(Function listener) {
+	default void addBeforePrintEventListener(Object listener) {
 		addEventListener("beforeprint", listener);
 	}
 
 	/**
 	 * <p>removeBeforePrintEventListener.</p>
 	 *
-	 * @param listener a {@link org.mozilla.javascript.Function} object.
+	 * @param listener a {@link org.mozilla.javascript.Object} object.
 	 * @param options a boolean.
 	 */
-	default void removeBeforePrintEventListener(Function listener, boolean options) {
+	default void removeBeforePrintEventListener(Object listener, boolean options) {
 		removeEventListener("beforeprint", listener, options);
 	}
 
 	/**
 	 * <p>removeBeforePrintEventListener.</p>
 	 *
-	 * @param listener a {@link org.mozilla.javascript.Function} object.
+	 * @param listener a {@link org.mozilla.javascript.Object} object.
 	 */
-	default void removeBeforePrintEventListener(Function listener) {
+	default void removeBeforePrintEventListener(Object listener) {
 		removeEventListener("beforeprint", listener);
 	}
 
 	/**
 	 * <p>addLanguageChangeEventListener.</p>
 	 *
-	 * @param listener a {@link org.mozilla.javascript.Function} object.
+	 * @param listener a {@link org.mozilla.javascript.Object} object.
 	 * @param options a boolean.
 	 */
-	default void addLanguageChangeEventListener(Function listener, boolean options) {
+	default void addLanguageChangeEventListener(Object listener, boolean options) {
 		addEventListener("languagechange", listener, options);
 	}
 
 	/**
 	 * <p>addLanguageChangeEventListener.</p>
 	 *
-	 * @param listener a {@link org.mozilla.javascript.Function} object.
+	 * @param listener a {@link org.mozilla.javascript.Object} object.
 	 */
-	default void addLanguageChangeEventListener(Function listener) {
+	default void addLanguageChangeEventListener(Object listener) {
 		addEventListener("languagechange", listener);
 	}
 
 	/**
 	 * <p>removeLanguageChangeEventListener.</p>
 	 *
-	 * @param listener a {@link org.mozilla.javascript.Function} object.
+	 * @param listener a {@link org.mozilla.javascript.Object} object.
 	 * @param options a boolean.
 	 */
-	default void removeLanguageChangeEventListener(Function listener, boolean options) {
+	default void removeLanguageChangeEventListener(Object listener, boolean options) {
 		removeEventListener("languagechange", listener, options);
 	}
 
 	/**
 	 * <p>removeLanguageChangeEventListener.</p>
 	 *
-	 * @param listener a {@link org.mozilla.javascript.Function} object.
+	 * @param listener a {@link org.mozilla.javascript.Object} object.
 	 */
-	default void removeLanguageChangeEventListener(Function listener) {
+	default void removeLanguageChangeEventListener(Object listener) {
 		removeEventListener("languagechange", listener);
 	}
 
 	/**
 	 * <p>addOfflineEventListener.</p>
 	 *
-	 * @param listener a {@link org.mozilla.javascript.Function} object.
+	 * @param listener a {@link org.mozilla.javascript.Object} object.
 	 * @param options a boolean.
 	 */
-	default void addOfflineEventListener(Function listener, boolean options) {
+	default void addOfflineEventListener(Object listener, boolean options) {
 		addEventListener("offline", listener, options);
 	}
 
 	/**
 	 * <p>addOfflineEventListener.</p>
 	 *
-	 * @param listener a {@link org.mozilla.javascript.Function} object.
+	 * @param listener a {@link org.mozilla.javascript.Object} object.
 	 */
-	default void addOfflineEventListener(Function listener) {
+	default void addOfflineEventListener(Object listener) {
 		addEventListener("offline", listener);
 	}
 
 	/**
 	 * <p>removeOfflineEventListener.</p>
 	 *
-	 * @param listener a {@link org.mozilla.javascript.Function} object.
+	 * @param listener a {@link org.mozilla.javascript.Object} object.
 	 * @param options a boolean.
 	 */
-	default void removeOfflineEventListener(Function listener, boolean options) {
+	default void removeOfflineEventListener(Object listener, boolean options) {
 		removeEventListener("offline", listener, options);
 	}
 
 	/**
 	 * <p>removeOfflineEventListener.</p>
 	 *
-	 * @param listener a {@link org.mozilla.javascript.Function} object.
+	 * @param listener a {@link org.mozilla.javascript.Object} object.
 	 */
-	default void removeOfflineEventListener(Function listener) {
+	default void removeOfflineEventListener(Object listener) {
 		removeEventListener("offline", listener);
 	}
 
 	/**
 	 * <p>addOnlineEventListener.</p>
 	 *
-	 * @param listener a {@link org.mozilla.javascript.Function} object.
+	 * @param listener a {@link org.mozilla.javascript.Object} object.
 	 * @param options a boolean.
 	 */
-	default void addOnlineEventListener(Function listener, boolean options) {
+	default void addOnlineEventListener(Object listener, boolean options) {
 		addEventListener("online", listener, options);
 	}
 
 	/**
 	 * <p>addOnlineEventListener.</p>
 	 *
-	 * @param listener a {@link org.mozilla.javascript.Function} object.
+	 * @param listener a {@link org.mozilla.javascript.Object} object.
 	 */
-	default void addOnlineEventListener(Function listener) {
+	default void addOnlineEventListener(Object listener) {
 		addEventListener("online", listener);
 	}
 
 	/**
 	 * <p>removeOnlineEventListener.</p>
 	 *
-	 * @param listener a {@link org.mozilla.javascript.Function} object.
+	 * @param listener a {@link org.mozilla.javascript.Object} object.
 	 * @param options a boolean.
 	 */
-	default void removeOnlineEventListener(Function listener, boolean options) {
+	default void removeOnlineEventListener(Object listener, boolean options) {
 		removeEventListener("online", listener, options);
 	}
 
 	/**
 	 * <p>removeOnlineEventListener.</p>
 	 *
-	 * @param listener a {@link org.mozilla.javascript.Function} object.
+	 * @param listener a {@link org.mozilla.javascript.Object} object.
 	 */
-	default void removeOnlineEventListener(Function listener) {
+	default void removeOnlineEventListener(Object listener) {
 		removeEventListener("online", listener);
 	}
 
 	/**
 	 * <p>addRejectionHandledEventListener.</p>
 	 *
-	 * @param listener a {@link org.mozilla.javascript.Function} object.
+	 * @param listener a {@link org.mozilla.javascript.Object} object.
 	 * @param options a boolean.
 	 */
-	default void addRejectionHandledEventListener(Function listener, boolean options) {
+	default void addRejectionHandledEventListener(Object listener, boolean options) {
 		addEventListener("rejectionhandled", listener, options);
 	}
 
 	/**
 	 * <p>addRejectionHandledEventListener.</p>
 	 *
-	 * @param listener a {@link org.mozilla.javascript.Function} object.
+	 * @param listener a {@link org.mozilla.javascript.Object} object.
 	 */
-	default void addRejectionHandledEventListener(Function listener) {
+	default void addRejectionHandledEventListener(Object listener) {
 		addEventListener("rejectionhandled", listener);
 	}
 
 	/**
 	 * <p>removeRejectionHandledEventListener.</p>
 	 *
-	 * @param listener a {@link org.mozilla.javascript.Function} object.
+	 * @param listener a {@link org.mozilla.javascript.Object} object.
 	 * @param options a boolean.
 	 */
-	default void removeRejectionHandledEventListener(Function listener, boolean options) {
+	default void removeRejectionHandledEventListener(Object listener, boolean options) {
 		removeEventListener("rejectionhandled", listener, options);
 	}
 
 	/**
 	 * <p>removeRejectionHandledEventListener.</p>
 	 *
-	 * @param listener a {@link org.mozilla.javascript.Function} object.
+	 * @param listener a {@link org.mozilla.javascript.Object} object.
 	 */
-	default void removeRejectionHandledEventListener(Function listener) {
+	default void removeRejectionHandledEventListener(Object listener) {
 		removeEventListener("rejectionhandled", listener);
 	}
 
 	/**
 	 * <p>addUnloadEventListener.</p>
 	 *
-	 * @param listener a {@link org.mozilla.javascript.Function} object.
+	 * @param listener a {@link org.mozilla.javascript.Object} object.
 	 * @param options a boolean.
 	 */
-	default void addUnloadEventListener(Function listener, boolean options) {
+	default void addUnloadEventListener(Object listener, boolean options) {
 		addEventListener("unload", listener, options);
 	}
 
 	/**
 	 * <p>addUnloadEventListener.</p>
 	 *
-	 * @param listener a {@link org.mozilla.javascript.Function} object.
+	 * @param listener a {@link org.mozilla.javascript.Object} object.
 	 */
-	default void addUnloadEventListener(Function listener) {
+	default void addUnloadEventListener(Object listener) {
 		addEventListener("unload", listener);
 	}
 
 	/**
 	 * <p>removeUnloadEventListener.</p>
 	 *
-	 * @param listener a {@link org.mozilla.javascript.Function} object.
+	 * @param listener a {@link org.mozilla.javascript.Object} object.
 	 * @param options a boolean.
 	 */
-	default void removeUnloadEventListener(Function listener, boolean options) {
+	default void removeUnloadEventListener(Object listener, boolean options) {
 		removeEventListener("unload", listener, options);
 	}
 
 	/**
 	 * <p>removeUnloadEventListener.</p>
 	 *
-	 * @param listener a {@link org.mozilla.javascript.Function} object.
+	 * @param listener a {@link org.mozilla.javascript.Object} object.
 	 */
-	default void removeUnloadEventListener(Function listener) {
+	default void removeUnloadEventListener(Object listener) {
 		removeEventListener("unload", listener);
 	}
 }

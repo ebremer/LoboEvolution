@@ -35,7 +35,6 @@ import org.loboevolution.html.node.Element;
 import org.loboevolution.html.node.Node;
 import org.loboevolution.html.renderstate.DisplayRenderState;
 import org.loboevolution.html.renderstate.RenderState;
-import org.mozilla.javascript.Undefined;
 
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
@@ -295,7 +294,7 @@ public class HTMLSelectElementImpl extends HTMLBasicInputElement implements HTML
      */
     @Override
     public void add(final Object element, final Object before) {
-        if (before == null || before instanceof Undefined) {
+        if (before == null) {
             getOptions().add((HTMLOptionElement) element);
         }
 

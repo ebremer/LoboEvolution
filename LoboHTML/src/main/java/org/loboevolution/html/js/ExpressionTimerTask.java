@@ -28,8 +28,7 @@ package org.loboevolution.html.js;
 
 import lombok.extern.slf4j.Slf4j;
 import org.loboevolution.html.dom.domimpl.HTMLDocumentImpl;
-import org.loboevolution.js.LoboContextFactory;
-import org.mozilla.javascript.Context;
+import org.loboevolution.html.js.engine.JsEngineFactory;
 
 import java.awt.event.ActionEvent;
 
@@ -77,17 +76,9 @@ class ExpressionTimerTask extends WeakWindowTask {
 			if (doc == null) {
 				throw new IllegalStateException("Cannot perform operation when document is unset.");
 			}
-			evalInScope(window, this.expression);
+			JsEngineFactory.forDocument(doc, window).eval(this.expression, "window.eval");
 		} catch (final Throwable err) {
 			log.error("actionPerformed()", err);
-		}
-	}
-
-	private void evalInScope(final WindowImpl window, final String javascript) {
-		LoboContextFactory contextFactory =  window.getContextFactory();
-		try (Context ctx = contextFactory.enterContext()) {
-			final String scriptURI = "window.eval";
-			ctx.evaluateString(window.getWindowScope(ctx), javascript, scriptURI, 1, null);
 		}
 	}
 }

@@ -26,10 +26,10 @@
 
 package org.loboevolution.html.js.events;
 
+import java.util.Map;
 import lombok.*;
 import org.htmlunit.cssparser.dom.DOMException;
 import org.loboevolution.events.ProgressEvent;
-import org.mozilla.javascript.NativeObject;
 
 /**
  * ProgressEventImpl class.
@@ -56,7 +56,7 @@ public class ProgressEventImpl extends EventImpl implements ProgressEvent {
 
         if (params != null && params.length > 0) {
             if (params.length > 1) {
-                if (params[1] != null && params[1] instanceof NativeObject obj) {
+                if (params[1] != null && params[1] instanceof Map<?,?> obj) {
                     this.loaded = (Double) obj.get("loaded");
                     this.total = (Double) obj.get("total");
                 }

@@ -31,8 +31,6 @@ import lombok.NoArgsConstructor;
 import org.htmlunit.cssparser.dom.DOMException;
 import org.loboevolution.events.BlobEvent;
 import org.loboevolution.html.dom.Blob;
-import org.loboevolution.js.JavaObjectWrapper;
-import org.mozilla.javascript.NativeObject;
 
 /**
  * BlobEventImpl class.
@@ -55,15 +53,11 @@ public class BlobEventImpl extends EventImpl implements BlobEvent {
         } catch (DOMException e) {
             throw new RuntimeException("Failed to initialize Event", e);
         }
-
-        if (params.length < 3) {
-            if (params[1] != null && params[1] instanceof NativeObject obj) {
-               if(obj.get("data") == null || "".equals(obj.get("data")))
-                   throw new DOMException(DOMException.NOT_FOUND_ERR, "Failed : Required member is undefined");
-                this.data = (Blob) ((JavaObjectWrapper) obj.get("data")).getJavaObject();
-            }
-        } else {
+        if (params.length >= 3) {
             throw new DOMException(DOMException.NOT_SUPPORTED_ERR, "Failed : 2 argument required, but only " + params.length + " present.");
+        }
+        if (params.length > 1 && params[1] instanceof Blob b) {
+            this.data = b;
         }
     }
 

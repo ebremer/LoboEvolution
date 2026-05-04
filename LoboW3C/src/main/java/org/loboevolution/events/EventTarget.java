@@ -27,83 +27,28 @@
 package org.loboevolution.events;
 
 import org.loboevolution.html.node.Node;
-import org.mozilla.javascript.Function;
 import org.w3c.dom.events.EventException;
 
 /**
- * <p>EventTarget interface.</p>
+ * Engine-agnostic event target. Listener parameters are typed as plain
+ * {@link Object} so any callable a JS engine can produce — a polyglot
+ * {@code Value}, a {@code FunctionalInterface} lambda, etc. — fits.
  */
 public interface EventTarget {
 
-    /**
-     * <p>addEventListener.</p>
-     *
-     * @param type     a {@link java.lang.String} object.
-     * @param listener a {@link org.mozilla.javascript.Function} object.
-     */
-    void addEventListener(String type, final Function listener);
-
-    /**
-     * <p>addEventListener.</p>
-     *
-     * @param type       a {@link java.lang.String} object.
-     * @param listener   a {@link org.mozilla.javascript.Function} object.
-     * @param useCapture a boolean.
-     */
-    void addEventListener(String type, Function listener, boolean useCapture);
-
-    /**
-     * <p>removeEventListener.</p>
-     *
-     * @param script   a {@link java.lang.String} object.
-     * @param function a {@link org.mozilla.javascript.Function} object.
-     */
-    void removeEventListener(String script, Function function);
-
-    /**
-     * <p>removeEventListener.</p>
-     *
-     * @param type       a {@link java.lang.String} object.
-     * @param listener   a {@link org.mozilla.javascript.Function} object.
-     * @param useCapture a boolean.
-     */
-    void removeEventListener(String type, Function listener, boolean useCapture);
-
-    /**
-     * Engine-agnostic {@code addEventListener}. The {@code listener} is the
-     * raw JS callback as the active engine surfaces it (a Rhino
-     * {@code Function} or a GraalJS {@code Value} or any other invocable
-     * object the underlying engine understands). Provided so GraalJS-side
-     * scripts can register listeners without going through Rhino's typed
-     * {@code Function} bridge, which they cannot construct.
-     */
+    /** Registers {@code listener} for {@code type} (no useCapture). */
     void addEventListener(String type, Object listener);
 
     /** {@link #addEventListener(String, Object)} with an explicit useCapture flag. */
     void addEventListener(String type, Object listener, boolean useCapture);
 
-    /** Engine-agnostic counterpart to {@link #removeEventListener(String, Function)}. */
+    /** Removes a previously-registered listener (no useCapture). */
     void removeEventListener(String type, Object listener);
 
     /** {@link #removeEventListener(String, Object)} with an explicit useCapture flag. */
     void removeEventListener(String type, Object listener, boolean useCapture);
 
-    /**
-     * <p>dispatchEvent.</p>
-     *
-     * @param element a {@link org.loboevolution.html.node.Node} object.
-     * @param evt     a {@link Event} object.
-     * @return a boolean.
-     */
     boolean dispatchEvent(Node element, Event evt);
 
-    /**
-     * <p>dispatchEvent.</p>
-     *
-     * @param evt a {@link Event} object.
-     * @return a boolean.
-     * @throws org.w3c.dom.events.EventException if any.
-     */
     boolean dispatchEvent(Event evt) throws EventException;
-
 }

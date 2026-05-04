@@ -26,14 +26,14 @@
 
 package org.loboevolution.html.js.events;
 
+import java.util.List;
+import java.util.Map;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.htmlunit.cssparser.dom.DOMException;
 import org.loboevolution.common.Strings;
 import org.loboevolution.events.InputEvent;
-import org.mozilla.javascript.NativeArray;
-import org.mozilla.javascript.NativeObject;
 
 /**
  * InputEventImpl class.
@@ -56,27 +56,22 @@ public class InputEventImpl extends UIEventImpl implements InputEvent {
 
         if (params.length > 1) {
             if (params[1] != null) {
-                NativeObject obj = (NativeObject) params[1];
+                Map<?,?> obj = (Map<?,?>) params[1];
                 Object isComposing = obj.get("isComposing");
                 Object inputType = obj.get("inputType");
                 if (isComposing != null) setIsComposing((Boolean) isComposing);
                 if (inputType != null) setInputType((String) inputType);
-                if (obj.get("data") instanceof NativeArray nativeArray) {
-                    if (nativeArray.getLength() > 0) {
-                        for (int i = 0; i < nativeArray.getLength(); i++) {
+                if (obj.get("data") instanceof List<?> list) {
+                    if (!list.isEmpty()) {
+                        for (Object item : list) {
                             if (Strings.isNotBlank(getData())) {
-                                setData(getData() + " " + nativeArray.get(i) + ",");
+                                setData(getData() + " " + item + ",");
                             } else {
-                                setData(nativeArray.get(i) + ",");
+                                setData(item + ",");
                             }
                         }
                         setData(getData().substring(0, getData().length() - 1));
                     }
-                }
-
-                if (obj.get("data") instanceof NativeObject) {
-                    NativeObject data = (NativeObject) obj.get("data");
-                    setData((String) data.get(0));
                 }
             }
         }

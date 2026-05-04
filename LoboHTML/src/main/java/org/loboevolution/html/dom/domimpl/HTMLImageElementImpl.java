@@ -41,7 +41,6 @@ import org.loboevolution.html.renderstate.ImageRenderState;
 import org.loboevolution.html.renderstate.RenderState;
 import org.loboevolution.net.UserAgent;
 import org.loboevolution.type.Decoding;
-import org.mozilla.javascript.Function;
 
 import java.awt.*;
 import java.net.URI;
@@ -74,7 +73,7 @@ public class HTMLImageElementImpl extends HTMLElementImpl implements HTMLImageEl
 	@Override
 	public void assignAttributeField(final String normalName, final String value) {
 		if ("onload".equals(normalName)) {
-			final Function onload = getFunction(this, normalName);
+			final Object onload = getCallable(this, normalName);
 			if (onload != null) {
 				setOnload(onload);
 			}
@@ -138,19 +137,12 @@ public class HTMLImageElementImpl extends HTMLElementImpl implements HTMLImageEl
 		return name == null ? "" : name;
 	}
 
-	/**
-	 * <p>getOnload.</p>
-	 *
-	 * @return a {@link org.mozilla.javascript.Function} object.
-	 */
-	public Function getOnload() {
+	public Object getOnload() {
 		final Object document = this.document;
 		if (document instanceof HTMLDocument) {
-			final Object handler = ((HTMLDocumentImpl) document).getOnloadHandler();
-			return handler instanceof Function f ? f : null;
-		} else {
-			return null;
+			return ((HTMLDocumentImpl) document).getOnloadHandler();
 		}
+		return null;
 	}
 
 	/** {@inheritDoc} */
@@ -230,7 +222,7 @@ public class HTMLImageElementImpl extends HTMLElementImpl implements HTMLImageEl
 	 *
 	 * <p>setOnload.</p>
 	 */
-	public void setOnload(final Function onload) {
+	public void setOnload(final Object onload) {
 		final Object document = this.document;
 		if (document instanceof HTMLDocument) {
 			((HTMLDocumentImpl) document).setOnloadHandler(onload);

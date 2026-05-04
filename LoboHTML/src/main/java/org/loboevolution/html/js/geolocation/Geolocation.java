@@ -27,12 +27,12 @@
 package org.loboevolution.html.js.geolocation;
 
 import lombok.extern.slf4j.Slf4j;
-import org.loboevolution.html.dom.nodeimpl.NodeImpl;
-import org.loboevolution.html.js.Executor;
+import org.loboevolution.html.dom.domimpl.HTMLDocumentImpl;
 import org.loboevolution.html.js.WindowImpl;
+import org.loboevolution.html.js.engine.JsEngine;
+import org.loboevolution.html.js.engine.JsEngineFactory;
 import org.loboevolution.js.AbstractScriptableDelegate;
 import org.loboevolution.js.Window;
-import org.mozilla.javascript.Function;
 
 import java.net.UnknownHostException;
 import java.util.concurrent.TimeoutException;
@@ -65,26 +65,13 @@ public class Geolocation extends AbstractScriptableDelegate {
 		this.window = window;
 	}
 
-	/**
-	 * <p>getCurrentPosition.</p>
-	 *
-	 * @param success a {@link org.mozilla.javascript.Function} object.
-	 * @throws java.lang.Exception if any.
-	 */
-	public void getCurrentPosition(final Function success) throws Exception {
+	public void getCurrentPosition(final Object success) throws Exception {
 		final IPAddressBasedGeoAcquirer ip = new IPAddressBasedGeoAcquirer();
 		final Position acquireLocation = ip.acquireLocation();
-		final NodeImpl node = (NodeImpl) window.getDocumentNode();
-		Executor.executeFunction(node, success, new Object[] { acquireLocation }, window.getContextFactory());
+		invokeCallback(success, acquireLocation);
 	}
 
-	/**
-	 * <p>getCurrentPosition.</p>
-	 *
-	 * @param success a {@link org.mozilla.javascript.Function} object.
-	 * @param error a {@link org.mozilla.javascript.Function} object.
-	 */
-	public void getCurrentPosition(final Function success, final Function error) {
+	public void getCurrentPosition(final Object success, final Object error) {
 		try {
 			getCurrentPosition(success);
 		} catch (final Exception e) {
@@ -92,13 +79,7 @@ public class Geolocation extends AbstractScriptableDelegate {
 		}
 	}
 
-	/**
-	 * <p>watchPosition.</p>
-	 *
-	 * @param success a {@link org.mozilla.javascript.Function} object.
-	 * @return a long.
-	 */
-	public long watchPosition(final Function success) {
+	public long watchPosition(final Object success) {
 		final long watchId = System.currentTimeMillis();
 		final Thread t = new Thread(() -> {
 			while (true) {
@@ -114,14 +95,7 @@ public class Geolocation extends AbstractScriptableDelegate {
 		return watchId;
 	}
 
-	/**
-	 * <p>watchPosition.</p>
-	 *
-	 * @param success a {@link org.mozilla.javascript.Function} object.
-	 * @param error a {@link org.mozilla.javascript.Function} object.
-	 * @return a long.
-	 */
-	public long watchPosition(final Function success, final Function error) {
+	public long watchPosition(final Object success, final Object error) {
 		final long watchId = System.currentTimeMillis();
 		final Thread t = new Thread(() -> {
 			while (true) {
@@ -138,14 +112,21 @@ public class Geolocation extends AbstractScriptableDelegate {
 		return watchId;
 	}
 
-	private void geoError(final Function error, final Exception e) {
-		final NodeImpl node = (NodeImpl) window.getDocumentNode();
+	private void geoError(final Object error, final Exception e) {
 		PositionError pError = null;
 		if (e instanceof UnknownHostException) {
 			pError = new PositionError(PositionError.POSITION_UNAVAILABLE);
 		} else if (e instanceof TimeoutException) {
 			pError = new PositionError(PositionError.TIMEOUT);
 		}
-		Executor.executeFunction(node, error, new Object[] { pError }, window.getContextFactory());
+		invokeCallback(error, pError);
+	}
+
+	private void invokeCallback(final Object callback, final Object arg) {
+		if (callback == null) return;
+		final HTMLDocumentImpl doc = (HTMLDocumentImpl) window.getDocument();
+		if (doc == null) return;
+		final JsEngine engine = JsEngineFactory.forDocument(doc, window);
+		engine.call(callback, arg);
 	}
 }

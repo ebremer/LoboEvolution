@@ -28,19 +28,11 @@ package org.loboevolution.html.dom.nodeimpl.event;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.mozilla.javascript.Function;
 
 /**
  * One registered event listener. The {@link #callback} is held as a generic
- * {@link Object} so the same entry type works for both engines: Rhino stores
- * a {@link org.mozilla.javascript.Function}; GraalJS stores a polyglot
- * {@code Value}. Dispatch routes through the JsEngine's
- * {@code call(callback, args)} method, which knows how to invoke either.
- *
- * <p>{@link #getFunction()} preserves the legacy Rhino-only accessor so
- * existing code that pulls the callback out as a Rhino {@code Function} (the
- * {@code on*} attribute path in {@code HTMLElementImpl}) keeps compiling.
- * It returns {@code null} for non-Rhino callbacks.
+ * {@link Object} (typically a polyglot {@code Value}). Dispatch routes through
+ * the {@link org.loboevolution.html.js.engine.JsEngine}'s {@code call(callback, args)}.
  */
 @Data
 @AllArgsConstructor
@@ -50,17 +42,7 @@ class EventListenerEntry {
     private Object callback;
     private boolean useCapture;
 
-    /** Convenience constructor that defaults useCapture to false. */
     EventListenerEntry(final String type, final Object callback) {
         this(type, callback, false);
-    }
-
-    /**
-     * Returns the callback as a Rhino {@link Function} when it is one, else
-     * {@code null}. Kept for the legacy {@code getOn*()} accessors that go
-     * back through Rhino's compiled-function machinery.
-     */
-    public Function getFunction() {
-        return callback instanceof Function f ? f : null;
     }
 }

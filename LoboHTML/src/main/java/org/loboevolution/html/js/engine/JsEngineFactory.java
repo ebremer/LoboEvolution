@@ -145,7 +145,7 @@ public final class JsEngineFactory {
         engine.putGlobal("FormData", (org.graalvm.polyglot.proxy.ProxyInstantiable) args ->
                 new org.loboevolution.html.dom.nodeimpl.FormDataImpl(doc));
         engine.putGlobal("XMLHttpRequest", (org.graalvm.polyglot.proxy.ProxyInstantiable) args ->
-                new org.loboevolution.html.js.xml.XMLHttpRequestImpl(doc, null, window));
+                new org.loboevolution.html.js.xml.XMLHttpRequestImpl(doc, window));
     }
 
     private static final String WINDOW_FUNCTION_BRIDGE = String.join("\n",

@@ -59,7 +59,6 @@ import org.loboevolution.html.style.HtmlValues;
 import org.loboevolution.html.style.StyleSheetAggregator;
 
 import org.loboevolution.svg.dom.SVGElementImpl;
-import org.mozilla.javascript.annotations.JSFunction;
 
 import javax.swing.*;
 import java.awt.*;
@@ -101,7 +100,6 @@ public class ElementImpl extends NodeImpl implements Element {
 
 	/** {@inheritDoc} */
 	@Override
-	@JSFunction
 	public String getAttribute(final String name) {
 		final Attr attr = getAttributeNode(name);
 		return attr == null ? null : attr.getValue();
@@ -109,7 +107,6 @@ public class ElementImpl extends NodeImpl implements Element {
 
 	/** {@inheritDoc} */
 	@Override
-	@JSFunction
 	public String getAttributeNS(final String namespaceURI, final String localName) throws DOMException {
 		final Attr attr = getAttributeNodeNS(namespaceURI, localName);
 		if (attr != null) {
@@ -120,7 +117,6 @@ public class ElementImpl extends NodeImpl implements Element {
 
 	/** {@inheritDoc} */
 	@Override
-	@JSFunction
 	public Attr getAttributeNode(final String name) {
 		final AttrImpl attribute = (AttrImpl) map.getNamedItem(name);
 		if (attribute != null) {
@@ -132,7 +128,6 @@ public class ElementImpl extends NodeImpl implements Element {
 
 	/** {@inheritDoc} */
 	@Override
-	@JSFunction
 	public Attr getAttributeNodeNS(final String namespaceURI, final String localName) throws DOMException {
 
 		if (Strings.isBlank(namespaceURI)) {

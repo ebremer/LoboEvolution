@@ -26,12 +26,12 @@
 
 package org.loboevolution.html.js.events;
 
+import java.util.Map;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.htmlunit.cssparser.dom.DOMException;
 import org.loboevolution.events.PointerEvent;
-import org.mozilla.javascript.NativeObject;
 
 @NoArgsConstructor
 @Getter
@@ -62,7 +62,7 @@ public class PointerEventImpl extends MouseEventImpl implements PointerEvent {
         }
 
         if (params.length > 1) {
-            if (params[1] != null && params[1] instanceof NativeObject obj) {
+            if (params[1] != null && params[1] instanceof Map<?,?> obj) {
                 this.pointerId = (Double) obj.get("pointerId");
                 this.pointerType = (String) obj.get("pointerType");
                 this.tiltX = obj.get("tiltX") != null ? (Integer)obj.get("tiltX") : 0;

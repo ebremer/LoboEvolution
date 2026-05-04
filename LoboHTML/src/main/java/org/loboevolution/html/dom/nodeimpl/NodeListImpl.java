@@ -23,53 +23,34 @@
  *
  * Contact info: ivan.difrancesco@yahoo.it
  */
-/*
- * Created on Sep 3, 2005
- */
 package org.loboevolution.html.dom.nodeimpl;
 
 import org.loboevolution.html.dom.domimpl.HTMLElementImpl;
 import org.loboevolution.html.js.WindowImpl;
+import org.loboevolution.html.js.engine.JsEngineFactory;
 import org.loboevolution.html.node.AbstractList;
-import org.loboevolution.html.js.Executor;
 import org.loboevolution.html.node.Node;
 import org.loboevolution.html.node.NodeList;
-import org.mozilla.javascript.ES6Iterator;
-import org.mozilla.javascript.Function;
-import org.mozilla.javascript.NativeArrayIterator;
 
+import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.NoSuchElementException;
 
-/**
- * <p>NodeListImpl class.</p>
- */
+/** Live and snapshot NodeList implementation backed by a Java List. */
 public class NodeListImpl extends AbstractList<Node> implements NodeList {
 
-	/**
-	 * <p>Constructor for NodeListImpl.</p>
-	 *
-	 * * @param rootNode a {@link org.loboevolution.html.dom.nodeimpl.NodeImpl} object.
-	 */
 	public NodeListImpl() {
 	}
 
-	/**
-	 * <p>Constructor for NodeListImpl.</p>
-	 *
-	 * @param collection a {@link java.util.List} object.
-	 */
 	public NodeListImpl(final List<Node> collection) {
 		super(collection);
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public int getLength() {
 		return this.size();
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public Node item(final int index) {
 		final int size = this.size();
@@ -80,45 +61,58 @@ public class NodeListImpl extends AbstractList<Node> implements NodeList {
 		}
 	}
 
-	/** {@inheritDoc} */
 	@Override
-	public ES6Iterator entries() {
-		return new NativeArrayIterator(getScriptable(), getScriptable(), NativeArrayIterator.ARRAY_ITERATOR_TYPE.ENTRIES);
-	}
-
-	/** {@inheritDoc}*/
-	@Override
-	public ES6Iterator keys() {
-		return new NativeArrayIterator(getScriptable(), getScriptable(), NativeArrayIterator.ARRAY_ITERATOR_TYPE.KEYS);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public ES6Iterator values() {
-		return new NativeArrayIterator(getScriptable(), getScriptable(), NativeArrayIterator.ARRAY_ITERATOR_TYPE.VALUES);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void forEach(final Function function) {
-		final AtomicInteger integer = new AtomicInteger(0);
-		this.forEach(node -> {
-			final int i = integer.getAndIncrement();
-			final NodeImpl n = (NodeImpl) node;
-			if (n instanceof HTMLElementImpl element) {
-				final WindowImpl win = (WindowImpl) element.getDocumentNode().getDefaultView();
-				Executor.executeFunction(n, function, new Object[]{n.getScriptable(), i, this}, win.getContextFactory());
+	public Iterator<Object> entries() {
+		return new Iterator<>() {
+			private int i = 0;
+			@Override public boolean hasNext() { return i < size(); }
+			@Override public Object next() {
+				if (!hasNext()) throw new NoSuchElementException();
+				final int idx = i++;
+				return new Object[]{ idx, get(idx) };
 			}
-		});
+		};
 	}
 
-	/** {@inheritDoc} */
+	@Override
+	public Iterator<Integer> keys() {
+		return new Iterator<>() {
+			private int i = 0;
+			@Override public boolean hasNext() { return i < size(); }
+			@Override public Integer next() {
+				if (!hasNext()) throw new NoSuchElementException();
+				return i++;
+			}
+		};
+	}
+
+	@Override
+	public Iterator<Node> values() {
+		return iterator();
+	}
+
+	@Override
+	public void forEach(final Object function) {
+		if (function == null) return;
+		HTMLElementImpl probe = null;
+		for (final Node n : this) {
+			if (n instanceof HTMLElementImpl elem) { probe = elem; break; }
+		}
+		if (probe == null) return;
+		final WindowImpl win = (WindowImpl) probe.getDocumentNode().getDefaultView();
+		final var engine = JsEngineFactory.forDocument(probe.getDocumentNode(), win);
+		int i = 0;
+		for (final Node n : this) {
+			engine.call(function, n, i, this);
+			i++;
+		}
+	}
+
 	@Override
 	public Node[] toArray() {
 		return this.toArray(new Node[0]);
 	}
-	
-	/** {@inheritDoc} */
+
 	@Override
 	public String toString() {
 		return "[object NodeList]";

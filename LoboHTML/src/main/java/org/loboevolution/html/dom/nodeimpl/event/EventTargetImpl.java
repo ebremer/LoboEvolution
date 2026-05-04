@@ -33,7 +33,6 @@ import org.loboevolution.common.Strings;
 import org.loboevolution.html.dom.domimpl.HTMLElementImpl;
 import org.loboevolution.html.dom.nodeimpl.ElementImpl;
 import org.loboevolution.html.dom.nodeimpl.NodeImpl;
-import org.loboevolution.html.js.Executor;
 import org.loboevolution.html.js.WindowImpl;
 import org.loboevolution.html.js.engine.JsEngine;
 import org.loboevolution.html.js.engine.JsEngineFactory;
@@ -45,15 +44,9 @@ import org.loboevolution.events.EventTarget;
 import org.loboevolution.html.renderer.HtmlController;
 import org.loboevolution.http.UserAgentContext;
 import org.loboevolution.js.AbstractScriptableDelegate;
-import org.loboevolution.js.JavaScript;
-import org.mozilla.javascript.Context;
-import org.mozilla.javascript.Function;
-import org.mozilla.javascript.RhinoException;
-import org.mozilla.javascript.Scriptable;
 import org.w3c.dom.events.EventException;
 
 import java.util.*;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * <p>EventTargetImpl class.</p>
@@ -64,16 +57,6 @@ public class EventTargetImpl extends AbstractScriptableDelegate implements Event
    @Setter
    private NodeImpl target;
    private List<EventListenerEntry> mListenerEntries;
-
-    @Override
-    public void addEventListener(final String type, final Function listener) {
-        addEventListener(type, (Object) listener, false);
-    }
-
-    @Override
-    public void addEventListener(final String type, final Function listener, final boolean useCapture) {
-        addEventListener(type, (Object) listener, useCapture);
-    }
 
     @Override
     public void addEventListener(final String type, final Object listener) {
@@ -93,16 +76,6 @@ public class EventTargetImpl extends AbstractScriptableDelegate implements Event
                 mListenerEntries.add(new EventListenerEntry(type, listener, useCapture));
             }
         }
-    }
-
-    @Override
-    public void removeEventListener(final String type, final Function listener) {
-        removeEventListener(type, (Object) listener, true);
-    }
-
-    @Override
-    public void removeEventListener(final String type, final Function listener, final boolean useCapture) {
-        removeEventListener(type, (Object) listener, useCapture);
     }
 
     @Override
@@ -153,15 +126,9 @@ public class EventTargetImpl extends AbstractScriptableDelegate implements Event
                         if (target instanceof HTMLElementImpl elem) {
                             eventImpl.setTarget(elem);
                             eventImpl.setCurrentTarget(elem);
-                            // Rhino-style attribute handlers go through HtmlController so the
-                            // legacy global `event` property is set; engine-agnostic callbacks
-                            // (e.g. graal Values from addEventListener) take the direct path.
-                            final Object cb = listenerEntry.getCallback();
-                            if (cb instanceof Function f) {
-                                HtmlController.getInstance().execute(target, f, eventImpl);
-                            } else {
-                                invokeCallback(target, cb, eventImpl);
-                            }
+                            // HtmlController.execute publishes `event` as a global before
+                            // dispatching so attribute-style handlers can read it.
+                            HtmlController.getInstance().execute(target, listenerEntry.getCallback(), eventImpl);
                         }
                     } catch (Exception e) {
                         log.error("Caught EventListener exception", e);
@@ -174,9 +141,7 @@ public class EventTargetImpl extends AbstractScriptableDelegate implements Event
 
     /**
      * Routes a callback through the engine that owns the document this event
-     * target belongs to. Works for both Rhino {@link Function}s and GraalJS
-     * {@code Value}s without the call site having to know which engine is
-     * active.
+     * target belongs to.
      */
     private static void invokeCallback(final NodeImpl node, final Object callback, final EventImpl evt) {
         final Document doc = node.getDocumentNode();
@@ -195,18 +160,12 @@ public class EventTargetImpl extends AbstractScriptableDelegate implements Event
         }
     }
 
-    public Function getFunction(final Object obj, final String type) {
-        final Object callable = getCallable(obj, type);
-        return callable instanceof Function f ? f : null;
-    }
-
     /**
-     * Engine-agnostic counterpart to {@link #getFunction(Object, String)}. Returns
-     * the registered callback for {@code type} as an opaque {@link Object} —
-     * a Rhino {@link Function} under Rhino, a GraalJS callable under GraalJS,
-     * or whatever the active engine produces. Use this when the caller needs
-     * to fire the handler regardless of engine; downcast only when a Rhino
-     * {@code Function} is specifically required (e.g. legacy W3C accessors).
+     * Returns the registered callback for {@code type} as an opaque
+     * {@link Object} — a polyglot {@code Value} or any other invocable the
+     * active engine produces. Used by element accessors like
+     * {@code getOnclick()}; the value is opaque to the caller, who routes it
+     * back through the engine via {@link JsEngine#call} to invoke.
      */
     public Object getCallable(final Object obj, final String type) {
         final String subType = type.startsWith("on") ? type.substring(2) : type;
@@ -273,14 +232,7 @@ public class EventTargetImpl extends AbstractScriptableDelegate implements Event
 
     private void onloadEvent(final Object onloadHandler) {
          if(target instanceof HTMLElementImpl elem){
-            // Rhino path keeps the legacy parent-scope behaviour; for any other
-            // engine we just route through the abstraction.
-            if (onloadHandler instanceof Function f) {
-                final WindowImpl window = (WindowImpl) elem.getDocumentNode().getDefaultView();
-                Executor.executeFunction(f.getParentScope(), f, window.getContextFactory());
-            } else {
-                invokeCallback(elem, onloadHandler, null);
-            }
+            invokeCallback(elem, onloadHandler, null);
         }
     }
 }

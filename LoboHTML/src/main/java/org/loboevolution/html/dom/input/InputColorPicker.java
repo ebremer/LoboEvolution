@@ -28,7 +28,6 @@ package org.loboevolution.html.dom.input;
 
 import org.loboevolution.html.control.InputControl;
 import org.loboevolution.html.dom.domimpl.HTMLInputElementImpl;
-import org.loboevolution.html.js.Executor;
 import org.loboevolution.html.js.WindowImpl;
 
 import javax.swing.*;
@@ -74,7 +73,7 @@ public class InputColorPicker {
 			public void mouseEntered(final MouseEvent e) {
 				if (modelNode.getOnmouseover() != null) {
 					final WindowImpl win = (WindowImpl) modelNode.getDocumentNode().getDefaultView();
-					Executor.executeFunction(modelNode, modelNode.getOnmouseover(), new Object[] {}, win.getContextFactory());
+					BasicInput.callHandler(modelNode, modelNode.getOnmouseover());
 				}
 			}
 		};

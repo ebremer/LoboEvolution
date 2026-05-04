@@ -38,7 +38,6 @@ import org.loboevolution.html.node.*;
 import org.loboevolution.js.geom.DOMRect;
 import org.loboevolution.js.geom.DOMRectList;
 import org.loboevolution.traversal.NodeFilter;
-import org.mozilla.javascript.Function;
 import org.w3c.dom.events.EventException;
 
 import java.net.URL;
@@ -808,26 +807,6 @@ public class SVGElementWrapper implements HTMLElement {
     @Override
     public NodeList querySelectorAll(String selectors) {
         return element.querySelectorAll(selectors);
-    }
-
-    @Override
-    public void addEventListener(String type, Function listener) {
-        element.addEventListener(type, listener);
-    }
-
-    @Override
-    public void addEventListener(String type, Function listener, boolean useCapture) {
-        element.addEventListener(type, listener, useCapture);
-    }
-
-    @Override
-    public void removeEventListener(String script, Function function) {
-        element.removeEventListener(script, function);
-    }
-
-    @Override
-    public void removeEventListener(String type, Function listener, boolean useCapture) {
-        element.removeEventListener(type, listener, useCapture);
     }
 
     @Override

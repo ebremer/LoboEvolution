@@ -26,57 +26,38 @@
 
 package org.loboevolution.html.node;
 
-import org.mozilla.javascript.ES6Iterator;
-import org.mozilla.javascript.Function;
+import java.util.Iterator;
 
 /**
  * NodeList objects are collections of nodes, usually returned by properties
  * such as Node.childNodes and methods such as document.querySelectorAll().
+ *
+ * <p>After Phase 12 the iterator/callback types use plain Java instead of
+ * Rhino's {@code ES6Iterator}/{@code Function}: GraalJS handles the JS-side
+ * iteration protocol automatically when given any {@link Iterable}.
  */
 public interface NodeList {
 
-    /**
-     * Returns the number of nodes in the collection.
-     *
-     * @return a {@link java.lang.Integer} object.
-     */
+    /** Number of nodes in the collection. */
     int getLength();
 
-    /**
-     * Returns the node with index index from the collection. The nodes are sorted
-     * in tree order.
-	 * @param index a {@link java.lang.Integer} object.
-     * @return a {@link org.loboevolution.html.node.Node} object.
-     */
+    /** Returns the node at {@code index} in tree order, or {@code null}. */
     Node item(int index);
 
-    /**
-     * Returns an iterator, allowing code to go through all key/value pairs contained in the collection.
-     * @return a {@link org.mozilla.javascript.ES6Iterator} object.
-     */
-    ES6Iterator entries();
+    /** Iterator over [index, node] pairs. */
+    Iterator<Object> entries();
+
+    /** Iterator over the indices. */
+    Iterator<Integer> keys();
+
+    /** Iterator over the contained nodes. */
+    Iterator<Node> values();
 
     /**
-     * Returns an iterator, allowing code to go through all the keys of the key/value pairs contained in the collection.
-     * @return a {@link org.mozilla.javascript.ES6Iterator} object.
+     * Executes the provided callback once per element. Callback type is
+     * opaque so any engine's invocable representation fits.
      */
-    ES6Iterator keys();
+    void forEach(Object function);
 
-    /**
-     * Returns an iterator allowing code to go through all values (nodes) of the key/value pairs contained in the collection.
-     * @return a {@link org.mozilla.javascript.ES6Iterator} object.
-     */
-    ES6Iterator values();
-
-    /**
-     * Executes a provided function once per NodeList element, passing the element as an argument to the function.
-     * @param function a {@link org.mozilla.javascript.Function} object.
-     */
-    void forEach(final Function function);
-
-    /**
-     * <p>toArray.</p>
-     * @return an array of {@link org.loboevolution.html.node.Node} objects.
-     */
     Node[] toArray();
 }

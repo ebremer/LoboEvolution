@@ -51,7 +51,6 @@ import org.loboevolution.html.xpath.XPathNSResolver;
 import org.loboevolution.html.xpath.XPathResult;
 import org.loboevolution.type.DocumentReadyState;
 import org.loboevolution.type.VisibilityState;
-import org.mozilla.javascript.Function;
 import org.w3c.dom.events.EventException;
 
 /**
@@ -1504,26 +1503,6 @@ public class DTMNodeProxy
     @Override
     public NodeList querySelectorAll(final String selectors) {
         return null;
-    }
-
-    @Override
-    public void addEventListener(final String type, final Function listener) {
-
-    }
-
-    @Override
-    public void addEventListener(final String type, final Function listener, final boolean useCapture) {
-
-    }
-
-    @Override
-    public void removeEventListener(final String type, final Function listener) {
-
-    }
-
-    @Override
-    public void removeEventListener(final String type, final Function listener, final boolean useCapture) {
-
     }
 
     @Override

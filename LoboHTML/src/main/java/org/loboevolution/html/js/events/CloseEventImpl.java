@@ -26,11 +26,11 @@
 
 package org.loboevolution.html.js.events;
 
+import java.util.Map;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.htmlunit.cssparser.dom.DOMException;
 import org.loboevolution.events.CloseEvent;
-import org.mozilla.javascript.NativeObject;
 
 @NoArgsConstructor
 @Getter
@@ -54,7 +54,7 @@ public class CloseEventImpl extends EventImpl implements CloseEvent {
 
         if (params != null && params.length > 0) {
             if (params.length > 1) {
-                if (params[1] != null && params[1] instanceof NativeObject obj) {
+                if (params[1] != null && params[1] instanceof Map<?,?> obj) {
                     this.wasClean = obj.get("wasClean") != null;
                     this.reason = (String) obj.get("reason");
                     this.code = (Double) obj.get("code");

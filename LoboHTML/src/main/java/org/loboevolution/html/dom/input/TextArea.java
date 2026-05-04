@@ -30,7 +30,6 @@ import org.loboevolution.common.Strings;
 import org.loboevolution.html.control.RUIControl;
 import org.loboevolution.html.control.TextAreaControl;
 import org.loboevolution.html.dom.domimpl.HTMLTextAreaElementImpl;
-import org.loboevolution.html.js.Executor;
 import org.loboevolution.html.js.WindowImpl;
 
 import javax.swing.*;
@@ -81,7 +80,7 @@ public class TextArea extends BasicInput {
 			public void mouseEntered(final MouseEvent e) {
 				if (modelNode.getOnmouseover() != null) {
 					final WindowImpl win = (WindowImpl) modelNode.getDocumentNode().getDefaultView();
-					Executor.executeFunction(modelNode, modelNode.getOnmouseover(), new Object[] {}, win.getContextFactory());
+					callHandler(modelNode, modelNode.getOnmouseover());
 				}
 			}
 		};

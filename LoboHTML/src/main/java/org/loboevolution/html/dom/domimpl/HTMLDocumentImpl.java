@@ -51,14 +51,12 @@ import org.loboevolution.html.js.css.StyleSheetListImpl;
 import org.loboevolution.html.node.Element;
 import org.loboevolution.html.node.Node;
 import org.loboevolution.css.StyleSheetList;
-import org.loboevolution.html.renderer.HtmlController;
 import org.loboevolution.views.DocumentView;
 import org.loboevolution.html.parser.XHtmlParser;
 import org.loboevolution.html.renderstate.RenderState;
 import org.loboevolution.html.renderstate.StyleSheetRenderState;
 import org.loboevolution.html.style.StyleSheetAggregator;
 import org.loboevolution.http.UserAgentContext;
-import org.mozilla.javascript.Function;
 import org.loboevolution.html.dom.UserDataHandler;
 import org.xml.sax.SAXException;
 
@@ -535,18 +533,15 @@ public class HTMLDocumentImpl extends DocumentImpl implements HTMLDocument, Docu
 			if (XHtmlParser.MODIFYING_KEY.equals(key) && data == Boolean.FALSE) {
 				final Event domContentLoadedEvent = createEvent("DOMContentLoaded");
 				domContentLoadedEvent.initEvent("load");
-				if (onloadHandler instanceof Function f) {
-					// Legacy Rhino path keeps the HtmlController side effect of
-					// publishing `event` as a global on the window scope.
-					HtmlController.getInstance().execute(this, f, domContentLoadedEvent);
-				} else {
-					// Engine-agnostic dispatch through the active JsEngine.
-					final org.loboevolution.html.js.WindowImpl window =
-							(org.loboevolution.html.js.WindowImpl) getDefaultView();
-					if (window != null) {
+				final org.loboevolution.html.js.WindowImpl window =
+						(org.loboevolution.html.js.WindowImpl) getDefaultView();
+				if (window != null) {
+					try {
 						org.loboevolution.html.js.engine.JsEngineFactory
 								.forDocument(this, window)
 								.call(onloadHandler, domContentLoadedEvent);
+					} catch (final Throwable ignored) {
+						// onload handlers are best-effort.
 					}
 				}
 			}

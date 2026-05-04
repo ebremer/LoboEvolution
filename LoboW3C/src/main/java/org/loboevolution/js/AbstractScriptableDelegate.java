@@ -25,23 +25,6 @@
  */
 package org.loboevolution.js;
 
-import org.mozilla.javascript.Scriptable;
-
-/**
- * <p>Abstract AbstractScriptableDelegate class.</p>
- */
+/** Empty base — see {@link ScriptableDelegate}. */
 public abstract class AbstractScriptableDelegate implements ScriptableDelegate {
-	private Scriptable scriptable;
-
-	/** {@inheritDoc} */
-	@Override
-	public Scriptable getScriptable() {
-		return this.scriptable;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void setScriptable(Scriptable scriptable) {
-		this.scriptable = scriptable;
-	}
 }

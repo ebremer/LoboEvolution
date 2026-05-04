@@ -44,7 +44,6 @@ import org.loboevolution.html.xpath.XPathNSResolver;
 import org.loboevolution.html.xpath.XPathResult;
 import org.loboevolution.type.DocumentReadyState;
 import org.loboevolution.type.VisibilityState;
-import org.mozilla.javascript.Function;
 import org.w3c.dom.events.EventException;
 import org.xml.sax.SAXException;
 
@@ -642,30 +641,6 @@ public class XMLDocument implements Document {
 	public boolean contains(final Node other) {
 
 		return doc.contains(other);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void addEventListener(final String type, final Function listener) {
-		doc.addEventListener(type, listener);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void addEventListener(final String type, final Function listener, final boolean useCapture) {
-		doc.addEventListener(type, listener, useCapture);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void removeEventListener(final String type, final Function listener) {
-		doc.removeEventListener(type, listener);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void removeEventListener(final String type, final Function listener, final boolean useCapture) {
-		doc.removeEventListener(type, listener, useCapture);
 	}
 
 	@Override

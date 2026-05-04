@@ -35,14 +35,10 @@ import java.awt.event.ActionEvent;
 import java.lang.ref.WeakReference;
 
 /**
- * Engine-agnostic counterpart to {@link FunctionTimerTask}. Holds the callback
- * as an opaque {@link Object} and dispatches it through whichever
- * {@link JsEngine} owns the associated document.
- *
- * <p>Used by {@code WindowImpl.setTimeout/setInterval} when the supplied
- * callback is neither a Rhino {@link org.mozilla.javascript.Function} nor a
- * string expression — i.e., the typical case under GraalJS where a JS
- * function arrives as a polyglot {@code Value}.
+ * Holds a setTimeout/setInterval callback as an opaque {@link Object} and
+ * dispatches it through whichever {@link JsEngine} owns the associated
+ * document. Used by {@code WindowImpl.setTimeout/setInterval} for any
+ * non-string callback (GraalJS polyglot {@code Value}, etc.).
  */
 @Slf4j
 class CallableTimerTask extends WeakWindowTask {

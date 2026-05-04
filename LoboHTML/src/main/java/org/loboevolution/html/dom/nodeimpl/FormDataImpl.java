@@ -29,15 +29,12 @@ package org.loboevolution.html.dom.nodeimpl;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.loboevolution.html.dom.domimpl.HTMLDocumentImpl;
-import org.loboevolution.html.js.Executor;
 import org.loboevolution.html.node.FormData;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.loboevolution.html.node.AbstractList;
-import org.loboevolution.js.JavaScript;
-import org.mozilla.javascript.*;
 
 /**
  * <p>FormDataImpl class.</p>
@@ -67,28 +64,19 @@ public class FormDataImpl extends AbstractList<FormDataImpl.Field> implements Fo
         return stream().anyMatch(f -> name.equals(f.getKey()));
     }
 
-    /** {@inheritDoc} */
     @Override
-    public ES6Iterator entries() {
-        final Scriptable scope = (Scriptable) doc.getUserData(Executor.SCOPE_KEY);
-        final Scriptable thisScope = (Scriptable) JavaScript.getInstance().getJavascriptObject(this, scope);
-        return new NativeArrayIterator(thisScope, thisScope, NativeArrayIterator.ARRAY_ITERATOR_TYPE.ENTRIES);
+    public Iterator<Object[]> entries() {
+        return stream().map(f -> new Object[] { f.getKey(), f.getValue() }).iterator();
     }
 
-    /** {@inheritDoc}*/
     @Override
-    public ES6Iterator keys() {
-        final Scriptable scope = (Scriptable) doc.getUserData(Executor.SCOPE_KEY);
-        final Scriptable thisScope = (Scriptable) JavaScript.getInstance().getJavascriptObject(this, scope);
-        return new NativeArrayIterator(thisScope, thisScope, NativeArrayIterator.ARRAY_ITERATOR_TYPE.KEYS);
+    public Iterator<String> keys() {
+        return stream().map(Field::getKey).iterator();
     }
 
-    /** {@inheritDoc} */
     @Override
-    public ES6Iterator values() {
-        final Scriptable scope = (Scriptable) doc.getUserData(Executor.SCOPE_KEY);
-        final Scriptable thisScope = (Scriptable) JavaScript.getInstance().getJavascriptObject(this, scope);
-        return new NativeArrayIterator(thisScope, thisScope, NativeArrayIterator.ARRAY_ITERATOR_TYPE.VALUES);
+    public Iterator<Object> values() {
+        return stream().map(Field::getValue).iterator();
     }
 
     @Override

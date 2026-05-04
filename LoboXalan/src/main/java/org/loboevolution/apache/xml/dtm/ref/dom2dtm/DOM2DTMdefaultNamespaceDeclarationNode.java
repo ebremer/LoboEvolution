@@ -32,7 +32,6 @@ import org.loboevolution.html.dom.UserDataHandler;
 import org.loboevolution.html.node.*;
 import org.loboevolution.events.Event;
 import org.loboevolution.traversal.NodeFilter;
-import org.mozilla.javascript.Function;
 import org.w3c.dom.events.EventException;
 
 import java.net.URL;
@@ -572,26 +571,6 @@ public class DOM2DTMdefaultNamespaceDeclarationNode implements Attr, TypeInfo {
   @Override
   public String getBaseURI() {
     return null;
-  }
-
-  @Override
-  public void addEventListener(final String type, final Function listener) {
-
-  }
-
-  @Override
-  public void addEventListener(final String type, final Function listener, final boolean useCapture) {
-
-  }
-
-  @Override
-  public void removeEventListener(final String type, final Function listener) {
-
-  }
-
-  @Override
-  public void removeEventListener(final String type, final Function listener, final boolean useCapture) {
-
   }
 
   @Override

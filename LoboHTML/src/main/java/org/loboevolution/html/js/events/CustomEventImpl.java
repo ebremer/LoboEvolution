@@ -26,11 +26,11 @@
 
 package org.loboevolution.html.js.events;
 
+import java.util.Map;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.htmlunit.cssparser.dom.DOMException;
 import org.loboevolution.events.CustomEvent;
-import org.mozilla.javascript.NativeObject;
 
 @NoArgsConstructor
 @Getter
@@ -51,7 +51,7 @@ public class CustomEventImpl extends EventImpl implements CustomEvent {
         }
 
         if (params.length > 1) {
-            if (params[1] != null && params[1] instanceof NativeObject obj) {
+            if (params[1] != null && params[1] instanceof Map<?,?> obj) {
                 this.detail = obj.get("detail");
             }
         }

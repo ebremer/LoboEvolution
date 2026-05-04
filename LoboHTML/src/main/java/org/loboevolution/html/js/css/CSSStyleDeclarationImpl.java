@@ -44,7 +44,6 @@ import org.loboevolution.html.parser.FontParser;
 import org.loboevolution.html.style.FontValues;
 import org.loboevolution.html.style.HtmlValues;
 import org.loboevolution.html.style.setter.*;
-import org.mozilla.javascript.annotations.JSFunction;
 
 import java.util.*;
 import java.util.regex.Pattern;
@@ -201,14 +200,12 @@ public class CSSStyleDeclarationImpl implements CSSStyleDeclaration, ProxyObject
 
     /** {@inheritDoc} */
     @Override
-    @JSFunction
     public String getPropertyValue(final String property) {
         return style.getPropertyValue(property);
     }
 
     /** {@inheritDoc} */
     @Override
-    @JSFunction
     public String getPropertyPriority(final String property) {
         return style.getPropertyPriority(property);
     }
@@ -221,7 +218,6 @@ public class CSSStyleDeclarationImpl implements CSSStyleDeclaration, ProxyObject
         return Strings.isNotBlank(style.getPropertyPriority(property));
     }
 
-    @JSFunction
     public void setProperty(final String propertyName, final String value) {
        this.setProperty(propertyName, value, "");
     }

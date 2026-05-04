@@ -35,7 +35,6 @@ import org.loboevolution.html.node.*;
 import org.loboevolution.events.Event;
 import org.loboevolution.html.xpath.XPathNamespace;
 import org.loboevolution.traversal.NodeFilter;
-import org.mozilla.javascript.Function;
 import org.loboevolution.html.dom.UserDataHandler;
 import org.w3c.dom.events.EventException;
 
@@ -425,34 +424,6 @@ public class XPathNamespaceImpl implements XPathNamespace {
 	@Override
 	public boolean contains(final Node other) {
 		return m_attributeNode.contains(other);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void addEventListener(final String type, final Function listener) {
-		m_attributeNode.addEventListener(type, listener);
-		
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void addEventListener(final String type, final Function listener, final boolean useCapture) {
-		m_attributeNode.addEventListener(type, listener, useCapture);
-		
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void removeEventListener(final String type, final Function listener) {
-		m_attributeNode.removeEventListener(type, listener);
-		
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void removeEventListener(final String type, final Function listener, final boolean useCapture) {
-		m_attributeNode.removeEventListener(type, listener, useCapture);
-
 	}
 
 	@Override

@@ -25,26 +25,11 @@
  */
 package org.loboevolution.js;
 
-import org.mozilla.javascript.Scriptable;
-
 /**
- * Java classes used in Javascript should implement this interface. While all
- * classes can be mapped to JavaScript, implementing this interface ensures that
- * the Java object proxy is not garbage collected as long as the Java object is
- * not garbage collected.
+ * Marker interface for Java classes exposed to scripting. Historically held a
+ * Rhino {@code Scriptable} reference to keep the JS proxy alive; under GraalJS
+ * the polyglot runtime tracks host-object lifetime itself, so this is now empty
+ * and exists only to preserve the type hierarchy for existing call sites.
  */
 public interface ScriptableDelegate {
-	/**
-	 * <p>getScriptable.</p>
-	 *
-	 * @return a {@link org.mozilla.javascript.Scriptable} object.
-	 */
-	Scriptable getScriptable();
-
-	/**
-	 * <p>setScriptable.</p>
-	 *
-	 * @param scriptable a {@link org.mozilla.javascript.Scriptable} object.
-	 */
-	void setScriptable(Scriptable scriptable);
 }
