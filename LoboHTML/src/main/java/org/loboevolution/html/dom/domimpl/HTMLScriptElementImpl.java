@@ -69,6 +69,12 @@ public class HTMLScriptElementImpl extends HTMLElementImpl implements HTMLScript
 
 	private String text;
 
+	/** HTML5 "already started" flag. Set on scripts that arrive via innerHTML /
+	 *  outerHTML / insertAdjacentHTML (parser-inserted=false in spec terms);
+	 *  prevents execution when the parser later signals end-of-element. */
+	@lombok.Setter
+	private boolean alreadyStarted;
+
 	/**
 	 * <p>Constructor for HTMLScriptElementImpl.</p>
 	 */
@@ -356,7 +362,7 @@ public class HTMLScriptElementImpl extends HTMLElementImpl implements HTMLScript
 	/** {@inheritDoc} */
 	@Override
 	public Object setUserData(final String key, final Object data, final UserDataHandler handler) {
-		if (XHtmlParser.MODIFYING_KEY.equals(key) && !Boolean.TRUE.equals(data)) {
+		if (XHtmlParser.MODIFYING_KEY.equals(key) && !Boolean.TRUE.equals(data) && !alreadyStarted) {
 			processScript();
 		}
 		return super.setUserData(key, data, handler);

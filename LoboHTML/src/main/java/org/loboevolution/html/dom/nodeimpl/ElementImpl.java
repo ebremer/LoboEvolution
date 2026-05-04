@@ -596,7 +596,7 @@ public class ElementImpl extends NodeImpl implements Element {
 	public void setInnerHTML(final String newHtml) {
 		final HTMLDocumentImpl document = (HTMLDocumentImpl) this.document;
 		if (document != null) {
-			final XHtmlParser parser = new XHtmlParser(document.getUserAgentContext(), document, false);
+			final XHtmlParser parser = new XHtmlParser(document.getUserAgentContext(), document, false, false);
 			this.nodeList.clear();
 			try (final Reader reader = new StringReader(newHtml)) {
 				parser.parse(reader, this);
@@ -702,7 +702,7 @@ public class ElementImpl extends NodeImpl implements Element {
 				list.remove(idx);
 
 				try (final Reader reader = new StringReader(newHtml != null ? newHtml : "")) {
-					final XHtmlParser parser = new XHtmlParser(document.getUserAgentContext(), document, false);
+					final XHtmlParser parser = new XHtmlParser(document.getUserAgentContext(), document, false, false);
 					parser.parse(reader, this.parentNode);
 				} catch (final Exception thrown) {
 					this.warn("setOuterHTML(): Error setting inner HTML.", thrown);
@@ -937,7 +937,7 @@ public class ElementImpl extends NodeImpl implements Element {
 	public void insertAdjacentHTML(final String position, final String text) {
 		final HTMLDocumentImpl document = (HTMLDocumentImpl) this.document;
 		if (document != null) {
-			final XHtmlParser parser = new XHtmlParser(document.getUserAgentContext(), document, false);
+			final XHtmlParser parser = new XHtmlParser(document.getUserAgentContext(), document, false, false);
 			try (final Reader reader = new StringReader(text)) {
 				parser.parse(reader, this);
 				switch (position) {

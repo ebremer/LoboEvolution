@@ -96,31 +96,31 @@ public class XHtmlParser {
 
 	private boolean needRoot = false;
 
+	/** When false, script elements parsed by this instance are flagged
+	 *  already-started so they don't execute. Used by innerHTML / outerHTML /
+	 *  insertAdjacentHTML, per HTML5 spec ("parser-inserted=false"). */
+	private boolean executeScripts = true;
+
 	@Getter
 	private final Map<String, String> namespaces = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 
-	/**
-	 * Constructs a XHtmlParser.
-	 *
-	 * @param ucontext The user agent context.
-	 * @param document A W3C Document instance.
-	 */
 	public XHtmlParser(final UserAgentContext ucontext, final Document document) {
 		this.ucontext = ucontext;
 		this.document = document;
 	}
 
-	/**
-	 * Constructs a XHtmlParser.
-	 *
-	 * @param ucontext     The user agent context.
-	 * @param document     An W3C Document instance.
-	 * @param needRoot a boolean.
-	 */
 	public XHtmlParser(final UserAgentContext ucontext, final Document document, final boolean needRoot) {
 		this.ucontext = ucontext;
 		this.document = document;
 		this.needRoot = needRoot;
+	}
+
+	public XHtmlParser(final UserAgentContext ucontext, final Document document,
+					   final boolean needRoot, final boolean executeScripts) {
+		this.ucontext = ucontext;
+		this.document = document;
+		this.needRoot = needRoot;
+		this.executeScripts = executeScripts;
 	}
 
 	/**
@@ -493,6 +493,12 @@ public class XHtmlParser {
 
 						element.setUserData(MODIFYING_KEY, Boolean.TRUE, null);
 
+						// Per HTML5: scripts inserted via innerHTML / outerHTML /
+						// insertAdjacentHTML must not execute (parser-inserted=false).
+						if (!executeScripts && element instanceof org.loboevolution.html.dom.domimpl.HTMLScriptElementImpl s) {
+							s.setAlreadyStarted(true);
+						}
+
 						safeAppendChild(parent, element);
 						final AtomicReference<Element> elementAtomicReference = new AtomicReference<>(element);
 
@@ -697,12 +703,12 @@ public class XHtmlParser {
 						}
 						sb.append("</");
 						sb.append(tempBuffer);
-						// NOTE: when an end-tag mismatch causes the inner while
-						// to break, the consumed '>' is intentionally dropped.
-						// Restoring it correctly captures the script body but
-						// then exposes a separate latent bug in Lobo: scripts
-						// inserted via innerHTML get executed (HTML5 says they
-						// shouldn't). See graaljs_phase8_audit.md, gap #5b.
+						// Restore the '>' the inner loop consumed when the tag-name
+						// didn't match: the unmatched tag is just text inside this
+						// raw-text element (e.g. "</div>" inside a <script>). This
+						// is HTML5 spec; the prior code dropped the '>' and produced
+						// e.g. "code</div" instead of "code</div>".
+						sb.append('>');
 					} else if (ch == '!') {
 						final String nextSeven = readN(reader, 7);
 						if ("[CDATA[".equals(nextSeven)) {

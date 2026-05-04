@@ -151,7 +151,8 @@
       "Bash(javap -cp '~/.m2/repository/org/graalvm/polyglot/polyglot/25.0.0/polyglot-25.0.0.jar' 'org.graalvm.polyglot.HostAccess$Builder')",
       "Bash(javap -cp ~/.m2/repository/org/graalvm/js/js-language/25.0.0/js-language-25.0.0.jar com.oracle.truffle.js.runtime.JSContextOptions)",
       "Bash(javap -cp ~/.m2/repository/org/graalvm/js/js-language/25.0.0/js-language-25.0.0.jar -constants com.oracle.truffle.js.runtime.JSContextOptions)",
-      "Bash(mvn -pl LoboUnitTest -am test -Dtest='HTMLScriptElementTest#onReadyStateChangeHandler' -DfailIfNoTests=false)"
+      "Bash(mvn -pl LoboUnitTest -am test -Dtest='HTMLScriptElementTest#onReadyStateChangeHandler' -DfailIfNoTests=false)",
+      "Bash(grep -v \"^.*//\")"
     ]
   }
 }
