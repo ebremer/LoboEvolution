@@ -118,4 +118,57 @@ class LoboGraalHostAccessTest {
             assertEquals("hi!", result.asString());
         }
     }
+
+    /** Bean with one-arg method. Documents that GraalJS host dispatch is strict
+     *  by default — the varargs absorber pattern below is the workaround. */
+    public static class ArityBean {
+        public String oneArg(String name) { return "got:" + name; }
+    }
+
+    @Test
+    void extraArgWithoutAbsorberIsRejected() {
+        try (Context ctx = newContext()) {
+            ctx.getBindings("js").putMember("bean", new ArityBean());
+            org.junit.jupiter.api.Assertions.assertThrows(
+                    org.graalvm.polyglot.PolyglotException.class,
+                    () -> ctx.eval("js", "bean.oneArg('hello', 'extra')"));
+        }
+    }
+
+    /** Bean with both fixed-arity and varargs overload of same name. Hypothesis:
+     *  GraalJS picks the varargs overload when the fixed one's arity doesn't match. */
+    public static class VarargsOverloadBean {
+        public String oneArg(String name) { return "got1:" + name; }
+        public String oneArg(String name, Object... extra) { return "gotV:" + name; }
+    }
+
+    @Test
+    void varargsOverloadAbsorbsExtraArgs() {
+        try (Context ctx = newContext()) {
+            ctx.getBindings("js").putMember("bean", new VarargsOverloadBean());
+            final Value one = ctx.eval("js", "bean.oneArg('a')");
+            assertEquals("got1:a", one.asString());
+            final Value two = ctx.eval("js", "bean.oneArg('a', 'b')");
+            assertEquals("gotV:a", two.asString());
+        }
+    }
+
+    /** Varargs absorber as a default method on the interface, fixed-arity on impl. */
+    public interface ArityIface {
+        String oneArg(String name);
+        default String oneArg(String name, Object... extra) { return oneArg(name); }
+    }
+
+    public static class IfaceImpl implements ArityIface {
+        @Override public String oneArg(String name) { return "got:" + name; }
+    }
+
+    @Test
+    void defaultMethodVarargsOverloadAbsorbsExtras() {
+        try (Context ctx = newContext()) {
+            ctx.getBindings("js").putMember("bean", new IfaceImpl());
+            final Value two = ctx.eval("js", "bean.oneArg('a', 'b')");
+            assertEquals("got:a", two.asString());
+        }
+    }
 }

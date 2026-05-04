@@ -951,6 +951,23 @@ public class DTMNodeProxy
     /**
      * {@inheritDoc}
      */
+    /** Resolves the diamond default-method conflict between Document and Element
+     *  for the arity-tolerance varargs overloads. */
+    @Override
+    public HTMLCollection getElementsByTagName(final String tagname, final Object... extra) {
+        return getElementsByTagName(tagname);
+    }
+
+    @Override
+    public HTMLCollection getElementsByTagNameNS(final String namespaceURI, final String localName, final Object... extra) {
+        return getElementsByTagNameNS(namespaceURI, localName);
+    }
+
+    @Override
+    public HTMLCollection getElementsByClassName(final String classNames, final Object... extra) {
+        return getElementsByClassName(classNames);
+    }
+
     @Override
     public final HTMLCollection getElementsByTagNameNS(final String namespaceURI, final String localName) {
         final List<Node> listVector = new ArrayList<>();

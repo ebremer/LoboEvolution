@@ -145,7 +145,13 @@
       "Bash(sed -i '1228,1356d' D:/projects/LoboEvolution/LoboHTML/src/main/java/org/loboevolution/html/js/WindowImpl.java)",
       "Bash(sed -n '1225,1232p' D:/projects/LoboEvolution/LoboHTML/src/main/java/org/loboevolution/html/js/WindowImpl.java)",
       "Bash(mvn -pl LoboHTML -am -q -DskipTests compile)",
-      "Bash(mvn -q clean package -DskipTests)"
+      "Bash(mvn -q clean package -DskipTests)",
+      "Bash(mvn -pl LoboUnitTest -am test -Dtest='HTMLElementTest,HTMLScriptElementTest' -Dsurefire.failIfNoSpecifiedTests=false)",
+      "Bash(awk '/<testcase/,/<\\\\/testcase>/' D:/projects/LoboEvolution/target/LoboUnitTest/surefire-reports/TEST-org.loboevolution.html.HTMLScriptElementTest.xml)",
+      "Bash(javap -cp '~/.m2/repository/org/graalvm/polyglot/polyglot/25.0.0/polyglot-25.0.0.jar' 'org.graalvm.polyglot.HostAccess$Builder')",
+      "Bash(javap -cp ~/.m2/repository/org/graalvm/js/js-language/25.0.0/js-language-25.0.0.jar com.oracle.truffle.js.runtime.JSContextOptions)",
+      "Bash(javap -cp ~/.m2/repository/org/graalvm/js/js-language/25.0.0/js-language-25.0.0.jar -constants com.oracle.truffle.js.runtime.JSContextOptions)",
+      "Bash(mvn -pl LoboUnitTest -am test -Dtest='HTMLScriptElementTest#onReadyStateChangeHandler' -DfailIfNoTests=false)"
     ]
   }
 }

@@ -451,4 +451,18 @@ public interface Node extends ModelNode, EventTarget {
 	Node getFeature(String feature, String version);
 
 	Document getDocumentNode();
+
+	// Arity-tolerance overloads — see Element.java for rationale.
+	default Node appendChild(Node newChild, Object... extra) { return appendChild(newChild); }
+	default Node removeChild(Node oldChild, Object... extra) { return removeChild(oldChild); }
+	default Node replaceChild(Node newChild, Node oldChild, Object... extra) { return replaceChild(newChild, oldChild); }
+	default Node insertBefore(Node newChild, Node refChild, Object... extra) { return insertBefore(newChild, refChild); }
+	default Node cloneNode(boolean deep, Object... extra) { return cloneNode(deep); }
+	default boolean contains(Node other, Object... extra) { return contains(other); }
+	default boolean isEqualNode(Node otherNode, Object... extra) { return isEqualNode(otherNode); }
+	default boolean isSameNode(Node otherNode, Object... extra) { return isSameNode(otherNode); }
+	default boolean isDefaultNamespace(String namespace, Object... extra) { return isDefaultNamespace(namespace); }
+	default String lookupNamespaceURI(String prefix, Object... extra) { return lookupNamespaceURI(prefix); }
+	default String lookupPrefix(String namespace, Object... extra) { return lookupPrefix(namespace); }
+	default short compareDocumentPosition(Node other, Object... extra) { return compareDocumentPosition(other); }
 }

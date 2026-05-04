@@ -51,4 +51,33 @@ public interface EventTarget {
     boolean dispatchEvent(Node element, Event evt);
 
     boolean dispatchEvent(Event evt) throws EventException;
+
+    // Arity-tolerance overloads — see Element.java for rationale. Modern JS
+    // sometimes passes an options object as the third arg
+    // (addEventListener(type, fn, {passive: true})); the boolean overload
+    // covers useCapture, this varargs default absorbs anything beyond.
+    default void addEventListener(String type, Object listener, boolean useCapture, Object... extra) {
+        addEventListener(type, listener, useCapture);
+    }
+    default void removeEventListener(String type, Object listener, boolean useCapture, Object... extra) {
+        removeEventListener(type, listener, useCapture);
+    }
+    /** Modern overload: third arg is an AddEventListenerOptions object instead of boolean.
+     *  We only honor the {@code capture} property; everything else is ignored. */
+    default void addEventListener(String type, Object listener, Object options) {
+        addEventListener(type, listener, isCaptureOption(options));
+    }
+    default void removeEventListener(String type, Object listener, Object options) {
+        removeEventListener(type, listener, isCaptureOption(options));
+    }
+    default boolean dispatchEvent(Event evt, Object... extra) throws EventException { return dispatchEvent(evt); }
+
+    static boolean isCaptureOption(Object options) {
+        if (options instanceof Boolean b) return b;
+        if (options instanceof java.util.Map<?, ?> m) {
+            final Object v = m.get("capture");
+            return v instanceof Boolean && (Boolean) v;
+        }
+        return false;
+    }
 }

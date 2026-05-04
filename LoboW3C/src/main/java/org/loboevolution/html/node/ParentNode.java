@@ -77,5 +77,9 @@ public interface ParentNode extends Node {
      * @return a {@link org.loboevolution.html.node.NodeList} object.
      */
     NodeList querySelectorAll(String selectors);
+
+    // Arity-tolerance overloads — see Element.java for rationale.
+    default Element querySelector(String selectors, Object... extra) { return querySelector(selectors); }
+    default NodeList querySelectorAll(String selectors, Object... extra) { return querySelectorAll(selectors); }
 }
 

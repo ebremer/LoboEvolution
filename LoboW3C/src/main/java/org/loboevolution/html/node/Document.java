@@ -937,5 +937,19 @@ public interface Document extends Node, NonElementParentNode, ParentNode, Docume
 
 	void setXml(boolean xml);
 
-
+	// Arity-tolerance overloads — see Element.java for rationale.
+	default Element createElement(String tagName, Object... extra) { return createElement(tagName); }
+	default Element createElementNS(String namespace, String qualifiedName, Object... extra) { return createElementNS(namespace, qualifiedName); }
+	default Text createTextNode(String data, Object... extra) throws DOMException { return createTextNode(data); }
+	default Comment createComment(String data, Object... extra) { return createComment(data); }
+	default Attr createAttribute(String localName, Object... extra) { return createAttribute(localName); }
+	default Element getElementById(String elementId, Object... extra) { return getElementById(elementId); }
+	default HTMLCollection getElementsByClassName(String classNames, Object... extra) { return getElementsByClassName(classNames); }
+	default HTMLCollection getElementsByName(String elementName, Object... extra) { return getElementsByName(elementName); }
+	default HTMLCollection getElementsByTagName(String qualifiedName, Object... extra) { return getElementsByTagName(qualifiedName); }
+	default HTMLCollection getElementsByTagNameNS(String namespaceURI, String localName, Object... extra) { return getElementsByTagNameNS(namespaceURI, localName); }
+	default void write(String text, Object... extra) { write(text); }
+	default void writeln(String text, Object... extra) { writeln(text); }
+	default Node importNode(Node importedNode, boolean deep, Object... extra) { return importNode(importedNode, deep); }
+	default Node adoptNode(Node source, Object... extra) { return adoptNode(source); }
 }

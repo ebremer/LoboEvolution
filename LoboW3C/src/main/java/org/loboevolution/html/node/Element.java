@@ -534,5 +534,29 @@ public interface Element extends Node, InnerHTML, NonDocumentTypeChildNode, Pare
      * @param text a {@link java.lang.String} object.
      */
     void insertAdjacentHTML(String position, String text);
+
+    // Arity-tolerance overloads — Web IDL says "extra arguments are ignored"
+    // but GraalJS host dispatch is strict. A JS call with extra args picks
+    // the matching-arity varargs default, which forwards to the real method.
+    default String getAttribute(String name, Object... extra) { return getAttribute(name); }
+    default String getAttributeNS(String namespace, String localName, Object... extra) { return getAttributeNS(namespace, localName); }
+    default Attr getAttributeNode(String name, Object... extra) { return getAttributeNode(name); }
+    default Attr getAttributeNodeNS(String namespaceURI, String localName, Object... extra) { return getAttributeNodeNS(namespaceURI, localName); }
+    default HTMLCollection getElementsByClassName(String classNames, Object... extra) { return getElementsByClassName(classNames); }
+    default HTMLCollection getElementsByTagName(String qualifiedName, Object... extra) { return getElementsByTagName(qualifiedName); }
+    default HTMLCollection getElementsByTagNameNS(String namespaceURI, String localName, Object... extra) { return getElementsByTagNameNS(namespaceURI, localName); }
+    default boolean hasAttribute(String qualifiedName, Object... extra) { return hasAttribute(qualifiedName); }
+    default boolean hasAttributeNS(String namespace, String localName, Object... extra) { return hasAttributeNS(namespace, localName); }
+    default boolean matches(String selectors, Object... extra) { return matches(selectors); }
+    default void removeAttribute(String qualifiedName, Object... extra) { removeAttribute(qualifiedName); }
+    default void removeAttributeNS(String namespace, String localName, Object... extra) { removeAttributeNS(namespace, localName); }
+    default void setAttribute(String qualifiedName, String value, Object... extra) { setAttribute(qualifiedName, value); }
+    default void setAttributeNS(String namespace, String qualifiedName, String value, Object... extra) { setAttributeNS(namespace, qualifiedName, value); }
+    default boolean toggleAttribute(String qualifiedName, boolean force, Object... extra) { return toggleAttribute(qualifiedName, force); }
+    default Node insertAdjacentElement(String where, Node insertedElement, Object... extra) { return insertAdjacentElement(where, insertedElement); }
+    default void insertAdjacentHTML(String position, String text, Object... extra) { insertAdjacentHTML(position, text); }
+    default void scroll(int x, int y, Object... extra) { scroll(x, y); }
+    default void scrollBy(int x, int y, Object... extra) { scrollBy(x, y); }
+    default void scrollTo(int x, int y, Object... extra) { scrollTo(x, y); }
 }
 
