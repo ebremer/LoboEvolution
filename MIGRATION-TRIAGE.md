@@ -116,7 +116,14 @@ etc. are not. `getComputedStyle` alone is used pervasively across the CSS tests.
 **Hits:** a large share of the `css` cluster and any test calling a bare window
 function.
 
-### RC-C — `new DOMParser().parseFromString(...)` NPEs 🟠
+### RC-C — `new DOMParser().parseFromString(...)` NPEs 🟠 — FIXED (2026-07-23)
+> `parseFromString` mangled the source (`replace("<","><").replace(">>",">")`),
+> which corrupted valid XML (`<a>1</a>` -> `<a>1></a>`); the SAX parse then failed,
+> left `XMLDocument.doc` null, and `getXML()` NPE'd. Parse the source verbatim and
+> null-guard `getXmlEncoding()`. **Suite: 2,546 → 2,537 (−9), zero regressions.**
+> Guarded by `GraalDomConstructorsTest.domParserParsesXml`.
+
+
 ```
 java.lang.NullPointerException: Cannot invoke
   "Document.getXmlEncoding()" because "this.doc" is null

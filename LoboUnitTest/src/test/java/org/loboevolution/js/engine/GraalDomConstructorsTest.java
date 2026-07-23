@@ -110,4 +110,12 @@ class GraalDomConstructorsTest extends LoboWebDriver {
     void imageConstructor() {
         assertEquals("[object HTMLImageElement]", eval("'' + new Image()"));
     }
+
+    @Test
+    void domParserParsesXml() {
+        // parseFromString used to corrupt the source and NPE on a null doc.
+        final String parse = "new DOMParser().parseFromString('<root><a>1</a></root>', 'text/xml')";
+        assertEquals("root", eval(parse + ".documentElement.nodeName"));
+        assertEquals("1", eval("'' + " + parse + ".getElementsByTagName('a').length"));
+    }
 }

@@ -546,8 +546,7 @@ public class XMLDocument implements Document {
 	/** {@inheritDoc} */
 	@Override
 	public String getXmlEncoding() {
-
-		return doc.getXmlEncoding();
+		return doc == null ? null : doc.getXmlEncoding();
 	}
 
 	/** {@inheritDoc} */

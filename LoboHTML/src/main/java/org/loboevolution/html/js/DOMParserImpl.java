@@ -47,8 +47,6 @@ public class DOMParserImpl extends AbstractScriptableDelegate implements DOMPars
 	/** {@inheritDoc} */
 	@Override
 	public Document parseFromString(final String html, final String type) {
-		String xml = html.replace("<", "><").replace(">>", ">");
-		xml = xml.substring(1);
 		if (!"text/html".equals(type) &&
 				!"text/xml".equals(type) &&
 				!"application/xml".equals(type) &&
@@ -56,8 +54,12 @@ public class DOMParserImpl extends AbstractScriptableDelegate implements DOMPars
 				!"image/svg+xml".equals(type)) {
 			throw new IllegalArgumentException("Invalid 'type' parameter: " + type);
 		}
+		// Parse the source verbatim. A previous transform
+		// (html.replace("<","><").replace(">>",">").substring(1)) corrupted
+		// valid XML — e.g. "<a>1</a>" became "<a>1></a>" — so the SAX parse
+		// failed, left XMLDocument.doc null, and getXML() then NPE'd.
 		final XMLDocument document = new XMLDocument();
-		document.loadXML(xml + ">");
+		document.loadXML(html == null ? "" : html.trim());
 		return document;
 	}
 
