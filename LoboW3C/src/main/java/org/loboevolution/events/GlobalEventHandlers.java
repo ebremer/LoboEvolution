@@ -1808,7 +1808,7 @@ public interface GlobalEventHandlers extends EventTarget {
     /**
      * <p>getOnfullscreenchange.</p>
      *
-     * @return a {@link org.mozilla.javascript.Object} object.
+     * @return a {@link Object} object.
      */
     Object getOnfullscreenchange();
 

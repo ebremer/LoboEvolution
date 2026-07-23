@@ -36,91 +36,91 @@ public interface WindowEventHandlers extends EventTarget {
 	/**
 	 * <p>getOnafterprint.</p>
 	 *
-	 * @return a {@link org.mozilla.javascript.Object} object.
+	 * @return a {@link Object} object.
 	 */
 	Object getOnafterprint();
 
 	/**
 	 * <p>getOnbeforeprint.</p>
 	 *
-	 * @return a {@link org.mozilla.javascript.Object} object.
+	 * @return a {@link Object} object.
 	 */
 	Object getOnbeforeprint();
 
 	/**
 	 * <p>getOnlanguagechange.</p>
 	 *
-	 * @return a {@link org.mozilla.javascript.Object} object.
+	 * @return a {@link Object} object.
 	 */
 	Object getOnlanguagechange();
 
 	/**
 	 * <p>getOnoffline.</p>
 	 *
-	 * @return a {@link org.mozilla.javascript.Object} object.
+	 * @return a {@link Object} object.
 	 */
 	Object getOnoffline();
 
 	/**
 	 * <p>getOnonline.</p>
 	 *
-	 * @return a {@link org.mozilla.javascript.Object} object.
+	 * @return a {@link Object} object.
 	 */
 	Object getOnonline();
 
 	/**
 	 * <p>getOnunload.</p>
 	 *
-	 * @return a {@link org.mozilla.javascript.Object} object.
+	 * @return a {@link Object} object.
 	 */
 	Object getOnunload();
 
 	/**
 	 * <p>setOnunload.</p>
 	 *
-	 * @param onunload a {@link org.mozilla.javascript.Object} object.
+	 * @param onunload a {@link Object} object.
 	 */
 	void setOnunload(Object onunload);
 
 	/**
 	 * <p>setOnonline.</p>
 	 *
-	 * @param ononline a {@link org.mozilla.javascript.Object} object.
+	 * @param ononline a {@link Object} object.
 	 */
 	void setOnonline(Object ononline);
 
 	/**
 	 * <p>setOnoffline.</p>
 	 *
-	 * @param onoffline a {@link org.mozilla.javascript.Object} object.
+	 * @param onoffline a {@link Object} object.
 	 */
 	void setOnoffline(Object onoffline);
 
 	/**
 	 * <p>setOnlanguagechange.</p>
 	 *
-	 * @param onlanguagechange a {@link org.mozilla.javascript.Object} object.
+	 * @param onlanguagechange a {@link Object} object.
 	 */
 	void setOnlanguagechange(Object onlanguagechange);
 
 	/**
 	 * <p>setOnbeforeprint.</p>
 	 *
-	 * @param onbeforeprint a {@link org.mozilla.javascript.Object} object.
+	 * @param onbeforeprint a {@link Object} object.
 	 */
 	void setOnbeforeprint(Object onbeforeprint);
 
 	/**
 	 * <p>setOnafterprint.</p>
 	 *
-	 * @param onafterprint a {@link org.mozilla.javascript.Object} object.
+	 * @param onafterprint a {@link Object} object.
 	 */
 	void setOnafterprint(Object onafterprint);
 
 	/**
 	 * <p>addAfterPrintEventListener.</p>
 	 *
-	 * @param listener a {@link org.mozilla.javascript.Object} object.
+	 * @param listener a {@link Object} object.
 	 * @param options a boolean.
 	 */
 	default void addAfterPrintEventListener(Object listener, boolean options) {
@@ -130,7 +130,7 @@ public interface WindowEventHandlers extends EventTarget {
 	/**
 	 * <p>addAfterPrintEventListener.</p>
 	 *
-	 * @param listener a {@link org.mozilla.javascript.Object} object.
+	 * @param listener a {@link Object} object.
 	 */
 	default void addAfterPrintEventListener(Object listener) {
 		addEventListener("afterprint", listener);
@@ -139,7 +139,7 @@ public interface WindowEventHandlers extends EventTarget {
 	/**
 	 * <p>removeAfterPrintEventListener.</p>
 	 *
-	 * @param listener a {@link org.mozilla.javascript.Object} object.
+	 * @param listener a {@link Object} object.
 	 * @param options a boolean.
 	 */
 	default void removeAfterPrintEventListener(Object listener, boolean options) {
@@ -149,7 +149,7 @@ public interface WindowEventHandlers extends EventTarget {
 	/**
 	 * <p>removeAfterPrintEventListener.</p>
 	 *
-	 * @param listener a {@link org.mozilla.javascript.Object} object.
+	 * @param listener a {@link Object} object.
 	 */
 	default void removeAfterPrintEventListener(Object listener) {
 		removeEventListener("afterprint", listener);
@@ -158,7 +158,7 @@ public interface WindowEventHandlers extends EventTarget {
 	/**
 	 * <p>addBeforePrintEventListener.</p>
 	 *
-	 * @param listener a {@link org.mozilla.javascript.Object} object.
+	 * @param listener a {@link Object} object.
 	 * @param options a boolean.
 	 */
 	default void addBeforePrintEventListener(Object listener, boolean options) {
@@ -168,7 +168,7 @@ public interface WindowEventHandlers extends EventTarget {
 	/**
 	 * <p>addBeforePrintEventListener.</p>
 	 *
-	 * @param listener a {@link org.mozilla.javascript.Object} object.
+	 * @param listener a {@link Object} object.
 	 */
 	default void addBeforePrintEventListener(Object listener) {
 		addEventListener("beforeprint", listener);
@@ -177,7 +177,7 @@ public interface WindowEventHandlers extends EventTarget {
 	/**
 	 * <p>removeBeforePrintEventListener.</p>
 	 *
-	 * @param listener a {@link org.mozilla.javascript.Object} object.
+	 * @param listener a {@link Object} object.
 	 * @param options a boolean.
 	 */
 	default void removeBeforePrintEventListener(Object listener, boolean options) {
@@ -187,7 +187,7 @@ public interface WindowEventHandlers extends EventTarget {
 	/**
 	 * <p>removeBeforePrintEventListener.</p>
 	 *
-	 * @param listener a {@link org.mozilla.javascript.Object} object.
+	 * @param listener a {@link Object} object.
 	 */
 	default void removeBeforePrintEventListener(Object listener) {
 		removeEventListener("beforeprint", listener);
@@ -196,7 +196,7 @@ public interface WindowEventHandlers extends EventTarget {
 	/**
 	 * <p>addLanguageChangeEventListener.</p>
 	 *
-	 * @param listener a {@link org.mozilla.javascript.Object} object.
+	 * @param listener a {@link Object} object.
 	 * @param options a boolean.
 	 */
 	default void addLanguageChangeEventListener(Object listener, boolean options) {
@@ -206,7 +206,7 @@ public interface WindowEventHandlers extends EventTarget {
 	/**
 	 * <p>addLanguageChangeEventListener.</p>
 	 *
-	 * @param listener a {@link org.mozilla.javascript.Object} object.
+	 * @param listener a {@link Object} object.
 	 */
 	default void addLanguageChangeEventListener(Object listener) {
 		addEventListener("languagechange", listener);
@@ -215,7 +215,7 @@ public interface WindowEventHandlers extends EventTarget {
 	/**
 	 * <p>removeLanguageChangeEventListener.</p>
 	 *
-	 * @param listener a {@link org.mozilla.javascript.Object} object.
+	 * @param listener a {@link Object} object.
 	 * @param options a boolean.
 	 */
 	default void removeLanguageChangeEventListener(Object listener, boolean options) {
@@ -225,7 +225,7 @@ public interface WindowEventHandlers extends EventTarget {
 	/**
 	 * <p>removeLanguageChangeEventListener.</p>
 	 *
-	 * @param listener a {@link org.mozilla.javascript.Object} object.
+	 * @param listener a {@link Object} object.
 	 */
 	default void removeLanguageChangeEventListener(Object listener) {
 		removeEventListener("languagechange", listener);
@@ -234,7 +234,7 @@ public interface WindowEventHandlers extends EventTarget {
 	/**
 	 * <p>addOfflineEventListener.</p>
 	 *
-	 * @param listener a {@link org.mozilla.javascript.Object} object.
+	 * @param listener a {@link Object} object.
 	 * @param options a boolean.
 	 */
 	default void addOfflineEventListener(Object listener, boolean options) {
@@ -244,7 +244,7 @@ public interface WindowEventHandlers extends EventTarget {
 	/**
 	 * <p>addOfflineEventListener.</p>
 	 *
-	 * @param listener a {@link org.mozilla.javascript.Object} object.
+	 * @param listener a {@link Object} object.
 	 */
 	default void addOfflineEventListener(Object listener) {
 		addEventListener("offline", listener);
@@ -253,7 +253,7 @@ public interface WindowEventHandlers extends EventTarget {
 	/**
 	 * <p>removeOfflineEventListener.</p>
 	 *
-	 * @param listener a {@link org.mozilla.javascript.Object} object.
+	 * @param listener a {@link Object} object.
 	 * @param options a boolean.
 	 */
 	default void removeOfflineEventListener(Object listener, boolean options) {
@@ -263,7 +263,7 @@ public interface WindowEventHandlers extends EventTarget {
 	/**
 	 * <p>removeOfflineEventListener.</p>
 	 *
-	 * @param listener a {@link org.mozilla.javascript.Object} object.
+	 * @param listener a {@link Object} object.
 	 */
 	default void removeOfflineEventListener(Object listener) {
 		removeEventListener("offline", listener);
@@ -272,7 +272,7 @@ public interface WindowEventHandlers extends EventTarget {
 	/**
 	 * <p>addOnlineEventListener.</p>
 	 *
-	 * @param listener a {@link org.mozilla.javascript.Object} object.
+	 * @param listener a {@link Object} object.
 	 * @param options a boolean.
 	 */
 	default void addOnlineEventListener(Object listener, boolean options) {
@@ -282,7 +282,7 @@ public interface WindowEventHandlers extends EventTarget {
 	/**
 	 * <p>addOnlineEventListener.</p>
 	 *
-	 * @param listener a {@link org.mozilla.javascript.Object} object.
+	 * @param listener a {@link Object} object.
 	 */
 	default void addOnlineEventListener(Object listener) {
 		addEventListener("online", listener);
@@ -291,7 +291,7 @@ public interface WindowEventHandlers extends EventTarget {
 	/**
 	 * <p>removeOnlineEventListener.</p>
 	 *
-	 * @param listener a {@link org.mozilla.javascript.Object} object.
+	 * @param listener a {@link Object} object.
 	 * @param options a boolean.
 	 */
 	default void removeOnlineEventListener(Object listener, boolean options) {
@@ -301,7 +301,7 @@ public interface WindowEventHandlers extends EventTarget {
 	/**
 	 * <p>removeOnlineEventListener.</p>
 	 *
-	 * @param listener a {@link org.mozilla.javascript.Object} object.
+	 * @param listener a {@link Object} object.
 	 */
 	default void removeOnlineEventListener(Object listener) {
 		removeEventListener("online", listener);
@@ -310,7 +310,7 @@ public interface WindowEventHandlers extends EventTarget {
 	/**
 	 * <p>addRejectionHandledEventListener.</p>
 	 *
-	 * @param listener a {@link org.mozilla.javascript.Object} object.
+	 * @param listener a {@link Object} object.
 	 * @param options a boolean.
 	 */
 	default void addRejectionHandledEventListener(Object listener, boolean options) {
@@ -320,7 +320,7 @@ public interface WindowEventHandlers extends EventTarget {
 	/**
 	 * <p>addRejectionHandledEventListener.</p>
 	 *
-	 * @param listener a {@link org.mozilla.javascript.Object} object.
+	 * @param listener a {@link Object} object.
 	 */
 	default void addRejectionHandledEventListener(Object listener) {
 		addEventListener("rejectionhandled", listener);
@@ -329,7 +329,7 @@ public interface WindowEventHandlers extends EventTarget {
 	/**
 	 * <p>removeRejectionHandledEventListener.</p>
 	 *
-	 * @param listener a {@link org.mozilla.javascript.Object} object.
+	 * @param listener a {@link Object} object.
 	 * @param options a boolean.
 	 */
 	default void removeRejectionHandledEventListener(Object listener, boolean options) {
@@ -339,7 +339,7 @@ public interface WindowEventHandlers extends EventTarget {
 	/**
 	 * <p>removeRejectionHandledEventListener.</p>
 	 *
-	 * @param listener a {@link org.mozilla.javascript.Object} object.
+	 * @param listener a {@link Object} object.
 	 */
 	default void removeRejectionHandledEventListener(Object listener) {
 		removeEventListener("rejectionhandled", listener);
@@ -348,7 +348,7 @@ public interface WindowEventHandlers extends EventTarget {
 	/**
 	 * <p>addUnloadEventListener.</p>
 	 *
-	 * @param listener a {@link org.mozilla.javascript.Object} object.
+	 * @param listener a {@link Object} object.
 	 * @param options a boolean.
 	 */
 	default void addUnloadEventListener(Object listener, boolean options) {
@@ -358,7 +358,7 @@ public interface WindowEventHandlers extends EventTarget {
 	/**
 	 * <p>addUnloadEventListener.</p>
 	 *
-	 * @param listener a {@link org.mozilla.javascript.Object} object.
+	 * @param listener a {@link Object} object.
 	 */
 	default void addUnloadEventListener(Object listener) {
 		addEventListener("unload", listener);
@@ -367,7 +367,7 @@ public interface WindowEventHandlers extends EventTarget {
 	/**
 	 * <p>removeUnloadEventListener.</p>
 	 *
-	 * @param listener a {@link org.mozilla.javascript.Object} object.
+	 * @param listener a {@link Object} object.
 	 * @param options a boolean.
 	 */
 	default void removeUnloadEventListener(Object listener, boolean options) {
@@ -377,7 +377,7 @@ public interface WindowEventHandlers extends EventTarget {
 	/**
 	 * <p>removeUnloadEventListener.</p>
 	 *
-	 * @param listener a {@link org.mozilla.javascript.Object} object.
+	 * @param listener a {@link Object} object.
 	 */
 	default void removeUnloadEventListener(Object listener) {
 		removeEventListener("unload", listener);

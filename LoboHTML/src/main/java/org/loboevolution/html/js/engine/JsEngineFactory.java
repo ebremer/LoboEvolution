@@ -31,19 +31,11 @@ import org.loboevolution.html.node.Document;
 /**
  * Builds {@link JsEngine} instances bound to a Lobo {@link Document}. Always
  * GraalJS — Phase 12 of the migration removed the Rhino runtime engine, so
- * this is now a thin factory rather than a true selector. The vendored Rhino
- * classes still exist in the build because some W3C interfaces reference
- * {@code org.mozilla.javascript.Function} as a type; nothing here evaluates
- * JS through them anymore.
+ * this is now a thin factory rather than a true selector. No Rhino classes
+ * remain on the classpath and nothing here reads a JS-engine selector; the
+ * migration is complete.
  */
 public final class JsEngineFactory {
-
-    /**
-     * Legacy system property that used to choose between Rhino and GraalJS.
-     * Kept as a public constant only so external scripts that set it don't
-     * fail compilation; the value is now ignored.
-     */
-    public static final String PROPERTY = "lobo.jsengine";
 
     /** UserData key under which a document's cached {@link JsEngine} lives. */
     static final String DOCUMENT_ENGINE_KEY = "lobo.js.engine";

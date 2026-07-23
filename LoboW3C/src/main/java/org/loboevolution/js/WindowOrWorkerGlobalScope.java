@@ -34,7 +34,7 @@ public interface WindowOrWorkerGlobalScope {
     /**
      * <p>setTimeout.</p>
      *
-     * @param function a {@link org.mozilla.javascript.Function} object.
+     * @param function a {@link Object} object.
      * @return a {@link java.lang.Integer} object.
      */
     int setTimeout(final Object function);
