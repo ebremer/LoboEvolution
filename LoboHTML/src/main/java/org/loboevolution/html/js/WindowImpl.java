@@ -212,8 +212,10 @@ public class WindowImpl extends WindowEventHandlersImpl implements Window, Proxy
 					org.loboevolution.html.js.engine.JsEngineFactory
 							.forDocument(prevDocument, this)
 							.call(onunload);
-				} catch (final Throwable ignored) {
-					// onunload handlers are best-effort.
+				} catch (final Exception ignored) {
+					// onunload handlers are best-effort; a broken handler must
+					// not abort navigation. Narrowed from Throwable so genuine
+					// Errors (OutOfMemory, StackOverflow) still propagate.
 				}
 				setOnunload(null);
 			}
