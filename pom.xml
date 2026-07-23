@@ -279,6 +279,24 @@
                 <artifactId>maven-project-info-reports-plugin</artifactId>
                 <version>3.9.0</version>
             </plugin>
+			<!--
+				Clean is skipped ON THE ROOT PROJECT ONLY, and deliberately.
+				Every module redirects its output into a shared target tree via
+				<directory>../target/<Module></directory>, and this aggregator
+				builds last. The default clean binds to ${project.build.directory}
+				= this project's "target", so an un-skipped root clean would
+				delete the whole shared target/ — including the sibling module
+				jars the reactor just built — immediately before the make-uber-jar
+				shade step, breaking `mvn clean package` with
+				"Error creating shaded jar: target/LoboCommon/LoboCommon-1.0.jar".
+				(Verified: flipping this to false reproduces exactly that.)
+
+				This does NOT make `mvn clean` a no-op: each module still runs its
+				own default clean and removes its ../target/<Module> subdir. Only
+				the root-level wipe of the shared tree (and the finished uber jar)
+				is suppressed. To force a from-scratch build, delete target/
+				manually.
+			-->
 			<plugin>
 				<artifactId>maven-clean-plugin</artifactId>
 				<version>3.5.0</version>
