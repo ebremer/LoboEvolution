@@ -1,5 +1,41 @@
 # GraalJS migration — failure triage
 
+> ## ▶ RESUME HERE (handoff, 2026-07-23)
+>
+> **State:** branch `develop`, tree clean, nothing pushed. Latest full-suite
+> baseline: **5,689 run · 2,537 failures · 8 errors · 1 skipped** (GraalVM JDK 25).
+> The whole review backlog is committed: C1–C2, H1–H2, M1–M5, L1–L6, a 5-item
+> hygiene batch, and the three systemic bridge fixes **RC-A/B/C** (migration
+> failures 2,644 → 2,537, −107). See `git log` for the per-item commits.
+>
+> **Next task:** the CSS `CssMembers` rework — see *CSS cluster sub-triage* below.
+> It is the biggest remaining lever but a CSSOM-semantics-aware core-path change
+> (regression-risky), so do it focused and re-measure. After that: shorthand
+> expansion, computed-style values, then the separate ~315 `domts.*` conformance
+> track. There is **no fourth systemic silver bullet** — the rest is per-feature.
+>
+> **How to work here (established conventions):**
+> - Commits: author **Erich Bremer <erich@ebremer.com>** only, **no `Co-Authored-By`
+>   trailer** (see `CLAUDE.md`). One commit per fix.
+> - Build: `mvn -B install -DskipTests -Dmaven.javadoc.skip=true`. Tests:
+>   `mvn -B test -pl LoboUnitTest`. GraalJS/Truffle version lives in
+>   `parent/pom.xml` `<graaljs.version>` and MUST match the GraalVM JDK.
+> - **Measure every fix** by diffing the *set* of failing tests (not just the
+>   count) against the prior full-suite log — a matching count can hide pass↔fail
+>   swaps. Extract with:
+>   `grep -E '^\[ERROR\]   [A-Za-z]' log | sed 's/^\[ERROR\]   //' | sed 's/[ :»].*//' | sort -u`
+>   then `comm -13 old new` (regressions) / `comm -23 old new` (wins).
+> - Many "regressions" are **green-by-accident** tests that expected an exception
+>   only because something was broken — verify each before treating it as real.
+> - Reproduce causes against `target/loboevolution-5.0.jar` with a tiny harness:
+>   build an `HTMLDocumentImpl` (see `LoboWebDriver.loadHtml`) + `GraalJsEngine` +
+>   `JsEngineFactory.bindWindowGlobals`, then `engine.eval(...)`. Faster than the
+>   full suite for pinpointing behavior.
+> - Add a guard test in `LoboUnitTest/.../js/engine/` for each fix and append it to
+>   the **blocking smoke list** in `.github/workflows/test.yml`.
+> - **Dead end (do not retry):** making `__noSuchProperty__` throw `ReferenceError`
+>   for unknown names breaks `typeof undeclaredVar` (must stay `"undefined"`).
+
 Snapshot: **2026-07-23**, against the full `LoboUnitTest` suite
 (**5,681 run · 2,644 failures · 8 errors · 1 skipped**, run on GraalVM JDK 25).
 
