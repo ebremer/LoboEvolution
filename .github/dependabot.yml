@@ -9,3 +9,10 @@ updates:
     directory: "/" # Location of package manifests
     schedule:
       interval: "daily"
+  # Maven dependencies were previously unwatched, so library CVEs (in the
+  # dependencyManagement in parent/pom.xml and the module poms) went unflagged.
+  - package-ecosystem: maven
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
