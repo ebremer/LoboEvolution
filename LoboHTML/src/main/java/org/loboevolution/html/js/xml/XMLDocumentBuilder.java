@@ -48,6 +48,12 @@ public class XMLDocumentBuilder {
         this.parserFactory = SAXParserFactory.newInstance();
 
         try {
+            // Secure processing ON so JAXP enforces its entity-expansion and
+            // similar limits against billion-laughs style DoS. External general
+            // and parameter entities plus external-DTD loading are disabled
+            // below, which is what blocks XXE from reading local resources.
+            // (A previous stray setFeature(..., false) here silently turned
+            // secure processing back off — removed.)
             parserFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
             parserFactory.setFeature("http://xml.org/sax/features/namespace-prefixes", false);
             parserFactory.setFeature("http://xml.org/sax/features/xmlns-uris", false);
@@ -55,7 +61,6 @@ public class XMLDocumentBuilder {
             parserFactory.setFeature("http://xml.org/sax/features/external-general-entities", false);
             parserFactory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
             parserFactory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
-            parserFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, false);
             parserFactory.setXIncludeAware(false);
             parserFactory.setNamespaceAware(true);
         } catch (final SAXNotRecognizedException | SAXNotSupportedException | ParserConfigurationException e) {
