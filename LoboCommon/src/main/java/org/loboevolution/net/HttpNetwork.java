@@ -50,8 +50,6 @@ import java.time.Instant;
 import java.util.Base64;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import java.util.zip.GZIPInputStream;
 
 /**
@@ -410,20 +408,13 @@ public class HttpNetwork {
 	 * @throws java.io.IOException if any.
 	 */
 	public static String toString(final InputStream inputStream) throws IOException {
-		final InputStreamReader inputStreamReader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
-		final Stream<String> lines = new BufferedReader(inputStreamReader).lines();
-		final String text = lines.collect(Collectors.joining("\n"));
-		return removeNonASCIIChar(text);
-	}
-	
-	private static String removeNonASCIIChar(final String str) {
-		final StringBuilder buff = new StringBuilder();
-		final char[] chars = str.toCharArray();
-		for (final char c : chars) {
-			if (0 < c && c < 127) {
-				buff.append(c);
-			}
+		if (inputStream == null) {
+			return "";
 		}
-		return buff.toString();
+		// Decode the fetched bytes as UTF-8 and return them verbatim. The old
+		// implementation stripped every character >= 127, which corrupted any
+		// non-ASCII CSS/JS/HTML (accented text, curly quotes, emoji, non-Latin
+		// content) before it was cached or shown in the source viewer.
+		return new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
 	}
 }
