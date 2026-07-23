@@ -73,6 +73,7 @@ import java.net.URI;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -97,7 +98,7 @@ public class WindowImpl extends WindowEventHandlersImpl implements Window, Proxy
 	@Getter
 	private List<String> msg;
 
-	private static int timerIdCounter = 0;
+	private final AtomicInteger timerIdCounter = new AtomicInteger(0);
 
 	private int length;
 
@@ -706,8 +707,8 @@ public class WindowImpl extends WindowEventHandlersImpl implements Window, Proxy
 		return timeID;
 	}
 
-	private static int generateTimerID() {
-		return timerIdCounter++;
+	private int generateTimerID() {
+		return timerIdCounter.getAndIncrement();
 	}
 
 	/**
