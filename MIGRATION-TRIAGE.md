@@ -131,6 +131,38 @@ java.lang.NullPointerException: Cannot invoke
 The `DOMParserImpl` → `XMLDocument` path leaves `doc` null. **Fix:** initialise /
 null-guard that path. **Hits:** part of the `xml` cluster.
 
+## CSS cluster sub-triage (2026-07-23) — the next per-feature lever
+
+With RC-A/B/C done, `CSSStyleDeclarationTest` is the biggest single class (128/163
+failing). It is **not** one bug — the mismatch shapes spread out — but two share a
+locus in the CSS member proxy (`CssMembers`) and a registry now exists to fix them
+correctly:
+
+Top mismatch shapes (from the failing run):
+- `expected <undefined> but was <null>` ×14 — reading a non-CSS name yields Java null.
+- `expected <string> but was <object>` ×6 — `typeof style.unsetProp` is "object"
+  (Java null → JS null) instead of "string" ("").
+- count too low, e.g. `expected <4> but was <2>` ×6, `<11> but was <2>` — shorthand
+  properties don't expand into their longhands (`style.length`, enumeration).
+- `expected <0px> but was <784px>` — layout-dependent computed values.
+
+Confirmed against the built jar:
+- `style.item(0)` → "color" ✓ but **`style[0]` → null** (numeric index access not
+  routed to `item(n)`).
+- **`style.margin` (unset) → null** (typeof "object"), should be "" — because
+  `CssMembers.getMember` is reflection-first and returns the bean getter's null
+  without falling through to `getPropertyValue`.
+
+**Correct fix is not a plain null→"" swap.** CSSOM distinguishes: a *recognized* CSS
+property reads as its value or "" (never null); an *unrecognized* name reads as
+`undefined`. So `CssMembers` needs: (a) getter-returns-null → fall through to
+`getPropertyValue` for known properties; (b) numeric keys → `item(n)`; (c)
+`hasMember` return false for unknown non-property names so they read as `undefined`
+rather than "". Use `org.htmlunit.cssparser.util.CSSProperties` as the known-property
+registry. This is a core-path change (CSS access is everywhere) — do it focused and
+re-measure, not as a drive-by. Shorthand expansion and computed-value correctness are
+separate, larger sub-tracks.
+
 ## What is *not* systemic
 
 `classList`, `element.style` get/set, `getElementsByTagName`/`querySelector[All]`
