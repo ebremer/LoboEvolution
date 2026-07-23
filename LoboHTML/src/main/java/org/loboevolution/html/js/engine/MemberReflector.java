@@ -82,22 +82,32 @@ final class MemberReflector {
     }
 
     /**
-     * Wraps overloaded methods as a {@link ProxyExecutable}; on invoke picks
-     * the first overload whose arity matches and converts each polyglot
-     * {@link Value} argument with {@link Value#as}. Most-specific declarations
-     * are tried first.
+     * Wraps overloaded methods as a {@link ProxyExecutable}. On invoke it keeps
+     * the arity-matching overloads and picks the one whose parameter types best
+     * fit the actual argument types (see {@link #overloadScore}) instead of just
+     * the first arity match — so, e.g., a host DOM-object argument selects the
+     * overload declaring that type rather than a same-arity {@code String}
+     * overload. If the best candidate fails to coerce or invoke, the next
+     * best-scoring one is tried before giving up.
      */
     static ProxyExecutable makeExecutable(final Object target, final Method[] methods) {
         return args -> {
-            final List<Method> sorted = new ArrayList<>(Arrays.asList(methods));
-            sorted.sort((a, b) -> {
+            final List<Method> candidates = new ArrayList<>();
+            for (final Method m : methods) {
+                if (m.getParameterCount() == args.length) {
+                    candidates.add(m);
+                }
+            }
+            candidates.sort((a, b) -> {
+                final int byType = Integer.compare(overloadScore(b, args), overloadScore(a, args));
+                if (byType != 0) return byType;
+                // Tie-break: most-derived declaring class first (previous behaviour).
                 if (a.getDeclaringClass().isAssignableFrom(b.getDeclaringClass())) return 1;
                 if (b.getDeclaringClass().isAssignableFrom(a.getDeclaringClass())) return -1;
                 return 0;
             });
-            ReflectiveOperationException lastError = null;
-            for (final Method m : sorted) {
-                if (m.getParameterCount() != args.length) continue;
+            RuntimeException lastError = null;
+            for (final Method m : candidates) {
                 try {
                     final Class<?>[] paramTypes = m.getParameterTypes();
                     final Object[] javaArgs = new Object[args.length];
@@ -106,15 +116,75 @@ final class MemberReflector {
                     }
                     return m.invoke(target, javaArgs);
                 } catch (final ReflectiveOperationException e) {
+                    lastError = new RuntimeException(e);
+                } catch (final RuntimeException e) {
+                    // coerce() can reject an argument that doesn't fit this
+                    // overload; fall through to the next best-scoring one.
                     lastError = e;
                 }
             }
             if (lastError != null) {
-                throw new RuntimeException(lastError);
+                throw lastError;
             }
             throw new RuntimeException("No overload of " + methods[0].getName()
                     + " accepts " + args.length + " arguments");
         };
+    }
+
+    /** Sums {@link #argScore} across all parameters; higher means a better fit. */
+    private static int overloadScore(final Method m, final Value[] args) {
+        final Class<?>[] paramTypes = m.getParameterTypes();
+        int score = 0;
+        for (int i = 0; i < paramTypes.length; i++) {
+            score += argScore(args[i], paramTypes[i]);
+        }
+        return score;
+    }
+
+    /**
+     * Compatibility score for passing a single polyglot {@code value} to a Java
+     * parameter of type {@code t}. Exact matches score highest, assignable or
+     * coercible matches lower, clearly wrong matches negative — so the summed
+     * {@link #overloadScore} prefers the most type-appropriate overload.
+     */
+    private static int argScore(final Value value, final Class<?> t) {
+        if (value == null || value.isNull()) {
+            return t.isPrimitive() ? -100 : 1;
+        }
+        if (value.isString()) {
+            if (t == String.class) return 10;
+            if (t == char.class || t == Character.class) return 3;
+            if (t == CharSequence.class || t == Object.class) return 2;
+            return -50;
+        }
+        if (value.isBoolean()) {
+            if (t == boolean.class || t == Boolean.class) return 10;
+            if (t == Object.class) return 2;
+            return -50;
+        }
+        if (value.isNumber()) {
+            if (t == int.class || t == Integer.class) return value.fitsInInt() ? 10 : 4;
+            if (t == long.class || t == Long.class) return value.fitsInLong() ? 9 : 4;
+            if (t == double.class || t == Double.class) return 8;
+            if (t == float.class || t == Float.class) return 7;
+            if (t == short.class || t == Short.class) return value.fitsInShort() ? 6 : 2;
+            if (t == byte.class || t == Byte.class) return value.fitsInByte() ? 6 : 2;
+            if (t == Number.class || t == Object.class) return 3;
+            if (t == String.class) return -10;
+            return -50;
+        }
+        if (value.isHostObject()) {
+            final Object host = value.asHostObject();
+            if (host == null) return t.isPrimitive() ? -100 : 1;
+            if (t == host.getClass()) return 14;
+            if (t.isInstance(host)) return 10;
+            if (t == Object.class) return 2;
+            return -50;
+        }
+        if (value.canExecute()) {
+            return (t.isInterface() || t == Object.class) ? 5 : -20;
+        }
+        return t == Object.class ? 1 : 0;
     }
 
     /** Bean-style member names plus method names declared on {@code target}'s class. */
