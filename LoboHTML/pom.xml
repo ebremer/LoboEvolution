@@ -14,7 +14,15 @@
         <maven.compiler.target>25</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <buildDirectory>../target/LoboHTML</buildDirectory>
-        <graaljs.version>25.0.0</graaljs.version>
+        <!--
+            GraalJS/Truffle MUST match the GraalVM JDK it runs on. Truffle
+            binds to the JDK's in-process libgraal via JNI, and a patch-level
+            mismatch (e.g. Truffle 25.0.0 on a GraalVM 25.1.x runtime) throws
+            UnsatisfiedLinkError (LibGraalScope.attachThreadTo) the first time a
+            script is evaluated, taking down the whole JS engine. Keep this in
+            lock-step with the target GraalVM release.
+        -->
+        <graaljs.version>25.1.3</graaljs.version>
     </properties>
 
     <dependencies>

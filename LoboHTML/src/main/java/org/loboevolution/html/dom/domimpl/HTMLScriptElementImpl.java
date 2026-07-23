@@ -238,8 +238,13 @@ public class HTMLScriptElementImpl extends HTMLElementImpl implements HTMLScript
 				}
 
 				try (InputStream in = getStream(scriptURL, scriptURI, info)) {
-					if (AlgorithmDigest.validate(IOUtil.readFully(in), getIntegrity())) {
-						final String body = stripCdataMarkers(readAll(in));
+					// Read the script body exactly once: readFully now consumes
+					// the stream, so the SRI check and the decode must share one
+					// buffer (reading the stream again would yield nothing and
+					// the script would silently not run).
+					final byte[] data = IOUtil.readFully(in);
+					if (AlgorithmDigest.validate(data, getIntegrity())) {
+						final String body = stripCdataMarkers(new String(data, StandardCharsets.UTF_8));
 						evalAndLog(engine, body, scriptURI);
 					}
 				} catch (final SocketTimeoutException e) {
@@ -293,19 +298,6 @@ public class HTMLScriptElementImpl extends HTMLElementImpl implements HTMLScript
 		return src
 				.replace("<![CDATA[", "         ")  // 9 chars → 9 spaces
 				.replace("]]>", "   ");              // 3 chars → 3 spaces
-	}
-
-	private static String readAll(final InputStream in) throws IOException {
-		try (final Reader reader = new InputStreamReader(in, StandardCharsets.UTF_8);
-		     final BufferedReader br = new BufferedReader(reader)) {
-			final StringBuilder sb = new StringBuilder();
-			final char[] buf = new char[4096];
-			int n;
-			while ((n = br.read(buf)) >= 0) {
-				sb.append(buf, 0, n);
-			}
-			return sb.toString();
-		}
 	}
 
 	private InputStream getStream(URL scriptURL, String scriptURI, TimingInfo info) throws Exception {

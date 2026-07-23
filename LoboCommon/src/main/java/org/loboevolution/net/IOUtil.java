@@ -26,7 +26,6 @@
 
 package org.loboevolution.net;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -43,7 +42,9 @@ public class IOUtil {
      * @throws IOException on error
      */
     public static byte[] readFully(final InputStream inputStream) throws IOException {
-        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        return baos.toByteArray();
+        if (inputStream == null) {
+            return new byte[0];
+        }
+        return inputStream.readAllBytes();
     }
 }

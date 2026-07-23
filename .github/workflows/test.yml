@@ -1,0 +1,63 @@
+name: Unit Tests
+
+# The project had no workflow that actually ran the test suite: CodeQL does not
+# run tests, and the publish job builds with -Dmaven.test.skip=true. This adds a
+# real gate on every push / PR to the main branches.
+on:
+  push:
+    branches: [ "master", "develop" ]
+  pull_request:
+    branches: [ "master", "develop" ]
+
+jobs:
+  test:
+    name: Build & test (GraalVM JDK 25)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      # Run on GraalVM (the intended runtime) so the GraalJS/Truffle engine
+      # exercises its real libgraal path. This is what catches a C1-style
+      # version mismatch between the polyglot artifacts (LoboHTML/pom.xml
+      # <graaljs.version>) and the JDK — keep the two in lock-step. If this
+      # setup ever drifts from graaljs.version and the smoke step below starts
+      # failing with UnsatisfiedLinkError, bump graaljs.version to match.
+      - name: Set up GraalVM JDK 25
+        uses: graalvm/setup-graalvm@v1
+        with:
+          java-version: '25'
+          distribution: 'graalvm-community'
+          cache: 'maven'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build all modules
+        run: mvn -B install -DskipTests -Dmaven.javadoc.skip=true
+
+      # Blocking gate: a fast, deterministic subset that MUST stay green.
+      # - Graal* / *HostAccess / JsEngineFactory: prove the JS engine boots on
+      #   the target runtime (guards C1).
+      # - SubresourceIntegrity: proves SRI still works end-to-end (guards C2).
+      - name: Smoke gate (JS engine + SRI)
+        run: >
+          mvn -B test -pl LoboUnitTest
+          -Dtest='GraalJsSmokeTest,LoboGraalHostAccessTest,JsEngineFactoryTest,GraalWindowGlobalsTest,GraalDomAccessTest,GraalCssStyleProxyTest,SubresourceIntegrityTest'
+          -Dsurefire.failIfNoSpecifiedTests=false
+
+      # Informational: the full suite currently has a large number of failures
+      # from the in-progress Rhino -> GraalJS migration (baseline at the time of
+      # writing: ~2644 failures / ~8 errors out of 5671). It runs non-blocking so
+      # the number stays visible on every push and can be driven down, without
+      # letting those known failures mask the smoke gate above. Once the suite is
+      # green, delete `continue-on-error` so it becomes a hard gate too.
+      - name: Full suite (informational)
+        continue-on-error: true
+        run: mvn -B test -pl LoboUnitTest
+
+      - name: Upload surefire reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: surefire-reports
+          path: target/LoboUnitTest/surefire-reports/
+          if-no-files-found: ignore

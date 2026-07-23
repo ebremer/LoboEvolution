@@ -280,8 +280,12 @@ public class HttpNetwork {
 	 */
 	public static String getSource(URI uri, final String integrity) throws Exception {
 		try (final InputStream in = fetchInputStream(uri, "GET")) {
-			if (AlgorithmDigest.validate(IOUtil.readFully(in), integrity)) {
-				return toString(in);
+			// Read the body exactly once: readFully now consumes the stream, so
+			// the SRI check and the text decode must both work off the same
+			// buffer (a second read of the stream would return nothing).
+			final byte[] data = IOUtil.readFully(in);
+			if (AlgorithmDigest.validate(data, integrity)) {
+				return toString(new ByteArrayInputStream(data));
 			}
 		} catch (final SocketTimeoutException | java.net.http.HttpTimeoutException e) {
 			log.error("More time elapsed {}", TIMEOUT_VALUE);
