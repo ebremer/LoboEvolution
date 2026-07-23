@@ -25,14 +25,23 @@
 > re-creates the wrapper while the declaration is empty, so a per-object expando
 > can't persist; such reads stay `undefined` (a handful of tests, no regressions).
 >
-> **Next task:** the CSS residual is now **per-value/per-feature**, not one bug —
-> confirmed by this rework netting only −7. Highest-value next levers: (a)
-> shorthand→longhand expansion (`style.length`/enumeration counts, e.g.
-> `expected <4> but was <2>`); (b) computed-style value correctness
-> (`getComputedStyle` — layout-dependent, e.g. `expected <0px> but was <784px>`);
-> (c) the separate ~315 `domts.*` DOM-conformance track (drives the Java DOM API
-> directly, no JS bridge). There is **no systemic silver bullet** left — cluster
-> by feature, measure by diffing the failing *set*, and beware green-by-accident.
+> **Next task:** the **Select/Option/Form cluster** is now the biggest single
+> lever (~285 failing across `HTMLSelectElementTest`/`HTMLOptionsCollectionTest`/
+> `HTMLOptionElement2Test`/`HTMLFormElementTest`), and unlike the CSS residual it
+> has a **confirmed systemic root cause** — see the *Select / Option / Form
+> cluster* section below. Two bridge bugs: (1) named/indexed access on collection
+> objects (`document.forms.testForm`, `form.select1` → `undefined`) — make
+> `HTMLCollection`/`HTMLFormElement` `ProxyObject`s like `CssMembers`; (2)
+> `HTMLFormElementImpl.getElements()` returns wrong wrappers (`form.elements[0]`
+> has `length 1`, no `.options`). The select+options work in isolation, so it's a
+> bridge bug, not options parsing. Do each focused and re-measure.
+>
+> After that, the CSS residual is **per-value/per-feature**, not one bug (this
+> rework netted only −7): shorthand→longhand expansion (`style.length`, e.g.
+> `expected <4> but was <2>`), computed-style value correctness (layout-dependent,
+> `expected <0px> but was <784px>`), and the separate ~315 `domts.*` DOM-conformance
+> track (drives the Java DOM API directly, no JS bridge). Cluster by feature,
+> measure by diffing the failing *set*, and beware green-by-accident.
 >
 > **How to work here (established conventions):**
 > - Commits: author **Erich Bremer <erich@ebremer.com>** only, **no `Co-Authored-By`
@@ -223,6 +232,42 @@ rather than "". Use `org.htmlunit.cssparser.util.CSSProperties` as the known-pro
 registry. This is a core-path change (CSS access is everywhere) — do it focused and
 re-measure, not as a drive-by. Shorthand expansion and computed-value correctness are
 separate, larger sub-tracks.
+
+## Select / Option / Form cluster (2026-07-23) — the next systemic lever
+
+After the CssMembers rework, the single biggest failing-test cluster is
+Select/Option/Form: `HTMLSelectElementTest` (123), `HTMLOptionsCollectionTest`
+(91), `HTMLOptionElement2Test` (30), `HTMLFormElementTest` (41), plus form-driven
+tests elsewhere. The dominant shape is **`expected <N> but was <1>`** (the actual
+count is `1` for every N) and `array lengths differ`. Reproduced through the real
+harness (`loadHtml` + `onload`) with a 3-option select in a `<form name=testForm>`:
+
+- `document.getElementById('sid').length` → **3**, `.options.length` → **3** ✓
+  (the select itself and its options collection are correct — see also the
+  standalone probe: `getOptions().getLength()` = 3).
+- `document.forms[0]` (indexed) → the form ✓; but **`document.forms.testForm`
+  (named) → `undefined`** and **`form.select1` (named) → `undefined`**. Raw
+  `HTMLCollectionImpl` / `HTMLFormElementImpl` are not `ProxyObject`s, so a
+  name key falls through GraalJS bean reflection to `undefined` (there is a
+  `namedItem`, but nothing routes `coll.name` to it). This is the CssMembers
+  problem again, one class over.
+- **`form.elements` is wrong at the source:** `form.elements.length` → **1** and
+  `form.elements[0].length` → **1** with **no `.options`** — i.e. it does not
+  return the real `HTMLSelectElementImpl`. `HTMLFormElementImpl.getElements()`
+  builds its list by scanning *every* node in the document and keeping those with
+  *any attribute value equal to the form's name*, plus an ad-hoc `findChild`
+  recursion (see lines ~95-125). That heuristic is broken; it should return the
+  form's descendant/associated controls (input/select/textarea/button/...).
+
+So the cluster has **two systemic root causes**, both needed to clear the
+`document.forms.testForm.select1`-style tests: (a) named/indexed access on
+collection-like bridge objects (`HTMLCollection`, and `HTMLFormElement`'s named
+controls) — make them `ProxyObject`s routing numeric→`item(n)` and name→named
+lookup, mirroring `CssMembers`; (b) rewrite `HTMLFormElementImpl.getElements()`
+to gather real form controls. Regression-risky (collection access is everywhere)
+— do each focused and re-measure by diffing the failing *set*. Note the select
+and its options already work in isolation, so this is a bridge/collection bug,
+**not** an options-parsing bug.
 
 ## What is *not* systemic
 
