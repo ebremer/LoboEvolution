@@ -39,7 +39,7 @@ public class ComputedFontTest extends LoboUnitTest {
 
 
     @Test
-    @Alerts({"null", "16px", "2em", "32px", "150%", "24px"})
+    @Alerts({"", "16px", "2em", "32px", "150%", "24px"})
     public void fontSizeEm() {
         final String html = "<html><head>\n"
                 + "<script>\n"
@@ -137,7 +137,7 @@ public class ComputedFontTest extends LoboUnitTest {
     }
 
     @Test
-    @Alerts({"", "16px Times New Roman", "null", "Times New Roman"})
+    @Alerts({"", "16px Times New Roman", "", "Times New Roman"})
     public void wrongFontFamily() {
         font("xyz", "fontFamily", null);
     }

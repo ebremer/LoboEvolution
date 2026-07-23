@@ -135,7 +135,7 @@ public class ComputedCSSStyleDeclarationTest extends LoboUnitTest {
 
 
     @Test
-    @Alerts({"null", "null", "auto", "pointer"})
+    @Alerts({"", "", "auto", "pointer"})
     public void styleElement() {
         final String html = "<html><head>\n"
                 + "<style type='text/css'>\n"
@@ -1663,7 +1663,7 @@ public class ComputedCSSStyleDeclarationTest extends LoboUnitTest {
 
 
     @Test
-    @Alerts({"null", "0px", "20%", "80px", "25%", "100px"})
+    @Alerts({"", "0px", "20%", "80px", "25%", "100px"})
     public void marginLeftRight() {
         final String html = "<html><head><script>\n"
                 + "  function test() {\n"
@@ -1696,7 +1696,7 @@ public class ComputedCSSStyleDeclarationTest extends LoboUnitTest {
 
 
     @Test
-    @Alerts({"null", "0px", "null", "0px", "50%", "100px", "50%", "100px"})
+    @Alerts({"", "0px", "", "0px", "50%", "100px", "50%", "100px"})
     public void topLeft() {
         final String html = "<html><head><script>\n"
                 + "  function test() {\n"
@@ -1952,7 +1952,7 @@ public class ComputedCSSStyleDeclarationTest extends LoboUnitTest {
     }
 
     @Test
-    @Alerts({"null", "auto"})
+    @Alerts({"", "auto"})
     public void getHeightInvisible() {
         final String html = "<html><head>\n"
                 + "<script>\n"
@@ -2146,7 +2146,7 @@ public class ComputedCSSStyleDeclarationTest extends LoboUnitTest {
 
 
     @Test
-    @Alerts({"null,null", "0,0", "auto,auto"})
+    @Alerts({",", "0,0", "auto,auto"})
     public void scriptWidthAndHeight() {
         final String html = "<html><body onload='test()'>\n"
                 + "<script id='e1'>\n"

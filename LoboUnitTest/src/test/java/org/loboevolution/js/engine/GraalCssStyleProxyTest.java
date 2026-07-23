@@ -53,10 +53,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * Verifies the {@link CssMembers}/{@code ProxyObject} cascade on
  * {@code CSSStyleDeclarationImpl}: bean reflection wins for properties that
- * have explicit setters (so {@code BackgroundImageSetter} etc. still fire),
- * and unknown camelCase property names fall through to
- * {@code setProperty(camelToKebab(name), ...)} so modern CSS works without
- * per-property setters being added.
+ * have explicit setters (so {@code BackgroundImageSetter} etc. still fire), and
+ * a <em>recognized</em> CSS property with no explicit setter falls through to
+ * {@code setProperty(camelToKebab(name), ...)} so modern CSS works without a
+ * per-property setter. An <em>unrecognized</em> name is not a camelCase member
+ * (reads {@code undefined}), matching the CSSOM rule that only supported
+ * properties get an accessor — see {@code GraalCssMembersTest} for the full set
+ * of undefined/""/numeric-index semantics.
  */
 class GraalCssStyleProxyTest extends LoboWebDriver {
 
@@ -96,16 +99,18 @@ class GraalCssStyleProxyTest extends LoboWebDriver {
     }
 
     @Test
-    void anotherUnknownCssPropertyRoundTrips() {
-        // boxShadow: another property script-set in real-world pages.
-        // Lobo's CSS parser canonicalises the value (adds spaces after commas);
-        // we just need the assignment to round-trip without throwing, with the
-        // original tokens preserved.
-        eval("document.getElementById('t').style.boxShadow = '5px 10px blue';");
+    void unrecognizedPropertyIsNotACamelCaseMember() {
+        // box-shadow is a real CSS property but is absent from Lobo's
+        // CSSProperties registry, so — like any name the registry doesn't know —
+        // it is not exposed as a camelCase member: assignment does not throw, but
+        // the read is undefined (CSSOM only creates accessors for supported
+        // properties). This is the guard against regressing to the old behaviour
+        // where every getterless name read back through getPropertyValue.
+        final Value assign = eval("'use strict';"
+                + "document.getElementById('t').style.boxShadow = '5px 10px blue'; 'ok'");
+        assertEquals("ok", assign.asString());
         final Value back = eval("document.getElementById('t').style.boxShadow");
-        assertTrue(back.asString().contains("5px"));
-        assertTrue(back.asString().contains("10px"));
-        assertTrue(back.asString().contains("blue"));
+        assertTrue(back.isNull(), "unrecognized property should read as undefined");
     }
 
     @Test
@@ -146,14 +151,14 @@ class GraalCssStyleProxyTest extends LoboWebDriver {
     }
 
     @Test
-    void unknownPropertyReadReturnsEmptyString() {
-        // Real browsers return "" (not undefined) for unset CSS properties
-        final Value back = eval("document.getElementById('t').style.gridTemplateColumns");
+    void recognizedUnsetPropertyReadsEmptyString() {
+        // Real browsers return "" (typeof "string"), not null, for a recognized
+        // but unset CSS property. 'margin' has a bean getter that returns null
+        // when unset; CssMembers normalises that to "".
+        final Value back = eval("document.getElementById('t').style.margin");
         assertNotNull(back);
-        assertTrue(back.isString() || back.isNull());
-        if (back.isString()) {
-            assertEquals("", back.asString());
-        }
+        assertTrue(back.isString(), "recognized unset property should be a string");
+        assertEquals("", back.asString());
     }
 
     @Test

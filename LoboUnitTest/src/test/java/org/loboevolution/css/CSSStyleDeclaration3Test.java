@@ -39,7 +39,7 @@ public class CSSStyleDeclaration3Test extends LoboUnitTest {
 
 
     @Test
-    @Alerts({"null", "null", "null", "null", "null"})
+    @Alerts({"", "", "", "", ""})
     public void backgroundEmpty() {
         background("");
     }
@@ -350,25 +350,25 @@ public class CSSStyleDeclaration3Test extends LoboUnitTest {
     }
 
     @Test
-    @Alerts({"null", "null", "null", "null", "null", "null"})
+    @Alerts({"", "", "", "", "", ""})
     public void fontEmpty() {
         font("");
     }
 
     @Test
-    @Alerts({"null", "null", "null", "null", "null", "null"})
+    @Alerts({"", "", "", "", "", ""})
     public void fontSizeOnly() {
         font("14px");
     }
 
     @Test
-    @Alerts({"null", "null", "null", "null", "null", "null"})
+    @Alerts({"", "", "", "", "", ""})
     public void fontFamilyOnly() {
         font("sans-serif");
     }
 
     @Test
-    @Alerts({"null", "null", "null", "null", "null", "null"})
+    @Alerts({"", "", "", "", "", ""})
     public void fontAllExceptSizeAndFamily() {
         font("italic small-caps bold");
     }
@@ -863,7 +863,7 @@ public class CSSStyleDeclaration3Test extends LoboUnitTest {
     }
 
     @Test
-    @Alerts({"null", "null", "null", "null", "null", "null", "null", "null", "null", "null", "null", "null"})
+    @Alerts({"", "", "", "", "", "", "", "", "", "", "", ""})
     public void borderEmpty() {
         border("");
     }

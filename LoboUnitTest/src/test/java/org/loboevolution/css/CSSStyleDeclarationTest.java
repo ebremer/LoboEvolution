@@ -437,7 +437,7 @@ public class CSSStyleDeclarationTest extends LoboUnitTest {
     }
 
     @Test
-    @Alerts({"null", "null", "pink", "color: pink"})
+    @Alerts({"null", "", "pink", "color: pink"})
     public void styleOneUndefinedCssAttribute() {
         final String html
                 = "<html><head><script>\n" 
@@ -735,8 +735,7 @@ public class CSSStyleDeclarationTest extends LoboUnitTest {
     }
 
     @Test
-    @Alerts({"null", "null", "null", "null", "null", "null", "null", "null", "null",
-            "null", "null", "null", "null", "null", "null", "null"})
+    @Alerts({"", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""})
     public void borderStylesNoStyle() {
         final String html
                 = "<html><head><script>\n" 
@@ -1025,7 +1024,7 @@ public class CSSStyleDeclarationTest extends LoboUnitTest {
     }
 
     @Test
-    @Alerts({"null", "null", "15px", "italic", "null", "italic"})
+    @Alerts({"", "", "15px", "italic", "", "italic"})
     public void cssText2() {
         final String html = "<html><head>"
                 + "<script>\n"
@@ -2198,7 +2197,7 @@ public class CSSStyleDeclarationTest extends LoboUnitTest {
     }
 
     @Test
-    @Alerts({"null", "null", "null", "null"})
+    @Alerts({"", "", "", ""})
     public void setToNull() {
         final String html
                 = "<html><head><script>\n" 
@@ -2290,7 +2289,7 @@ public class CSSStyleDeclarationTest extends LoboUnitTest {
     }
 
     @Test
-    @Alerts({"null", "2", "null", "2", "5", "5", "5", "5"})
+    @Alerts({"", "2", "", "2", "5", "5", "5", "5"})
     public void widows() {
         final String html = "<html><head>\n"
                 + "<script>"
@@ -2317,7 +2316,7 @@ public class CSSStyleDeclarationTest extends LoboUnitTest {
     }
 
     @Test
-    @Alerts({"null", "2", "null", "2", "5", "5", "5", "5"})
+    @Alerts({"", "2", "", "2", "5", "5", "5", "5"})
     public void orphans() {
         final String html = "<html><head>\n"
                 + "<script>"
@@ -2344,7 +2343,7 @@ public class CSSStyleDeclarationTest extends LoboUnitTest {
     }
 
     @Test
-    @Alerts({"null", "static", "null", "static", "null", "static", "absolute", "absolute", "null", "static"})
+    @Alerts({"", "static", "", "static", "", "static", "absolute", "absolute", "", "static"})
     public void position() {
         final String html = "<html><head>\n"
                 + "<script>"

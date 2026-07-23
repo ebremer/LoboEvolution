@@ -41,7 +41,7 @@ jobs:
       - name: Smoke gate (JS engine + SRI)
         run: >
           mvn -B test -pl LoboUnitTest
-          -Dtest='GraalJsSmokeTest,LoboGraalHostAccessTest,JsEngineFactoryTest,GraalWindowGlobalsTest,GraalDomAccessTest,GraalCssStyleProxyTest,GraalDomConstructorsTest,GraalGlobalFunctionsTest,GraalSandboxTest,SubresourceIntegrityTest'
+          -Dtest='GraalJsSmokeTest,LoboGraalHostAccessTest,JsEngineFactoryTest,GraalWindowGlobalsTest,GraalDomAccessTest,GraalCssStyleProxyTest,GraalCssMembersTest,GraalDomConstructorsTest,GraalGlobalFunctionsTest,GraalSandboxTest,SubresourceIntegrityTest'
           -Dsurefire.failIfNoSpecifiedTests=false
 
       # Informational: the full suite currently has a large number of failures
