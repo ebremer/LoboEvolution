@@ -58,7 +58,17 @@ Distinct failing test methods by package:
 
 ## Confirmed systemic bridge bugs (fix once, clear many)
 
-### RC-A — DOM constructors are broken or missing 🔴
+### RC-A — DOM constructors are broken or missing 🔴 — FIXED (2026-07-23)
+> Bound the event impls + `Option`/`Image` as `ProxyInstantiable` in
+> `JsEngineFactory`. **Suite: 2,644 → 2,558 failures (−86): 114 tests newly pass,
+> 28 newly fail.** The 28 were green *by accident* — they expected an exception and
+> only got one because construction was broken (e.g. `createCtorUnknownType` passes
+> an *undefined variable* as the type, which should be a `ReferenceError`; with
+> construction fixed the missing ReferenceError is exposed). Those belong to RC-B
+> (bare-identifier scope) and per-feature edge-case validation, not to this fix.
+> Guarded by `GraalDomConstructorsTest` (in the blocking smoke gate).
+
+
 ```js
 new Event('click')   // TypeError: no applicable overload found
 new Option('t','v')  // TypeError: undefined is not a function

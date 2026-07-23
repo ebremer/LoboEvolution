@@ -25,8 +25,17 @@
  */
 package org.loboevolution.html.js.engine;
 
+import org.graalvm.polyglot.Value;
+import org.graalvm.polyglot.proxy.ProxyInstantiable;
+import org.loboevolution.html.dom.HTMLImageElement;
+import org.loboevolution.html.dom.HTMLOptionElement;
 import org.loboevolution.html.js.WindowImpl;
+import org.loboevolution.html.js.events.*;
 import org.loboevolution.html.node.Document;
+
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * Builds {@link JsEngine} instances bound to a Lobo {@link Document}. Always
@@ -122,22 +131,133 @@ public final class JsEngineFactory {
         engine.putGlobal("HTMLSpanElement", org.loboevolution.html.dom.domimpl.HTMLSpanElementImpl.class);
         engine.putGlobal("HTMLTableElement", org.loboevolution.html.dom.domimpl.HTMLTableElementImpl.class);
         engine.putGlobal("Text", org.loboevolution.html.dom.nodeimpl.TextImpl.class);
-        engine.putGlobal("Event", org.loboevolution.html.js.events.EventImpl.class);
-        engine.putGlobal("MouseEvent", org.loboevolution.html.js.events.MouseEventImpl.class);
-        engine.putGlobal("KeyboardEvent", org.loboevolution.html.js.events.KeyboardEventImpl.class);
-        engine.putGlobal("CustomEvent", org.loboevolution.html.js.events.CustomEventImpl.class);
         engine.putGlobal("MutationObserver", org.loboevolution.html.js.observer.MutationObserverImpl.class);
         engine.putGlobal("IntersectionObserver", org.loboevolution.html.js.observer.IntersectionObserverImpl.class);
         engine.putGlobal("ResizeObserver", org.loboevolution.html.js.observer.ResizeObserverImpl.class);
 
         final org.loboevolution.html.dom.domimpl.HTMLDocumentImpl doc =
                 (org.loboevolution.html.dom.domimpl.HTMLDocumentImpl) window.getDocumentNode();
-        engine.putGlobal("DOMParser", (org.graalvm.polyglot.proxy.ProxyInstantiable) args ->
+        engine.putGlobal("DOMParser", (ProxyInstantiable) args ->
                 new org.loboevolution.html.js.DOMParserImpl(doc));
-        engine.putGlobal("FormData", (org.graalvm.polyglot.proxy.ProxyInstantiable) args ->
+        engine.putGlobal("FormData", (ProxyInstantiable) args ->
                 new org.loboevolution.html.dom.nodeimpl.FormDataImpl(doc));
-        engine.putGlobal("XMLHttpRequest", (org.graalvm.polyglot.proxy.ProxyInstantiable) args ->
+        engine.putGlobal("XMLHttpRequest", (ProxyInstantiable) args ->
                 new org.loboevolution.html.js.xml.XMLHttpRequestImpl(doc, window));
+
+        // DOM event constructors. Bound as ProxyInstantiable (not a raw Class)
+        // so `new Event('click', {bubbles:true})` reaches the impl's Object[]
+        // constructor: GraalJS cannot route a single JS argument to a Java
+        // Object[] parameter, so binding the Class made `new X(...)` throw
+        // "no applicable overload found". Tests never use `instanceof <Event>`,
+        // so nothing is lost by not binding the Class.
+        bindEvent(engine, "Event", EventImpl::new);
+        bindEvent(engine, "UIEvent", UIEventImpl::new);
+        bindEvent(engine, "MouseEvent", MouseEventImpl::new);
+        bindEvent(engine, "KeyboardEvent", KeyboardEventImpl::new);
+        bindEvent(engine, "CustomEvent", CustomEventImpl::new);
+        bindEvent(engine, "FocusEvent", FocusEventImpl::new);
+        bindEvent(engine, "PointerEvent", PointerEventImpl::new);
+        bindEvent(engine, "WheelEvent", WheelEventImpl::new);
+        bindEvent(engine, "InputEvent", InputEventImpl::new);
+        bindEvent(engine, "CompositionEvent", CompositionEventImpl::new);
+        bindEvent(engine, "DragEvent", DragEventImpl::new);
+        bindEvent(engine, "TouchEvent", TouchEventImpl::new);
+        bindEvent(engine, "MessageEvent", MessageEventImpl::new);
+        bindEvent(engine, "StorageEvent", StorageEventImpl::new);
+        bindEvent(engine, "ProgressEvent", ProgressEventImpl::new);
+        bindEvent(engine, "SubmitEvent", SubmitEventImpl::new);
+        bindEvent(engine, "HashChangeEvent", HashChangeEventImpl::new);
+        bindEvent(engine, "PopStateEvent", PopStateEventImpl::new);
+        bindEvent(engine, "PageTransitionEvent", PageTransitionEventImpl::new);
+        bindEvent(engine, "CloseEvent", CloseEventImpl::new);
+        bindEvent(engine, "AnimationEvent", AnimationEventImpl::new);
+        bindEvent(engine, "TransitionEvent", TransitionEventImpl::new);
+        bindEvent(engine, "ErrorEvent", ErrorEventImpl::new);
+        bindEvent(engine, "MutationEvent", MutationEventImpl::new);
+        bindEvent(engine, "TrackEvent", TrackEventImpl::new);
+        bindEvent(engine, "BeforeUnloadEvent", BeforeUnloadEventImpl::new);
+        bindEvent(engine, "BlobEvent", BlobEventImpl::new);
+        bindEvent(engine, "DeviceMotionEvent", DeviceMotionEventImpl::new);
+        bindEvent(engine, "DeviceOrientationEvent", DeviceOrientationEventImpl::new);
+
+        // Element constructors that build through the document.
+        engine.putGlobal("Option", (ProxyInstantiable) args -> {
+            final HTMLOptionElement o = (HTMLOptionElement) doc.createElement("option");
+            if (args.length > 0 && !args[0].isNull()) o.setText(stringOf(args[0]));
+            if (args.length > 1 && !args[1].isNull()) o.setValue(stringOf(args[1]));
+            if (args.length > 2 && !args[2].isNull()) o.setDefaultSelected(boolOf(args[2]));
+            if (args.length > 3 && !args[3].isNull()) o.setSelected(boolOf(args[3]));
+            return o;
+        });
+        engine.putGlobal("Image", (ProxyInstantiable) args -> {
+            final HTMLImageElement img = (HTMLImageElement) doc.createElement("img");
+            if (args.length > 0 && args[0].isNumber()) img.setWidth(args[0].asDouble());
+            if (args.length > 1 && args[1].isNumber()) img.setHeight(args[1].asDouble());
+            return img;
+        });
+    }
+
+    /** A DOM event impl's {@code (Object[])} constructor; may throw checked exceptions. */
+    @FunctionalInterface
+    private interface EventCtor {
+        Object make(Object[] params) throws Exception;
+    }
+
+    /**
+     * Binds {@code name} as a JS constructor that builds the event impl from the
+     * JS arguments. The polyglot values are converted to host values first
+     * (a JS init dict becomes a {@link Map} so {@code EventImpl.setParams} reads
+     * its properties).
+     */
+    private static void bindEvent(final JsEngine engine, final String name, final EventCtor factory) {
+        engine.putGlobal(name, (ProxyInstantiable) args -> {
+            try {
+                return factory.make(toHostArgs(args));
+            } catch (final RuntimeException re) {
+                throw re;
+            } catch (final Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+    private static Object[] toHostArgs(final Value[] args) {
+        final Object[] out = new Object[args.length];
+        for (int i = 0; i < args.length; i++) {
+            out[i] = toHost(args[i]);
+        }
+        return out;
+    }
+
+    /** Converts a polyglot value to a plain host value; JS objects -> Map, arrays -> List. */
+    private static Object toHost(final Value v) {
+        if (v == null || v.isNull()) return null;
+        if (v.isHostObject()) return v.asHostObject();
+        if (v.isString()) return v.asString();
+        if (v.isBoolean()) return v.asBoolean();
+        if (v.isNumber()) return v.asDouble();
+        if (v.hasArrayElements()) {
+            final int n = (int) v.getArraySize();
+            final Object[] arr = new Object[n];
+            for (int i = 0; i < n; i++) arr[i] = toHost(v.getArrayElement(i));
+            return Arrays.asList(arr);
+        }
+        if (v.hasMembers()) {
+            final Map<String, Object> m = new LinkedHashMap<>();
+            for (final String k : v.getMemberKeys()) m.put(k, toHost(v.getMember(k)));
+            return m;
+        }
+        return v;
+    }
+
+    private static String stringOf(final Value v) {
+        return v.isString() ? v.asString() : v.toString();
+    }
+
+    private static boolean boolOf(final Value v) {
+        if (v.isBoolean()) return v.asBoolean();
+        if (v.isNumber()) return v.asDouble() != 0;
+        return !v.isNull();
     }
 
     private static final String WINDOW_FUNCTION_BRIDGE = String.join("\n",
