@@ -433,7 +433,8 @@ public class WindowImpl extends WindowEventHandlersImpl implements Window, Proxy
 	@Override
 	public Storage getSessionStorage() {
 		final HTMLDocumentImpl doc = this.document;
-		return new SessionStorage(doc.getHtmlRendererConfig());
+		final HtmlRendererConfig cfg = doc != null ? doc.getHtmlRendererConfig() : this.config;
+		return cfg == null ? null : new SessionStorage(cfg);
 	}
 
 	/** {@inheritDoc} */
@@ -974,7 +975,8 @@ public class WindowImpl extends WindowEventHandlersImpl implements Window, Proxy
 	@Override
 	public Console getConsole() {
 		final HTMLDocumentImpl doc = this.document;
-		return new ConsoleImpl(doc.getHtmlRendererConfig());
+		final HtmlRendererConfig cfg = doc != null ? doc.getHtmlRendererConfig() : this.config;
+		return cfg == null ? null : new ConsoleImpl(cfg);
 	}
 
 	/** {@inheritDoc} */
