@@ -226,6 +226,12 @@ public class LAFSettings implements Serializable {
      */
     public static String[] getFonts(final String type) {
         final List<String> fonts = new ArrayList<>();
+        if (!"FONT".equals(type) && !"FONT_SIZE".equals(type)) {
+            // 'type' is interpolated into the query as a table name; restrict it
+            // to the two known font tables so this can never be an injection sink.
+            log.error("Unsupported font table requested: {}", type);
+            return fonts.toArray(new String[0]);
+        }
         final String query = "SELECT name FROM " + type;
         try (final Connection conn = DriverManager.getConnection(DatabseSQLite.getDatabaseDirectory());
              final Statement stmt = conn.createStatement();
