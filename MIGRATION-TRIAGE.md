@@ -3,16 +3,36 @@
 > ## ▶ RESUME HERE (handoff, 2026-07-23)
 >
 > **State:** branch `develop`, tree clean, nothing pushed. Latest full-suite
-> baseline: **5,689 run · 2,537 failures · 8 errors · 1 skipped** (GraalVM JDK 25).
-> The whole review backlog is committed: C1–C2, H1–H2, M1–M5, L1–L6, a 5-item
-> hygiene batch, and the three systemic bridge fixes **RC-A/B/C** (migration
-> failures 2,644 → 2,537, −107). See `git log` for the per-item commits.
+> baseline: **5,690 run · 2,530 failures · 8 errors · 1 skipped** (GraalVM JDK 25).
+> Committed: the whole review backlog (C1–C2, H1–H2, M1–M5, L1–L6), a 5-item
+> hygiene batch, the three systemic bridge fixes **RC-A/B/C** (2,644 → 2,537),
+> and the **CSSOM `CssMembers` rework** (2,537 → 2,530, −7, zero regressions;
+> commit `828b36b69`). See `git log` for per-item commits.
 >
-> **Next task:** the CSS `CssMembers` rework — see *CSS cluster sub-triage* below.
-> It is the biggest remaining lever but a CSSOM-semantics-aware core-path change
-> (regression-risky), so do it focused and re-measure. After that: shorthand
-> expansion, computed-style values, then the separate ~315 `domts.*` conformance
-> track. There is **no fourth systemic silver bullet** — the rest is per-feature.
+> **CssMembers rework — DONE (2026-07-23).** Made inline `element.style` member
+> access CSSOM-correct: recognized property unset → `""` (not null); unrecognized
+> name → `undefined` via `hasMember`=false (not null, even if present in the store
+> from inline parsing); numeric key → `item(n)`; read-only `length` write throws;
+> `x=null` clears to `""` ([LegacyNullToEmptyString]). Known-property gate =
+> `org.htmlunit.cssparser.util.CSSProperties` registry ∪ bean getters. Guarded by
+> `GraalCssMembersTest` (in the smoke gate) + updated `GraalCssStyleProxyTest`.
+> **Lesson learned:** the rework is browser-correct but the raw win is only −7,
+> because ~20 tests' `@Alerts` asserted a browser-*incorrect* `"null"` for an
+> unset inline property (green-by-accident against the old null-returning bridge);
+> those 20 were corrected to real browser values (`""`) in the same commit, so the
+> net is −7 with **zero regressions**. The unregistered-JS-write expando (e.g.
+> `style.pixelLeft=123` reading back) is NOT supported — `HTMLElementImpl.getStyle`
+> re-creates the wrapper while the declaration is empty, so a per-object expando
+> can't persist; such reads stay `undefined` (a handful of tests, no regressions).
+>
+> **Next task:** the CSS residual is now **per-value/per-feature**, not one bug —
+> confirmed by this rework netting only −7. Highest-value next levers: (a)
+> shorthand→longhand expansion (`style.length`/enumeration counts, e.g.
+> `expected <4> but was <2>`); (b) computed-style value correctness
+> (`getComputedStyle` — layout-dependent, e.g. `expected <0px> but was <784px>`);
+> (c) the separate ~315 `domts.*` DOM-conformance track (drives the Java DOM API
+> directly, no JS bridge). There is **no systemic silver bullet** left — cluster
+> by feature, measure by diffing the failing *set*, and beware green-by-accident.
 >
 > **How to work here (established conventions):**
 > - Commits: author **Erich Bremer <erich@ebremer.com>** only, **no `Co-Authored-By`
@@ -167,7 +187,12 @@ java.lang.NullPointerException: Cannot invoke
 The `DOMParserImpl` → `XMLDocument` path leaves `doc` null. **Fix:** initialise /
 null-guard that path. **Hits:** part of the `xml` cluster.
 
-## CSS cluster sub-triage (2026-07-23) — the next per-feature lever
+## CSS cluster sub-triage (2026-07-23) — ✅ CssMembers rework DONE (commit 828b36b69)
+
+> The `CssMembers` rework described below is **implemented**. The `undefined`/`""`/
+> numeric-index/read-only semantics are correct and guarded. Shorthand expansion
+> and computed-style values remain open (separate, larger sub-tracks — see the
+> RESUME HERE block). What follows is the original analysis, kept for context.
 
 With RC-A/B/C done, `CSSStyleDeclarationTest` is the biggest single class (128/163
 failing). It is **not** one bug — the mismatch shapes spread out — but two share a
