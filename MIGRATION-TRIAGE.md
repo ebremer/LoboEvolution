@@ -89,7 +89,19 @@ all → `undefined is not a function`.
 **Hits:** the `event` cluster and every Select/Option/Image test that constructs
 via `new`.
 
-### RC-B — window methods aren't callable as bare globals 🔴
+### RC-B — window methods aren't callable as bare globals 🔴 — FIXED (2026-07-23)
+> `__noSuchProperty__` now falls through to `window[name]`, so bare
+> `getComputedStyle`/`matchMedia`/`getSelection`/`atob`/`btoa` are callable.
+> **Suite: 2,558 → 2,546 (−12), no real regressions** (one net-zero PopState swap,
+> again a green-by-accident unmask). The win is small only because ~119 tests call
+> `window.getComputedStyle` (property access, which already worked) and still fail
+> on computed-*value* correctness — a per-feature CSS gap, not callability.
+> **Dead end noted:** making `__noSuchProperty__` throw `ReferenceError` for
+> unknown names (to recover RC-A's `createCtorUnknownType` cases) is wrong — the
+> hook fires during `typeof`, so it made `typeof undeclaredVar` throw instead of
+> yielding `"undefined"`. Reverted; guarded by `GraalGlobalFunctionsTest`.
+
+
 ```js
 getComputedStyle(el)  // TypeError: undefined is not a function
 ```

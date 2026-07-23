@@ -268,13 +268,16 @@ public final class JsEngineFactory {
             "var clearTimeout = function(id) { window.clearTimeout(id); };",
             "var clearInterval = function(id) { window.clearInterval(id); };",
             "var alert = function(msg) { window.alert(msg); };",
-            // Element-id auto-globals: real browsers expose any element with
-            // id='X' as window.X. Nashorn-compat lets us hook the global
-            // object's __noSuchProperty__ to fall back to getElementById when
-            // a bare identifier is unbound.
+            // Nashorn-compat calls the global object's __noSuchProperty__ when a
+            // bare identifier is unbound. In a browser `window` IS the global,
+            // so first fall through to window members: this makes bare calls
+            // like getComputedStyle(el), matchMedia(q), getSelection() and
+            // atob(s) work without the `window.` prefix. Then fall back to
+            // element-id auto-globals (an element with id='X' is exposed as X).
             "Object.defineProperty(this, '__noSuchProperty__', {",
             "  configurable: true,",
             "  value: function(name) {",
+            "    if (name in window) return window[name];",
             "    var el = document.getElementById(name);",
             "    return el == null ? undefined : el;",
             "  }",
