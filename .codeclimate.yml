@@ -2,7 +2,7 @@ plugins:
   sonar-java:
     enabled: true
     config:
-      sonar.java.source: 8
+      sonar.java.source: 25
 
 exclude_patterns:
   - "LoboParser/src/main/**"
