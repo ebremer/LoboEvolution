@@ -76,6 +76,19 @@ public final class LoboGraalHostAccess {
             // only fires when a Java method specifically requires String, so
             // overloads taking Object continue to receive the original type.
             .targetTypeMapping(Object.class, String.class, null, String::valueOf)
+            // SECURITY: allowPublicAccess exposes Object.getClass(), and from a
+            // Class a script can walk getClassLoader().loadClass("java.lang.Runtime")
+            // then getMethod("getRuntime").invoke(null) to reach Runtime.exec —
+            // i.e. arbitrary code execution by untrusted page JavaScript. Deny
+            // the reflection surface so a bound DOM object can't be used as a
+            // springboard out of the sandbox. getClass() still returns a Class
+            // (harmless on its own), but every method on Class, ClassLoader and
+            // the java.lang.reflect.* types is blocked. Verified not to affect
+            // method calls, `instanceof`, or `new` on bound host types.
+            .denyAccess(Class.class)
+            .denyAccess(ClassLoader.class)
+            .denyAccess(java.lang.reflect.AccessibleObject.class)
+            .denyAccess(java.lang.reflect.Member.class)
             .build();
 
     /**
