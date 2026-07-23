@@ -12,7 +12,7 @@ Guidance for Claude Code when working in this repository.
 
 - Java 25. Build with `mvn -B install -DskipTests`. Note the `maven-clean-plugin`
   is intentionally skipped in the root `pom.xml`, so `mvn clean` is a no-op.
-- The GraalJS/Truffle version (`LoboHTML/pom.xml` `<graaljs.version>`) must stay
+- The GraalJS/Truffle version (`parent/pom.xml` `<graaljs.version>`) must stay
   in lock-step with the GraalVM JDK it runs on. A patch-level mismatch throws
   `UnsatisfiedLinkError` (libgraal) the first time a script is evaluated and
   takes down the entire JS engine.

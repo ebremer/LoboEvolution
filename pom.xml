@@ -113,6 +113,7 @@
     </profiles>
 
     <modules>
+        <module>parent</module>
         <module>LoboW3C</module>
         <module>LoboCommon</module>
         <module>LoboStore</module>

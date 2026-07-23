@@ -19,7 +19,7 @@ jobs:
 
       # Run on GraalVM (the intended runtime) so the GraalJS/Truffle engine
       # exercises its real libgraal path. This is what catches a C1-style
-      # version mismatch between the polyglot artifacts (LoboHTML/pom.xml
+      # version mismatch between the polyglot artifacts (parent/pom.xml
       # <graaljs.version>) and the JDK — keep the two in lock-step. If this
       # setup ever drifts from graaljs.version and the smoke step below starts
       # failing with UnsatisfiedLinkError, bump graaljs.version to match.
