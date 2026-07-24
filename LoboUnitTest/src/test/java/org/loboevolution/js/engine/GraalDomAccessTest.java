@@ -330,6 +330,16 @@ class GraalDomAccessTest extends LoboWebDriver {
     }
 
     @Test
+    void documentNamedAccessResolvesElements() {
+        // document.NAME -> element with id==NAME (browser named property).
+        assertEquals("DIV", eval("document.root.tagName").asString());
+        assertEquals("SPAN", eval("document.other.tagName").asString());
+        assertTrue(eval("document.root === document.getElementById('root')").asBoolean());
+        // an unknown name is undefined, not an error
+        assertEquals("undefined", eval("typeof document.noSuchThing").asString());
+    }
+
+    @Test
     void classListIsIndexedAndIterable() {
         // classList must be a browser array-like: length, [i], for..of, methods.
         assertEquals(1, eval("document.getElementById('root').classList.length").asInt());

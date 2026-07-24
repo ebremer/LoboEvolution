@@ -31,7 +31,10 @@ package org.loboevolution.html.dom.domimpl;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.graalvm.polyglot.Value;
+import org.graalvm.polyglot.proxy.ProxyObject;
 import org.loboevolution.common.Strings;
+import org.loboevolution.html.js.engine.MemberReflector;
 import org.loboevolution.common.Urls;
 import org.loboevolution.config.HtmlRendererConfig;
 import org.loboevolution.events.Event;
@@ -62,6 +65,7 @@ import org.xml.sax.SAXException;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -71,7 +75,7 @@ import java.util.*;
  * Implementation of the W3C HTMLDocument interface.
  */
 @Slf4j
-public class HTMLDocumentImpl extends DocumentImpl implements HTMLDocument, DocumentView {
+public class HTMLDocumentImpl extends DocumentImpl implements HTMLDocument, DocumentView, ProxyObject {
 
 	@Setter
 	private volatile String baseURI;
@@ -569,5 +573,79 @@ public class HTMLDocumentImpl extends DocumentImpl implements HTMLDocument, Docu
         for (final DocumentNotificationListener dnl : this.documentNotificationListeners) {
 			dnl.structureInvalidated(node);
 		}
+	}
+
+	// --- GraalJS ProxyObject: document.NAME named-element access ---
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>A document is a {@link ProxyObject} so {@code document.myForm} /
+	 * {@code document.myImage} resolve to a named element the way a browser does,
+	 * completing chains such as {@code document.myForm.myInput}. Every other
+	 * member falls back to the shared bean/method reflection. Caveat: being a
+	 * polyglot proxy, a document cannot be passed as an argument to a host method
+	 * (see {@code HTMLFormElementImpl} for the same limitation).</p>
+	 */
+	@Override
+	public Object getMember(final String key) {
+		final Method getter = MemberReflector.findGetter(this, key);
+		if (getter != null) {
+			try {
+				return getter.invoke(this);
+			} catch (final ReflectiveOperationException e) {
+				throw new RuntimeException(e);
+			}
+		}
+		final Method[] methods = MemberReflector.findMethods(this, key);
+		if (methods.length > 0) {
+			return MemberReflector.makeExecutable(this, methods);
+		}
+		return namedElement(key);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public boolean hasMember(final String key) {
+		if (MemberReflector.findGetter(this, key) != null) return true;
+		if (MemberReflector.findSetter(this, key) != null) return true;
+		if (MemberReflector.findMethods(this, key).length > 0) return true;
+		return namedElement(key) != null;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void putMember(final String key, final Value value) {
+		final Method setter = MemberReflector.findSetter(this, key);
+		if (setter != null) {
+			try {
+				setter.invoke(this, MemberReflector.coerce(value, setter.getParameterTypes()[0]));
+			} catch (final ReflectiveOperationException ignored) {
+				// read-only member; a strict-mode write must not surface as a TypeError
+			}
+		}
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public Object getMemberKeys() {
+		return MemberReflector.reflectiveMemberNames(this).toArray(new String[0]);
+	}
+
+	/**
+	 * HTML named-property access on the document: the element whose {@code id}
+	 * equals {@code key}, else the first element whose {@code name} equals
+	 * {@code key}, else null — what makes {@code document.myForm} resolve.
+	 */
+	private Node namedElement(final String key) {
+		if (key == null || key.isEmpty()) {
+			return null;
+		}
+		final Element byId = getElementById(key);
+		if (byId != null) {
+			return byId;
+		}
+		final HTMLCollection byName = getElementsByName(key);
+		return (byName != null && byName.getLength() > 0) ? (Node) byName.item(0) : null;
 	}
 }
