@@ -118,4 +118,19 @@ class GraalDomConstructorsTest extends LoboWebDriver {
         assertEquals("root", eval(parse + ".documentElement.nodeName"));
         assertEquals("1", eval("'' + " + parse + ".getElementsByTagName('a').length"));
     }
+
+    @Test
+    void observerConstructorsAcceptCallback() {
+        // The observers take a callback; their impls declare an Object[] ctor
+        // that a raw-Class binding cannot reach from one JS arg, so
+        // `new MutationObserver(fn)` threw and aborted the whole observer/
+        // DOMTokenList test family. They must construct (and MutationObserver
+        // observe/disconnect) without throwing.
+        assertEquals("ok", eval(
+                "(function(){var o = new MutationObserver(function(){});"
+                        + "o.observe(document.body, {attributes:true}); o.disconnect(); return 'ok';})()"));
+        assertEquals("ok", eval(
+                "(function(){new ResizeObserver(function(){});"
+                        + "new IntersectionObserver(function(){}); return 'ok';})()"));
+    }
 }

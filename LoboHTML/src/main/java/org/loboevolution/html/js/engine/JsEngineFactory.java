@@ -131,9 +131,21 @@ public final class JsEngineFactory {
         engine.putGlobal("HTMLSpanElement", org.loboevolution.html.dom.domimpl.HTMLSpanElementImpl.class);
         engine.putGlobal("HTMLTableElement", org.loboevolution.html.dom.domimpl.HTMLTableElementImpl.class);
         engine.putGlobal("Text", org.loboevolution.html.dom.nodeimpl.TextImpl.class);
-        engine.putGlobal("MutationObserver", org.loboevolution.html.js.observer.MutationObserverImpl.class);
-        engine.putGlobal("IntersectionObserver", org.loboevolution.html.js.observer.IntersectionObserverImpl.class);
-        engine.putGlobal("ResizeObserver", org.loboevolution.html.js.observer.ResizeObserverImpl.class);
+
+        // The observers take a callback function; their impls declare an Object[]
+        // constructor, which — bound as a raw Class — GraalJS cannot reach from a
+        // single JS argument ("no applicable overload found"), so `new
+        // MutationObserver(fn)` threw and aborted every script using one (the
+        // whole DOMTokenList/observer test family). Bind as ProxyInstantiable so
+        // the JS args reach the Object[] constructor (same fix as the DOM events).
+        // Tests do not use `instanceof <Observer>`, so binding the Class is not
+        // needed.
+        engine.putGlobal("MutationObserver", (ProxyInstantiable) args ->
+                new org.loboevolution.html.js.observer.MutationObserverImpl(toHostArgs(args)));
+        engine.putGlobal("IntersectionObserver", (ProxyInstantiable) args ->
+                new org.loboevolution.html.js.observer.IntersectionObserverImpl(toHostArgs(args)));
+        engine.putGlobal("ResizeObserver", (ProxyInstantiable) args ->
+                new org.loboevolution.html.js.observer.ResizeObserverImpl(toHostArgs(args)));
 
         final org.loboevolution.html.dom.domimpl.HTMLDocumentImpl doc =
                 (org.loboevolution.html.dom.domimpl.HTMLDocumentImpl) window.getDocumentNode();
