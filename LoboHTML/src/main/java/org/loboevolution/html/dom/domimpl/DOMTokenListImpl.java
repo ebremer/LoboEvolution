@@ -26,20 +26,35 @@
 
 package org.loboevolution.html.dom.domimpl;
 
+import org.graalvm.polyglot.Value;
+import org.graalvm.polyglot.proxy.ProxyIterable;
+import org.graalvm.polyglot.proxy.ProxyObject;
 import org.htmlunit.cssparser.dom.DOMException;
 import org.loboevolution.common.Strings;
 import org.loboevolution.html.dom.DOMTokenList;
 import org.loboevolution.html.dom.nodeimpl.ElementImpl;
+import org.loboevolution.html.js.engine.MemberReflector;
 
+import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 
 /**
  * <p>DOMTokenListImpl class.</p>
+ *
+ * <p>Implements {@link ProxyObject} + {@link ProxyIterable} so a {@code classList}
+ * is exposed to GraalJS as the browser array-like it is: {@code classList[0]},
+ * {@code classList.length}, {@code for..of}/{@code Array.from}, plus its methods
+ * ({@code add}/{@code remove}/{@code toggle}/{@code contains}/{@code item}/…).
+ * Previously only the methods and {@code length} were reachable — {@code
+ * classList[i]} was {@code undefined} and iterating threw "not iterable", which
+ * aborted the many token-list tests that loop over the list. Rhino is unaware of
+ * the polyglot proxy interfaces and keeps using its own reflection unchanged.</p>
  */
-public class DOMTokenListImpl implements DOMTokenList {
+public class DOMTokenListImpl implements DOMTokenList, ProxyObject, ProxyIterable {
 
 	private final ElementImpl element;
 
@@ -244,5 +259,97 @@ public class DOMTokenListImpl implements DOMTokenList {
 		final StringBuilder sb = new StringBuilder();
 		tokenset.forEach(tok -> sb.append(tok).append(' '));
 		return sb.toString().trim();
+	}
+
+	// --- GraalJS ProxyIterable: for..of / Array.from over the tokens ---
+
+	/** {@inheritDoc} */
+	@Override
+	public Object getIterator() {
+		return new Iterator<Object>() {
+			private int index = 0;
+
+			@Override
+			public boolean hasNext() {
+				return index < getLength();
+			}
+
+			@Override
+			public Object next() {
+				if (index >= getLength()) {
+					throw new NoSuchElementException();
+				}
+				return item(index++);
+			}
+		};
+	}
+
+	// --- GraalJS ProxyObject: numeric index, length, token-list methods ---
+
+	/** {@inheritDoc} */
+	@Override
+	public Object getMember(final String key) {
+		final int idx = asIndex(key);
+		if (idx != Integer.MIN_VALUE) {
+			return (idx >= 0 && idx < getLength()) ? item(idx) : null;
+		}
+		final Method getter = MemberReflector.findGetter(this, key);
+		if (getter != null) {
+			try {
+				return getter.invoke(this);
+			} catch (final ReflectiveOperationException e) {
+				throw new RuntimeException(e);
+			}
+		}
+		final Method[] methods = MemberReflector.findMethods(this, key);
+		if (methods.length > 0) {
+			return MemberReflector.makeExecutable(this, methods);
+		}
+		return null;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public boolean hasMember(final String key) {
+		final int idx = asIndex(key);
+		if (idx != Integer.MIN_VALUE) {
+			return idx >= 0 && idx < getLength();
+		}
+		return MemberReflector.findGetter(this, key) != null
+				|| MemberReflector.findSetter(this, key) != null
+				|| MemberReflector.findMethods(this, key).length > 0;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void putMember(final String key, final Value value) {
+		final Method setter = MemberReflector.findSetter(this, key);
+		if (setter != null) {
+			try {
+				setter.invoke(this, MemberReflector.coerce(value, setter.getParameterTypes()[0]));
+			} catch (final ReflectiveOperationException ignored) {
+				// read-only member
+			}
+		}
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public Object getMemberKeys() {
+		return MemberReflector.reflectiveMemberNames(this).toArray(new String[0]);
+	}
+
+	private static int asIndex(final String key) {
+		if (key == null || key.isEmpty()) return Integer.MIN_VALUE;
+		final int start = key.charAt(0) == '-' ? 1 : 0;
+		if (start == key.length()) return Integer.MIN_VALUE;
+		for (int i = start; i < key.length(); i++) {
+			if (!Character.isDigit(key.charAt(i))) return Integer.MIN_VALUE;
+		}
+		try {
+			return Integer.parseInt(key);
+		} catch (final NumberFormatException overflow) {
+			return Integer.MIN_VALUE;
+		}
 	}
 }

@@ -328,4 +328,19 @@ class GraalDomAccessTest extends LoboWebDriver {
         assertEquals("item-0", doc.getElementById("sec").getChildren().item(0).getTextContent());
         assertEquals("item-4", doc.getElementById("sec").getChildren().item(4).getTextContent());
     }
+
+    @Test
+    void classListIsIndexedAndIterable() {
+        // classList must be a browser array-like: length, [i], for..of, methods.
+        assertEquals(1, eval("document.getElementById('root').classList.length").asInt());
+        assertEquals("outer", eval("document.getElementById('root').classList[0]").asString());
+        assertEquals("outer", eval("document.getElementById('root').classList.item(0)").asString());
+        assertTrue(eval("document.getElementById('root').classList.contains('outer')").asBoolean());
+        assertEquals("outer", eval(
+                "(function(){var s='';for(var c of document.getElementById('root').classList)s+=c;return s;})()")
+                .asString());
+        assertEquals("outer,added", eval(
+                "(function(){var e=document.getElementById('root');e.classList.add('added');"
+                        + "return Array.from(e.classList).join(',');})()").asString());
+    }
 }
