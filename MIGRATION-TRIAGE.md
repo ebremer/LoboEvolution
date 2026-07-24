@@ -3,12 +3,21 @@
 > ## ▶ RESUME HERE (handoff, 2026-07-23)
 >
 > **State:** branch `develop`, tree clean, nothing pushed. Latest full-suite
-> baseline: **5,697 run · 2,512 failures · 8 errors · 1 skipped** (GraalVM JDK 25).
+> baseline: **5,697 run · 2,417 failures · 8 errors · 1 skipped** (GraalVM JDK 25).
 > Committed: the whole review backlog (C1–C2, H1–H2, M1–M5, L1–L6), a 5-item
 > hygiene batch, the three systemic bridge fixes **RC-A/B/C** (2,644 → 2,537),
-> the **CSSOM `CssMembers` rework** (2,537 → 2,530, −7; commit `828b36b69`), and
-> the **`HTMLCollection` named/indexed proxy** (2,530 → 2,512, −18, 19 wins/1
-> green-by-accident; commit `66daeed6d`). See `git log` for per-item commits.
+> the **CSSOM `CssMembers` rework** (2,537 → 2,530, −7; commit `828b36b69`), the
+> **`HTMLCollection` named/indexed proxy** (2,530 → 2,512, −18; commit
+> `66daeed6d`), and the **`HTMLFormElement` named/indexed proxy** (2,512 → 2,417,
+> −95, 98 wins/3 regressions; commit `ca701072b`). See `git log`.
+>
+> **Proxy-on-element caveat learned (important for the next levers):** a polyglot
+> `ProxyObject` **keeps its host-type identity for `instanceof`** (verified) but
+> **cannot be passed as an argument to a host method** — GraalJS will not unwrap a
+> proxy to its host type (a `targetTypeMapping` does not rescue it). So
+> `document.body.appendChild(aCreatedForm)` throws (the 3 form regressions);
+> form-as-*receiver* is fine. Weigh this before making another central object
+> (e.g. `document`) a proxy.
 >
 > **CssMembers rework — DONE (2026-07-23).** Made inline `element.style` member
 > access CSSOM-correct: recognized property unset → `""` (not null); unrecognized
@@ -26,15 +35,19 @@
 > re-creates the wrapper while the declaration is empty, so a per-object expando
 > can't persist; such reads stay `undefined` (a handful of tests, no regressions).
 >
-> **Next task:** finish the **Select/Option/Form cluster** — its collection half
-> is done (`HTMLCollection` proxy, −18); the remaining half is **form + document
-> named access** so `document.forms.testForm.select1` and `document.form1.select1`
-> resolve. See *Select / Option / Form cluster → ▶ Remaining* below: reuse the
-> form's existing traversal-based `namedItem`/`item`, mirror the collection's
-> `ProxyObject`+`ProxyIterable` shape, and **first de-risk making a full element a
-> proxy** (`form instanceof HTMLElement`, event/render paths) with a small
-> prototype + targeted measure. Skipping the non-browser `form.item()` also clears
-> the one collection-step regression (`itemInteger`).
+> **Next task:** the Select/Option/Form collection+form halves are done (−113
+> combined). The last thin slice of that cluster is **document named access**
+> (`document.form1`, `document.myImage`) — make `HTMLDocumentImpl` expose named
+> elements like the collection/form proxies do. **But** `document` is the central
+> object (every test touches `document.getElementById`, `.body`, `.createElement`,
+> …), so a full `ProxyObject` there is far riskier than the form was and must
+> preserve exact reflection parity — validate against `HTMLDocumentTest`/
+> `DocumentTest` before committing, and mind the proxy-as-arg caveat above. If
+> that looks too invasive, the remaining top clusters are per-feature, not one
+> bug: `CSSStyleDeclarationTest` (123, CSS per-value/shorthand — see CSS
+> sub-triage), `HTMLElementTest` (100), `HTMLInputElementTest` (91),
+> `CanvasRenderingContext2DTest` (60), `DOMTokenListTest` (58), and the separate
+> ~315 `domts.*` DOM-conformance track.
 >
 > After that, the CSS residual is **per-value/per-feature**, not one bug (this
 > rework netted only −7): shorthand→longhand expansion (`style.length`, e.g.
