@@ -3,13 +3,16 @@
 > ## ▶ RESUME HERE (handoff, 2026-07-23)
 >
 > **State:** branch `develop`, tree clean, nothing pushed. Latest full-suite
-> baseline: **5,697 run · 2,417 failures · 8 errors · 1 skipped** (GraalVM JDK 25).
+> baseline: **5,704 run · 2,379 failures · 8 errors · 1 skipped** (GraalVM JDK 25).
 > Committed: the whole review backlog (C1–C2, H1–H2, M1–M5, L1–L6), a 5-item
 > hygiene batch, the three systemic bridge fixes **RC-A/B/C** (2,644 → 2,537),
-> the **CSSOM `CssMembers` rework** (2,537 → 2,530, −7; commit `828b36b69`), the
-> **`HTMLCollection` named/indexed proxy** (2,530 → 2,512, −18; commit
-> `66daeed6d`), and the **`HTMLFormElement` named/indexed proxy** (2,512 → 2,417,
-> −95, 98 wins/3 regressions; commit `ca701072b`). See `git log`.
+> the **CSSOM `CssMembers` rework** (2,537 → 2,530; `828b36b69`), the
+> **`HTMLCollection` named/indexed proxy** (2,530 → 2,512; `66daeed6d`), the
+> **`HTMLFormElement` named/indexed proxy** (2,512 → 2,417, −95, 3 regressions;
+> `ca701072b`), the **`classList` (DOMTokenList) indexed+iterable proxy** (2,417 →
+> 2,408; `7e428804b`), and **binding the 3 observers as `ProxyInstantiable`**
+> (2,408 → 2,379; `308cb3622`). See `git log`. (This session: 2,537 → 2,379,
+> **−158**.)
 >
 > **Proxy-on-element caveat learned (important for the next levers):** a polyglot
 > `ProxyObject` **keeps its host-type identity for `instanceof`** (verified) but
@@ -35,19 +38,28 @@
 > re-creates the wrapper while the declaration is empty, so a per-object expando
 > can't persist; such reads stay `undefined` (a handful of tests, no regressions).
 >
-> **Next task:** the Select/Option/Form collection+form halves are done (−113
-> combined). The last thin slice of that cluster is **document named access**
-> (`document.form1`, `document.myImage`) — make `HTMLDocumentImpl` expose named
-> elements like the collection/form proxies do. **But** `document` is the central
-> object (every test touches `document.getElementById`, `.body`, `.createElement`,
-> …), so a full `ProxyObject` there is far riskier than the form was and must
-> preserve exact reflection parity — validate against `HTMLDocumentTest`/
-> `DocumentTest` before committing, and mind the proxy-as-arg caveat above. If
-> that looks too invasive, the remaining top clusters are per-feature, not one
-> bug: `CSSStyleDeclarationTest` (123, CSS per-value/shorthand — see CSS
-> sub-triage), `HTMLElementTest` (100), `HTMLInputElementTest` (91),
-> `CanvasRenderingContext2DTest` (60), `DOMTokenListTest` (58), and the separate
-> ~315 `domts.*` DOM-conformance track.
+> **Next task — document named access (HIGH value, HIGH risk).** Many tests reach
+> a control via `document.myForm.myInput` / `document.form1.select1` — i.e.
+> **`document.NAME`** (named property on the document). It is `undefined` today,
+> so `document.NAME.anything` throws and aborts the script: this is the dominant
+> "actual array was <null>" cause in **`HTMLInputElementTest` (73 threw)** and a
+> chunk of `HTMLAllCollectionTest`/`HTMLSelectElementTest`. Fix: give
+> `HTMLDocumentImpl` named access like the collection/form proxies —
+> `getMember(key)` → reflection, then `getElementById(key) ?? getElementsByName(key)[0]`.
+> **Risk is the highest yet:** `document` is the central object (every test uses
+> `document.getElementById`/`.body`/`.createElement`), so a full `ProxyObject`
+> there must preserve exact reflection parity (the form change proved the pattern
+> holds, but validate on `HTMLInputElementTest`/`HTMLDocumentTest`/`DocumentTest`
+> at the CLASS level before a full run, and revert on any parity regression), and
+> `document` is passed as a host-method arg more than a form is (importNode,
+> adoptNode, XPath context, serializers) — the proxy-as-arg caveat will bite those.
+> Weigh staged.
+>
+> If deferring that, the remaining clusters are per-feature, not one bug:
+> `CSSStyleDeclarationTest` (123, CSS per-value/shorthand — see CSS sub-triage),
+> `HTMLElementTest` (100), `CanvasRenderingContext2DTest` (60), `XMLHttpRequestTest`
+> (49), and the separate ~315 `domts.*` DOM-conformance track (direct Java DOM API,
+> no JS bridge).
 >
 > After that, the CSS residual is **per-value/per-feature**, not one bug (this
 > rework netted only −7): shorthand→longhand expansion (`style.length`, e.g.
