@@ -41,12 +41,12 @@ import java.util.Set;
  * GraalJS without having to repeat the per-class boilerplate. Pure
  * {@code java.lang.reflect}; no polyglot recursion.
  */
-final class MemberReflector {
+public final class MemberReflector {
 
     private MemberReflector() {}
 
     /** A bean getter ({@code getX}/{@code isX}) on {@code target} for {@code key}, or null. */
-    static Method findGetter(final Object target, final String key) {
+    public static Method findGetter(final Object target, final String key) {
         if (key == null || key.isEmpty()) return null;
         final String cap = capitalize(key);
         for (final String prefix : new String[]{"get", "is"}) {
@@ -63,7 +63,7 @@ final class MemberReflector {
     }
 
     /** A single-arg bean setter ({@code setX}) on {@code target} for {@code key}, or null. */
-    static Method findSetter(final Object target, final String key) {
+    public static Method findSetter(final Object target, final String key) {
         if (key == null || key.isEmpty()) return null;
         final String setterName = "set" + capitalize(key);
         for (final Method m : target.getClass().getMethods()) {
@@ -75,7 +75,7 @@ final class MemberReflector {
     }
 
     /** All public methods named {@code key} (any arity); empty array on miss. */
-    static Method[] findMethods(final Object target, final String key) {
+    public static Method[] findMethods(final Object target, final String key) {
         return Arrays.stream(target.getClass().getMethods())
                 .filter(m -> m.getName().equals(key))
                 .toArray(Method[]::new);
@@ -90,7 +90,7 @@ final class MemberReflector {
      * overload. If the best candidate fails to coerce or invoke, the next
      * best-scoring one is tried before giving up.
      */
-    static ProxyExecutable makeExecutable(final Object target, final Method[] methods) {
+    public static ProxyExecutable makeExecutable(final Object target, final Method[] methods) {
         return args -> {
             final List<Method> candidates = new ArrayList<>();
             for (final Method m : methods) {
@@ -188,7 +188,7 @@ final class MemberReflector {
     }
 
     /** Bean-style member names plus method names declared on {@code target}'s class. */
-    static Set<String> reflectiveMemberNames(final Object target) {
+    public static Set<String> reflectiveMemberNames(final Object target) {
         final Set<String> keys = new LinkedHashSet<>();
         for (final Method m : target.getClass().getMethods()) {
             if (m.getDeclaringClass() == Object.class) continue;
@@ -206,7 +206,7 @@ final class MemberReflector {
     }
 
     /** Convert a polyglot Value to the requested Java type. */
-    static Object coerce(final Value value, final Class<?> targetType) {
+    public static Object coerce(final Value value, final Class<?> targetType) {
         if (value == null) return null;
         if (targetType == Object.class) {
             return value.isHostObject() ? value.asHostObject() : value;
@@ -215,7 +215,7 @@ final class MemberReflector {
     }
 
     /** Unwrap a Value to its host representation; preserve Values for callables. */
-    static Object unwrap(final Value value) {
+    public static Object unwrap(final Value value) {
         if (value == null) return null;
         if (value.isHostObject()) return value.asHostObject();
         if (value.isString()) return value.asString();
