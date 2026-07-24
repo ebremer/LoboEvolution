@@ -3,11 +3,12 @@
 > ## ▶ RESUME HERE (handoff, 2026-07-23)
 >
 > **State:** branch `develop`, tree clean, nothing pushed. Latest full-suite
-> baseline: **5,690 run · 2,530 failures · 8 errors · 1 skipped** (GraalVM JDK 25).
+> baseline: **5,697 run · 2,512 failures · 8 errors · 1 skipped** (GraalVM JDK 25).
 > Committed: the whole review backlog (C1–C2, H1–H2, M1–M5, L1–L6), a 5-item
 > hygiene batch, the three systemic bridge fixes **RC-A/B/C** (2,644 → 2,537),
-> and the **CSSOM `CssMembers` rework** (2,537 → 2,530, −7, zero regressions;
-> commit `828b36b69`). See `git log` for per-item commits.
+> the **CSSOM `CssMembers` rework** (2,537 → 2,530, −7; commit `828b36b69`), and
+> the **`HTMLCollection` named/indexed proxy** (2,530 → 2,512, −18, 19 wins/1
+> green-by-accident; commit `66daeed6d`). See `git log` for per-item commits.
 >
 > **CssMembers rework — DONE (2026-07-23).** Made inline `element.style` member
 > access CSSOM-correct: recognized property unset → `""` (not null); unrecognized
@@ -25,16 +26,15 @@
 > re-creates the wrapper while the declaration is empty, so a per-object expando
 > can't persist; such reads stay `undefined` (a handful of tests, no regressions).
 >
-> **Next task:** the **Select/Option/Form cluster** is now the biggest single
-> lever (~285 failing across `HTMLSelectElementTest`/`HTMLOptionsCollectionTest`/
-> `HTMLOptionElement2Test`/`HTMLFormElementTest`), and unlike the CSS residual it
-> has a **confirmed systemic root cause** — see the *Select / Option / Form
-> cluster* section below. Two bridge bugs: (1) named/indexed access on collection
-> objects (`document.forms.testForm`, `form.select1` → `undefined`) — make
-> `HTMLCollection`/`HTMLFormElement` `ProxyObject`s like `CssMembers`; (2)
-> `HTMLFormElementImpl.getElements()` returns wrong wrappers (`form.elements[0]`
-> has `length 1`, no `.options`). The select+options work in isolation, so it's a
-> bridge bug, not options parsing. Do each focused and re-measure.
+> **Next task:** finish the **Select/Option/Form cluster** — its collection half
+> is done (`HTMLCollection` proxy, −18); the remaining half is **form + document
+> named access** so `document.forms.testForm.select1` and `document.form1.select1`
+> resolve. See *Select / Option / Form cluster → ▶ Remaining* below: reuse the
+> form's existing traversal-based `namedItem`/`item`, mirror the collection's
+> `ProxyObject`+`ProxyIterable` shape, and **first de-risk making a full element a
+> proxy** (`form instanceof HTMLElement`, event/render paths) with a small
+> prototype + targeted measure. Skipping the non-browser `form.item()` also clears
+> the one collection-step regression (`itemInteger`).
 >
 > After that, the CSS residual is **per-value/per-feature**, not one bug (this
 > rework netted only −7): shorthand→longhand expansion (`style.length`, e.g.
@@ -268,6 +268,39 @@ to gather real form controls. Regression-risky (collection access is everywhere)
 — do each focused and re-measure by diffing the failing *set*. Note the select
 and its options already work in isolation, so this is a bridge/collection bug,
 **not** an options-parsing bug.
+
+### ✅ Part (a-collection) DONE (2026-07-23, commit 66daeed6d)
+
+`HTMLCollectionImpl` is now a `ProxyObject` + `ProxyIterable`: numeric index,
+`length` (read + the option collection's **writable** truncation), named access
+(`document.forms.myForm`, `select.options.opt` → contained element whose id/name
+matches, scoped to the collection), the collection methods, and a **live**
+`for..of` iterator. Suite **2,530 → 2,512 (−18, 19 wins, 1 regression)**.
+Interop lessons (verified with probes, keep them):
+- **`ProxyObject`+`ProxyIterable`, NOT `ProxyArray`.** A `ProxyArray` makes
+  `length` read-only and *silently* drops `options.length = 0` (assignment never
+  reaches `putMember`), which breaks `select.selectedIndex`.
+- The `for..of` iterator must be **live** (re-read `getLength()`/`item(i)` each
+  step), or a collection mutated mid-iteration is missed (`forOfDynamic*`).
+- `MemberReflector` was made `public` to share the bean/method reflection.
+- Lone regression `HTMLFormElementTest.itemInteger` is green-by-accident and is
+  fixed by the form-proxy step below (form must not expose its `item()`).
+
+### ▶ Remaining: form + document named access (the bigger half)
+
+`document.forms.testForm.select1` and `document.form1.select1` still fail because
+**`form.select1`** (named control) and **`document.form1`** (document named prop)
+are not resolved. The good news: `HTMLFormElementImpl` already has correct,
+traversal-based `namedItem(name)` and `item(index)` (they use `isInput`+visit,
+**not** the buggy `getElements()`), so a form proxy can reuse them directly —
+`getElements()` only needs fixing for `form.length`/`form.elements`, a separate
+concern. **Open risk to resolve first:** making a full DOM element a
+`ProxyObject` (unlike the single `WindowImpl`) may break `form instanceof
+HTMLElement` (a polyglot proxy is not an `asHostObject`) and could touch
+event/render paths. Prototype it and measure `form instanceof`/event tests before
+committing; if proxy-on-element is too invasive, consider a narrower interop hook.
+Same `ProxyObject`+`ProxyIterable` shape as the collection; skip exposing the
+non-browser `item()` method to fix `itemInteger`.
 
 ## What is *not* systemic
 
