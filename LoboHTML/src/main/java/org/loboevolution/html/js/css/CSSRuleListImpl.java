@@ -28,17 +28,32 @@ package org.loboevolution.html.js.css;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.graalvm.polyglot.Value;
+import org.graalvm.polyglot.proxy.ProxyIterable;
+import org.graalvm.polyglot.proxy.ProxyObject;
 import org.htmlunit.cssparser.dom.AbstractCSSRuleImpl;
 import org.loboevolution.css.CSSRuleList;
 import org.loboevolution.css.CSSStyleRule;
+import org.loboevolution.html.js.engine.MemberReflector;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 /**
  * <p>CSSRuleListImpl class.</p>
+ *
+ * <p>Implements {@link ProxyObject} + {@link ProxyIterable} so a
+ * {@code CSSRuleList} is the browser array-like it should be: {@code
+ * sheet.cssRules[0]}, {@code cssRules.length}, {@code for..of} and its
+ * {@code item()} method. Previously only {@code item(i)}/{@code length} were
+ * reachable and {@code cssRules[i]} was {@code undefined}, so the common
+ * {@code styleSheets[0].cssRules[0].style} pattern threw and aborted the whole
+ * stylesheet-rule test family. Rhino ignores the polyglot proxy interfaces.</p>
  */
-public class CSSRuleListImpl implements CSSRuleList {
+public class CSSRuleListImpl implements CSSRuleList, ProxyObject, ProxyIterable {
 
     @Getter
     @Setter
@@ -102,6 +117,98 @@ public class CSSRuleListImpl implements CSSRuleList {
                 styleRuleList.add(new CSSMediaRuleImpl(rule));
             }
         });
+    }
+
+    // --- GraalJS ProxyIterable: for..of / Array.from over the rules ---
+
+    /** {@inheritDoc} */
+    @Override
+    public Object getIterator() {
+        return new Iterator<Object>() {
+            private int index = 0;
+
+            @Override
+            public boolean hasNext() {
+                return index < getLength();
+            }
+
+            @Override
+            public Object next() {
+                if (index >= getLength()) {
+                    throw new NoSuchElementException();
+                }
+                return item(index++);
+            }
+        };
+    }
+
+    // --- GraalJS ProxyObject: numeric index, length, item() ---
+
+    /** {@inheritDoc} */
+    @Override
+    public Object getMember(final String key) {
+        final int idx = asIndex(key);
+        if (idx != Integer.MIN_VALUE) {
+            return (idx >= 0 && idx < getLength()) ? item(idx) : null;
+        }
+        final Method getter = MemberReflector.findGetter(this, key);
+        if (getter != null) {
+            try {
+                return getter.invoke(this);
+            } catch (final ReflectiveOperationException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        final Method[] methods = MemberReflector.findMethods(this, key);
+        if (methods.length > 0) {
+            return MemberReflector.makeExecutable(this, methods);
+        }
+        return null;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean hasMember(final String key) {
+        final int idx = asIndex(key);
+        if (idx != Integer.MIN_VALUE) {
+            return idx >= 0 && idx < getLength();
+        }
+        return MemberReflector.findGetter(this, key) != null
+                || MemberReflector.findSetter(this, key) != null
+                || MemberReflector.findMethods(this, key).length > 0;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void putMember(final String key, final Value value) {
+        final Method setter = MemberReflector.findSetter(this, key);
+        if (setter != null) {
+            try {
+                setter.invoke(this, MemberReflector.coerce(value, setter.getParameterTypes()[0]));
+            } catch (final ReflectiveOperationException ignored) {
+                // read-only member
+            }
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Object getMemberKeys() {
+        return MemberReflector.reflectiveMemberNames(this).toArray(new String[0]);
+    }
+
+    private static int asIndex(final String key) {
+        if (key == null || key.isEmpty()) return Integer.MIN_VALUE;
+        final int start = key.charAt(0) == '-' ? 1 : 0;
+        if (start == key.length()) return Integer.MIN_VALUE;
+        for (int i = start; i < key.length(); i++) {
+            if (!Character.isDigit(key.charAt(i))) return Integer.MIN_VALUE;
+        }
+        try {
+            return Integer.parseInt(key);
+        } catch (final NumberFormatException overflow) {
+            return Integer.MIN_VALUE;
+        }
     }
 
     @Override

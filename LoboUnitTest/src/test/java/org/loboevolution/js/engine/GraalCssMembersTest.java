@@ -62,7 +62,9 @@ class GraalCssMembersTest extends LoboWebDriver {
 
     @BeforeEach
     void setUp() throws Exception {
-        final String html = "<html><body>"
+        final String html = "<html><head>"
+                + "<style>div { color: red; } p { margin-top: 1px; }</style>"
+                + "</head><body>"
                 + "<div id='t'></div>"
                 + "<div id='w' style='width: 100%'></div>"
                 + "</body></html>";
@@ -139,6 +141,19 @@ class GraalCssMembersTest extends LoboWebDriver {
         assertEquals("threw", caught.asString());
         // and no phantom 'length' property was minted
         assertEquals(0, style("t", "s.length").asInt());
+    }
+
+    @Test
+    void cssRuleListIsIndexedAndIterable() {
+        // styleSheets[0].cssRules[0].style is the pervasive stylesheet-rule
+        // pattern; cssRules[i] must resolve (was undefined -> threw).
+        assertEquals(2, eval("document.styleSheets[0].cssRules.length").asInt());
+        assertEquals("object", eval("typeof document.styleSheets[0].cssRules[0]").asString());
+        assertTrue(eval("document.styleSheets[0].cssRules[0] "
+                + "=== document.styleSheets[0].cssRules.item(0)").asBoolean());
+        assertEquals(2, eval(
+                "(function(){var n=0;for(var r of document.styleSheets[0].cssRules)n++;return n;})()").asInt());
+        assertEquals("red", eval("document.styleSheets[0].cssRules[0].style.color").asString());
     }
 
     @Test
